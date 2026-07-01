@@ -21,6 +21,7 @@ panorama = ExtResource("3_0ksgj")
 
 [sub_resource type="Sky" id="Sky_vroi3"]
 sky_material = SubResource("PanoramaSkyMaterial_t7jwl")
+process_mode = 3
 
 [sub_resource type="Environment" id="Environment_icybu"]
 background_mode = 2
@@ -30,7 +31,6 @@ fog_mode = 1
 fog_light_color = Color(0.272954, 0.419272, 0.484632, 1)
 fog_sun_scatter = 0.05
 fog_density = 1.0
-fog_aerial_perspective = 0.626
 fog_sky_affect = 0.0
 fog_depth_curve = 0.25
 fog_depth_begin = 200.0
@@ -157,13 +157,8 @@ shadow_normal_bias = 6.464
 shadow_opacity = 0.8
 shadow_blur = 5.0
 
-[node name="Camera" type="Camera3D" parent="."]
-transform = Transform3D(-0.964313, 0, -0.264765, 0, 1, 0, 0.264765, 0, -0.964313, -26.2515, 12.3556, -97.3144)
-far = 10000.0
-script = ExtResource("4_v2yip")
-
 [node name="Water" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, -154)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22, 0, -98)
 sorting_offset = 999.0
 material_override = ExtResource("5_lt75t")
 cast_shadow = 0
@@ -304,6 +299,11 @@ calc_f_gravity = true
 transform = Transform3D(1, 8.88178e-16, 0, -1.55431e-15, 1, 3.55271e-15, 0, 0, 1, 0, -3.04366, -9.53674e-07)
 visible = false
 mesh = SubResource("BoxMesh_getpj")
+
+[node name="Camera" type="Camera3D" parent="Ferry Simplified Experiment"]
+transform = Transform3D(-0.0471064, 0, 0.998889, 0, 1, 0, -0.998889, 0, -0.0471064, -15, 1, 0)
+far = 10000.0
+script = ExtResource("4_v2yip")
 
 [node name="Box Octet Experiment" type="RigidBody3D" parent="." node_paths=PackedStringArray("buoyant_cells", "mesh")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.27228, 0, 21.2058)
