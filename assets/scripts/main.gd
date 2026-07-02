@@ -8,6 +8,10 @@ var should_render_imgui := not Engine.is_editor_hint()
 @onready var viewport : Variant = Engine.get_singleton(&'EditorInterface').get_editor_viewport_3d(0) if Engine.is_editor_hint() else get_viewport()
 @onready var camera : Variant = viewport.get_camera_3d()
 @onready var water := $Water
+@onready var start_screen := $StartScreen
+@onready var pause_menu := $PauseMenu
+
+var game_started := false
 
 # References to various parameters (for imgui)
 @onready var _camera_fov := [camera.fov]
@@ -22,15 +26,33 @@ func _init() -> void:
 		DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
 	DisplayServer.window_set_size(DisplayServer.screen_get_size() * 0.75)
 	DisplayServer.window_set_position(DisplayServer.screen_get_size() * 0.25 / 2.0)
-	
-#func _ready() -> void:
-	#Engine.set_max_fps(60)
+
+func _ready() -> void:
+	if Engine.is_editor_hint(): return
+	get_tree().paused = true
+	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+	start_screen.get_node('VBoxContainer/PlayButton').pressed.connect(_on_play_pressed)
+	start_screen.get_node('VBoxContainer/QuitButton').pressed.connect(get_tree().quit)
+	pause_menu.get_node('VBoxContainer/ResumeButton').pressed.connect(_on_resume_pressed)
+	pause_menu.get_node('VBoxContainer/QuitButton').pressed.connect(get_tree().quit)
+
+func _on_play_pressed() -> void:
+	game_started = true
+	start_screen.visible = false
+	get_tree().paused = false
+	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+
+func _on_resume_pressed() -> void:
+	pause_menu.visible = false
+	get_tree().paused = false
+	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
 func _process(delta : float) -> void:
 	if not Engine.is_editor_hint():
 		#if should_render_imgui:
 			#_render_imgui()
-		camera.enable_camera_movement = not (ImGui.IsWindowHovered(ImGui.HoveredFlags_AnyWindow) or ImGui.IsAnyItemActive())
+		if &'enable_camera_movement' in camera:
+			camera.enable_camera_movement = not (ImGui.IsWindowHovered(ImGui.HoveredFlags_AnyWindow) or ImGui.IsAnyItemActive())
 
 func _physics_process(delta: float) -> void:
 	# Shift water mesh whenever player moves into a new tile.
@@ -51,8 +73,13 @@ func _input(event: InputEvent) -> void:
 		should_render_imgui = not should_render_imgui
 	elif event.is_action_pressed(&'toggle_fullscreen'):
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN if DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_WINDOWED else DisplayServer.WINDOW_MODE_WINDOWED)
-	elif event.is_action_pressed(&'ui_cancel'):
-		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+	elif event.is_action_pressed(&'ui_cancel') and game_started:
+		if pause_menu.visible:
+			_on_resume_pressed()
+		else:
+			pause_menu.visible = true
+			get_tree().paused = true
+			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 
 func imgui_text_tooltip(title : String, tooltip : String) -> void:
 	ImGui.Text(title); if ImGui.IsItemHovered() and not tooltip.is_empty(): ImGui.SetTooltip(tooltip)

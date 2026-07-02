@@ -9,12 +9,18 @@ extends RigidBody3D
 @export var drag_coef_pitch: float = 100;
 @export var drag_coef_roll: float = 100;
 @export var mesh: MeshInstance3D;
+@export var engine_cells: Array[MeshInstance3D] = []; # Cells whose throttle is driven by the helm while piloted
+@export var rudder_torque_strength: float = 2000000.0;
 
 # TODO: Move to global config
 const DEBUG_FORCE_SCALE: float = 0.000015;
 
 const WATER_MASS_DENSITY := 1000; # kg / m^3
 const DRAG_SCALE: float = 1;
+
+var piloted: bool = false
+var helm_throttle: float = 0.0
+var helm_rudder: float = 0.0
 
 func _ready() -> void:
 	var prospective_mass = 0 # Error if 0
@@ -32,6 +38,25 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	apply_drag();
+	if piloted:
+		apply_helm();
+
+func set_piloted(active: bool) -> void:
+	piloted = active
+	if not active:
+		helm_throttle = 0.0
+		helm_rudder = 0.0
+		for cell in engine_cells:
+			cell.throttle = 1.0
+
+func set_helm_input(throttle: float, rudder: float) -> void:
+	helm_throttle = throttle
+	helm_rudder = rudder
+
+func apply_helm() -> void:
+	for cell in engine_cells:
+		cell.throttle = helm_throttle
+	apply_torque(basis.y * helm_rudder * rudder_torque_strength)
 
 func apply_drag() -> void:
 	# TODO: Different drag for parts in air vs water

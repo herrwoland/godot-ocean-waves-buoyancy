@@ -5,6 +5,7 @@ extends MeshInstance3D
 @export var cell_density_kg_per_m3: float = 500; # 500 is about right for solid wood, though 300-900 are acceptable ranges
 @export var calc_f_gravity: bool = false; # True if this should simulate gravity on this cell. 0 if gravity is calculated on the whole rigidbody
 @export var engine_force: float = 0; # If not 0 provides thrust of the amount given at this cell in the local X direction
+@export var throttle: float = 1.0; # Scales engine_force, meant to be driven externally (eg. by a helm controller)
 @export var debug: bool = false; # True if this should simulate gravity on this cell. 0 if gravity is calculated on the whole rigidbody
 @export var active: bool = true; # If false, does nothing
 
@@ -27,7 +28,7 @@ func _physics_process(delta: float) -> void:
 	
 func apply_engine_force_on_cell(delta: float) -> void:
 	#print("firing engine")
-	var engine_force_vec = to_global( Vector3(-engine_force, 0, 0))
+	var engine_force_vec = to_global( Vector3(-engine_force * throttle, 0, 0))
 	parent.apply_force(engine_force_vec, parent.transform.basis * position)
 
 	if debug:

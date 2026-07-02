@@ -1,0 +1,38 @@
+[gd_scene load_steps=6 format=3]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_island"]
+height = 12.0
+radius = 32.0
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_base"]
+top_radius = 28.0
+bottom_radius = 32.0
+height = 8.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sand"]
+albedo_color = Color(0.85, 0.76, 0.55, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_hill"]
+radius = 20.0
+height = 22.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_grass"]
+albedo_color = Color(0.31, 0.5, 0.24, 1)
+
+[node name="Island" type="StaticBody3D"]
+collision_layer = 1
+collision_mask = 0
+
+[node name="Collider" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0)
+shape = SubResource("CylinderShape3D_island")
+
+[node name="Base" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0)
+mesh = SubResource("CylinderMesh_base")
+surface_material_override/0 = SubResource("StandardMaterial3D_sand")
+
+[node name="Hill" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7, 0)
+mesh = SubResource("SphereMesh_hill")
+surface_material_override/0 = SubResource("StandardMaterial3D_grass")
