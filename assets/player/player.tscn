@@ -6,6 +6,9 @@
 radius = 0.4
 height = 1.8
 
+[sub_resource type="SphereShape3D" id="SphereShape3D_interact"]
+radius = 2.5
+
 [node name="Player" type="CharacterBody3D"]
 collision_layer = 2
 collision_mask = 1
@@ -26,3 +29,11 @@ target_position = Vector3(0, 0, -3)
 collision_mask = 4
 collide_with_areas = true
 collide_with_bodies = false
+
+[node name="InteractArea" type="Area3D" parent="."]
+collision_layer = 0
+collision_mask = 4
+monitorable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="InteractArea"]
+shape = SubResource("SphereShape3D_interact")

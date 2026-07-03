@@ -151,3 +151,7 @@ func _render_imgui() -> void:
 	ImGui.Text('Press %s-F to toggle fullscreen!' % ['Cmd' if OS.get_name() == 'macOS' else 'Ctrl']);
 	ImGui.PopStyleColor()
 	ImGui.End()
+
+
+func _on_helm_interactable_area_entered(area: Area3D) -> void:
+	pass # Replace with function body.

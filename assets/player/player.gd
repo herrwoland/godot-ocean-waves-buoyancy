@@ -11,23 +11,36 @@ enum State { WALK, SWIM, PILOT }
 @export var swim_speed: float = 3.5
 @export var jump_velocity: float = 4.5
 @export var mouse_sensitivity: float = 0.0025
+@export var turn_speed: float = 2.0 # radians/sec, for keyboard look (Q/R) when the mouse isn't captured
 @export var interact_distance: float = 3.0
 @export var swim_enter_depth: float = 0.6 # how deep water must be over the feet before we start swimming
 @export var swim_exit_margin: float = 0.15 # how far above water the feet must be, while grounded, to exit swimming
+@export var sink_speed: float = 1.0 # constant downward speed while swimming unless swim_up is held
 
 @onready var head: Node3D = $Head
 @onready var camera: Camera3D = $Head/Camera3D
 @onready var interact_ray: RayCast3D = $Head/Camera3D/InteractRay
+@onready var interact_area: Area3D = $InteractArea
 @onready var collider: CollisionShape3D = $Collider
 
 var state: State = State.WALK
 var piloted_ship: Node = null
 var helm_marker: Node3D = null
+var nearby_interactables: Array = []
 
 const GRAVITY: float = 9.8
 
 func _ready() -> void:
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	interact_area.area_entered.connect(_on_interact_area_entered)
+	interact_area.area_exited.connect(_on_interact_area_exited)
+
+func _on_interact_area_entered(area: Area3D) -> void:
+	if area.has_method(&'interact') and not nearby_interactables.has(area):
+		nearby_interactables.append(area)
+
+func _on_interact_area_exited(area: Area3D) -> void:
+	nearby_interactables.erase(area)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if state == State.PILOT and Input.get_mouse_mode() != Input.MOUSE_MODE_CAPTURED:
@@ -40,6 +53,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		_try_interact()
 
 func _physics_process(delta: float) -> void:
+	_process_turn_keys(delta)
 	match state:
 		State.WALK:
 			_process_walk(delta)
@@ -49,6 +63,11 @@ func _physics_process(delta: float) -> void:
 			_check_exit_swim()
 		State.PILOT:
 			_process_pilot(delta)
+
+func _process_turn_keys(delta: float) -> void:
+	var turn := Input.get_action_strength(&'turn_left') - Input.get_action_strength(&'turn_right')
+	if turn != 0.0:
+		head.rotation.y += turn * turn_speed * delta
 
 func _process_walk(delta: float) -> void:
 	if not is_on_floor():
@@ -69,9 +88,6 @@ func _process_walk(delta: float) -> void:
 	move_and_slide()
 
 func _process_swim(delta: float) -> void:
-	var surface_y: float = water.get_wave_height(global_position)
-	var target_y: float = surface_y - 0.4 # swim with head roughly at the surface
-
 	var input_dir := Vector2(
 		Input.get_action_strength(&'move_right') - Input.get_action_strength(&'move_left'),
 		Input.get_action_strength(&'move_back') - Input.get_action_strength(&'move_forward')
@@ -80,12 +96,17 @@ func _process_swim(delta: float) -> void:
 	if move_dir.length() > 0.0:
 		move_dir = move_dir.normalized()
 
-	var vertical := Input.get_action_strength(&'swim_up') - Input.get_action_strength(&'swim_down')
-
 	velocity.x = move_dir.x * swim_speed
 	velocity.z = move_dir.z * swim_speed
-	# Gentle spring back toward the surface, plus manual vertical control.
-	velocity.y = clampf((target_y - global_position.y) * 2.0, -swim_speed, swim_speed) + vertical * swim_speed
+
+	# The player constantly sinks; swim_up (space) is required to rise or stay afloat,
+	# swim_down speeds up the sinking.
+	if Input.is_action_pressed(&'swim_up'):
+		velocity.y = swim_speed
+	elif Input.is_action_pressed(&'swim_down'):
+		velocity.y = -swim_speed
+	else:
+		velocity.y = -sink_speed
 
 	move_and_slide()
 
@@ -102,7 +123,7 @@ func _process_pilot(delta: float) -> void:
 	if piloted_ship and piloted_ship.has_method(&'set_helm_input'):
 		piloted_ship.set_helm_input(throttle, rudder)
 
-	if Input.is_action_just_pressed(&'interact'):
+	if Input.is_action_just_pressed(&'jump'):
 		exit_pilot()
 
 func _check_enter_swim() -> void:
@@ -122,11 +143,16 @@ func _check_exit_swim() -> void:
 
 func _try_interact() -> void:
 	if state == State.PILOT:
-		exit_pilot()
-		return
-	if not interact_ray.is_colliding():
-		return
-	var target := interact_ray.get_collider()
+		return # piloting is only exited via the jump (space) key
+
+	var target: Object = null
+	if interact_ray.is_colliding():
+		target = interact_ray.get_collider()
+	if not (target and target.has_method(&'interact')):
+		nearby_interactables = nearby_interactables.filter(is_instance_valid)
+		if nearby_interactables.size() > 0:
+			target = nearby_interactables[0]
+
 	if target and target.has_method(&'interact'):
 		target.interact(self)
 

@@ -137,6 +137,9 @@ size = Vector3(9, 4, 6)
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cabin"]
 albedo_color = Color(0.9, 0.9, 0.88, 1)
 
+[sub_resource type="BoxMesh" id="BoxMesh_ryguw"]
+size = Vector3(1, 2, 1)
+
 [sub_resource type="CylinderMesh" id="CylinderMesh_funnel"]
 top_radius = 0.9
 bottom_radius = 1.1
@@ -165,7 +168,7 @@ size = Vector3(10, 3, 5)
 size = Vector3(42, 8, 8)
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_helm"]
-radius = 1.5
+radius = 1.1981678
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_vivmo"]
 size = Vector3(10, 6, 4)
@@ -209,7 +212,7 @@ shadow_opacity = 0.8
 shadow_blur = 5.0
 
 [node name="Water" type="MeshInstance3D" parent="." unique_id=946478083]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -79, 0, 2010)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -78, 0, 52)
 sorting_offset = 999.0
 material_override = ExtResource("5_lt75t")
 cast_shadow = 0
@@ -283,6 +286,11 @@ surface_material_override/0 = SubResource("StandardMaterial3D_deck")
 [node name="Cabin" type="MeshInstance3D" parent="Ferry Simplified Experiment/Ferry" unique_id=913755626]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 2, 0)
 mesh = SubResource("BoxMesh_cabin")
+surface_material_override/0 = SubResource("StandardMaterial3D_cabin")
+
+[node name="navigation" type="MeshInstance3D" parent="Ferry Simplified Experiment/Ferry" unique_id=587197864]
+transform = Transform3D(1, 3.5527137e-15, 0, -1.5543122e-15, 1, 1.4210855e-14, 0, 0, 1, -0.31343842, 0.94984293, -1.0390568)
+mesh = SubResource("BoxMesh_ryguw")
 surface_material_override/0 = SubResource("StandardMaterial3D_cabin")
 
 [node name="Funnel" type="MeshInstance3D" parent="Ferry Simplified Experiment/Ferry" unique_id=697841285]
@@ -382,7 +390,7 @@ far = 10000.0
 script = ExtResource("4_v2yip")
 
 [node name="HelmPosition" type="Marker3D" parent="Ferry Simplified Experiment" unique_id=1908486165]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+transform = Transform3D(1, 8.881784e-16, 0, -1.5543122e-15, 1, 3.5527137e-15, 0, 0, 1, -0.013648987, 1, 0.13551521)
 
 [node name="HelmInteractable" type="Area3D" parent="Ferry Simplified Experiment" unique_id=332319211 node_paths=PackedStringArray("ship", "helm_marker")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
@@ -393,6 +401,7 @@ ship = NodePath("..")
 helm_marker = NodePath("../HelmPosition")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Ferry Simplified Experiment/HelmInteractable" unique_id=430993038]
+transform = Transform3D(1, 1.7763568e-15, 0, -1.5543122e-15, 1, 7.1054274e-15, 0, 0, 1, -0.13716125, 0.25847006, -0.013819218)
 shape = SubResource("SphereShape3D_helm")
 
 [node name="Box Octet Experiment" type="RigidBody3D" parent="." unique_id=1036328041 node_paths=PackedStringArray("buoyant_cells", "mesh")]
@@ -418,7 +427,7 @@ cell_density_kg_per_m3 = 300.0
 calc_f_gravity = true
 
 [node name="Player" parent="." unique_id=939891512 node_paths=PackedStringArray("water") instance=ExtResource("16_player")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -84.68873, -8.303974, 9.36186)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -83.44903, 6.867653, 9.36186)
 water = NodePath("../Water")
 
 [node name="Island" parent="." unique_id=1072612934 instance=ExtResource("17_island")]
@@ -448,3 +457,5 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -54.69391, 0)
 size = Vector3(200, 110.61218, 200)
 resolution = 1
 update_mode = 1
+
+[connection signal="body_entered" from="Ferry Simplified Experiment/HelmInteractable" to="Ferry Simplified Experiment/HelmInteractable" method="_on_body_entered"]
