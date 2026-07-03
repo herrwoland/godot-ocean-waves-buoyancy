@@ -10,7 +10,8 @@ extends RigidBody3D
 @export var drag_coef_roll: float = 100;
 @export var mesh: MeshInstance3D;
 @export var engine_cells: Array[MeshInstance3D] = []; # Cells whose throttle is driven by the helm while piloted
-@export var rudder_torque_strength: float = 2000000.0;
+@export var engine_power: float = 400000.0; # newtons of thrust each engine cell produces at full throttle
+@export var rudder_torque_strength: float = 8000000.0;
 
 # TODO: Move to global config
 const DEBUG_FORCE_SCALE: float = 0.000015;
@@ -36,6 +37,13 @@ func _ready() -> void:
 		print("---- " + name + " -----")
 		print("Calculated Bounds: " + str(bounds) + " Calculated Mass: "+ str(mass) + " Calculated Inertia: " + str(inertia))
 
+	set_engine_power(engine_power)
+
+func set_engine_power(power: float) -> void:
+	engine_power = clampf(power, 0.0, 1000000.0)
+	for cell in engine_cells:
+		cell.engine_force = engine_power
+
 func _physics_process(delta: float) -> void:
 	apply_drag();
 	if piloted:
@@ -47,7 +55,7 @@ func set_piloted(active: bool) -> void:
 		helm_throttle = 0.0
 		helm_rudder = 0.0
 		for cell in engine_cells:
-			cell.throttle = 1.0
+			cell.throttle = 0.0 # engines idle when nobody is at the helm
 
 func set_helm_input(throttle: float, rudder: float) -> void:
 	helm_throttle = throttle

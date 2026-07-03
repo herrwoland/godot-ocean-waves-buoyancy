@@ -2,7 +2,7 @@
 
 [sub_resource type="Shader" id="Shader_l4ax1"]
 code = "shader_type spatial;
-render_mode world_vertex_coords, depth_draw_always;
+render_mode world_vertex_coords, depth_draw_always, cull_disabled;
 /**
  * Water lighting model roughly follows the 2019 GDC talk: \"Wakes, Explosions and Lighting: Interactive Water Simulation in Atlas\".
  * Source: https://gpuopen.com/gdc-presentations/2019/gdc-2019-agtd6-interactive-water-simulation-in-atlas.pdf
@@ -13,6 +13,7 @@ render_mode world_vertex_coords, depth_draw_always;
 
 global uniform vec4 water_color : source_color;
 global uniform vec4 foam_color : source_color;
+uniform bool backface_culling = true; // Toggle in the material inspector: discards back faces when on.
 uniform vec3 depth_color_consumption = vec3(7.5, 22.0, 38.0);
 
 
@@ -90,6 +91,9 @@ vec4 texture_bicubic(in sampler2DArray sampler, in vec3 uvw) {
 }
 
 void fragment() {
+	if (backface_culling && !FRONT_FACING) {
+		discard;
+	}
 	float map_size = float(textureSize(normals, 0).x);
 	float dist = length(VERTEX.xz);
 	// Read foam and normal information from normal maps.
@@ -182,6 +186,7 @@ void light() {
 [resource]
 render_priority = 1
 shader = SubResource("Shader_l4ax1")
+shader_parameter/backface_culling = false
 shader_parameter/depth_color_consumption = Vector3(7.5, 22, 38)
 shader_parameter/roughness = 0.65
 shader_parameter/normal_strength = 1.0

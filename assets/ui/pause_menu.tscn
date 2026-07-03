@@ -32,6 +32,10 @@ text = "Paused"
 layout_mode = 2
 text = "Resume"
 
+[node name="SettingsButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Settings"
+
 [node name="QuitButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 text = "Quit"

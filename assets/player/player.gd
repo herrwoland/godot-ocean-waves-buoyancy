@@ -12,36 +12,41 @@ enum State { WALK, SWIM, PILOT }
 @export var jump_velocity: float = 4.5
 @export var mouse_sensitivity: float = 0.0025
 @export var turn_speed: float = 2.0 # radians/sec, for keyboard look (Q/R) when the mouse isn't captured
-@export var interact_distance: float = 3.0
 @export var swim_enter_depth: float = 0.6 # how deep water must be over the feet before we start swimming
-@export var swim_exit_margin: float = 0.15 # how far above water the feet must be, while grounded, to exit swimming
+@export var swim_exit_depth: float = 0.45 # while grounded, water shallower than this switches back to walking (wading)
 @export var sink_speed: float = 1.0 # constant downward speed while swimming unless swim_up is held
 
 @onready var head: Node3D = $Head
 @onready var camera: Camera3D = $Head/Camera3D
 @onready var interact_ray: RayCast3D = $Head/Camera3D/InteractRay
-@onready var interact_area: Area3D = $InteractArea
 @onready var collider: CollisionShape3D = $Collider
+@onready var splash_particles: GPUParticles3D = $SplashParticles
+@onready var surface_ripples: GPUParticles3D = $SurfaceRipples
 
 var state: State = State.WALK
 var piloted_ship: Node = null
 var helm_marker: Node3D = null
-var nearby_interactables: Array = []
-var pilot_cooldown_until_msec: int = 0
+var hovered_interactable: Object = null
 
 const GRAVITY: float = 9.8
 
 func _ready() -> void:
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-	interact_area.area_entered.connect(_on_interact_area_entered)
-	interact_area.area_exited.connect(_on_interact_area_exited)
 
-func _on_interact_area_entered(area: Area3D) -> void:
-	if area.has_method(&'interact') and not nearby_interactables.has(area):
-		nearby_interactables.append(area)
+func _update_interact_hover() -> void:
+	var target: Object = null
+	if interact_ray.is_colliding():
+		var collider_hit := interact_ray.get_collider()
+		if collider_hit and collider_hit.has_method(&'interact'):
+			target = collider_hit
 
-func _on_interact_area_exited(area: Area3D) -> void:
-	nearby_interactables.erase(area)
+	if target == hovered_interactable:
+		return
+	if hovered_interactable and is_instance_valid(hovered_interactable) and hovered_interactable.has_method(&'set_highlighted'):
+		hovered_interactable.set_highlighted(false)
+	if target and target.has_method(&'set_highlighted'):
+		target.set_highlighted(true)
+	hovered_interactable = target
 
 func _unhandled_input(event: InputEvent) -> void:
 	if state == State.PILOT and Input.get_mouse_mode() != Input.MOUSE_MODE_CAPTURED:
@@ -55,6 +60,8 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _physics_process(delta: float) -> void:
 	_process_turn_keys(delta)
+	if state != State.PILOT:
+		_update_interact_hover()
 	match state:
 		State.WALK:
 			_process_walk(delta)
@@ -89,6 +96,9 @@ func _process_walk(delta: float) -> void:
 	move_and_slide()
 
 func _process_swim(delta: float) -> void:
+	var surface_y: float = water.get_wave_height(global_position)
+	var swim_top_y: float = surface_y - 0.4 # highest the feet can get: head roughly at the surface
+
 	var input_dir := Vector2(
 		Input.get_action_strength(&'move_right') - Input.get_action_strength(&'move_left'),
 		Input.get_action_strength(&'move_back') - Input.get_action_strength(&'move_forward')
@@ -110,6 +120,15 @@ func _process_swim(delta: float) -> void:
 		velocity.y = -sink_speed
 
 	move_and_slide()
+
+	# You can't swim out of the water: clamp to the wave surface so holding
+	# swim_up rides the waves instead of launching into the sky.
+	if global_position.y > swim_top_y:
+		global_position.y = swim_top_y
+		velocity.y = minf(velocity.y, 0.0)
+
+	# Keep the surface ripples sitting on the waves above us.
+	surface_ripples.global_position = Vector3(global_position.x, surface_y, global_position.z)
 
 func _process_pilot(delta: float) -> void:
 	if not is_instance_valid(helm_marker):
@@ -134,32 +153,35 @@ func _check_enter_swim() -> void:
 	if surface_y - global_position.y > swim_enter_depth:
 		state = State.SWIM
 		collider.disabled = false
+		_play_splash(surface_y)
+		surface_ripples.emitting = true
 
 func _check_exit_swim() -> void:
 	if not water:
 		return
+	# Standing on ground (eg. a beach slope or the ship's deck) in shallow-enough
+	# water means we can wade: back to walking, which also restores jumping.
 	var surface_y: float = water.get_wave_height(global_position)
-	if is_on_floor() and surface_y - global_position.y < -swim_exit_margin:
+	if is_on_floor() and surface_y - global_position.y < swim_exit_depth:
 		state = State.WALK
+		surface_ripples.emitting = false
+
+func _play_splash(surface_y: float) -> void:
+	splash_particles.global_position = Vector3(global_position.x, surface_y, global_position.z)
+	splash_particles.restart()
 
 func _try_interact() -> void:
 	if state == State.PILOT:
 		return # piloting is only exited via the jump (space) key
-
-	var target: Object = null
-	if interact_ray.is_colliding():
-		target = interact_ray.get_collider()
-	if not (target and target.has_method(&'interact')):
-		nearby_interactables = nearby_interactables.filter(is_instance_valid)
-		if nearby_interactables.size() > 0:
-			target = nearby_interactables[0]
-
-	if target and target.has_method(&'interact'):
-		target.interact(self)
+	if hovered_interactable and hovered_interactable.has_method(&'interact'):
+		hovered_interactable.interact(self)
 
 func enter_pilot(ship: Node, marker: Node3D) -> void:
-	if state == State.PILOT or Time.get_ticks_msec() < pilot_cooldown_until_msec:
-		return # re-entry guard: re-enabling the collider below re-triggers the helm's body_entered
+	if state == State.PILOT:
+		return
+	if hovered_interactable and hovered_interactable.has_method(&'set_highlighted'):
+		hovered_interactable.set_highlighted(false)
+	hovered_interactable = null
 	state = State.PILOT
 	piloted_ship = ship
 	helm_marker = marker
@@ -177,4 +199,3 @@ func exit_pilot() -> void:
 	piloted_ship = null
 	helm_marker = null
 	collider.disabled = false
-	pilot_cooldown_until_msec = Time.get_ticks_msec() + 800

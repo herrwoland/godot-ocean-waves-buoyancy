@@ -10,8 +10,10 @@ var should_render_imgui := not Engine.is_editor_hint()
 @onready var water := $Water
 @onready var start_screen := $StartScreen
 @onready var pause_menu := $PauseMenu
+@onready var settings_menu := $SettingsMenu
 
 var game_started := false
+var _settings_return_menu: CanvasLayer = null
 
 # References to various parameters (for imgui)
 @onready var _camera_fov := [camera.fov]
@@ -32,9 +34,23 @@ func _ready() -> void:
 	get_tree().paused = true
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	start_screen.get_node('VBoxContainer/PlayButton').pressed.connect(_on_play_pressed)
+	start_screen.get_node('VBoxContainer/SettingsButton').pressed.connect(_on_settings_pressed.bind(start_screen))
 	start_screen.get_node('VBoxContainer/QuitButton').pressed.connect(get_tree().quit)
 	pause_menu.get_node('VBoxContainer/ResumeButton').pressed.connect(_on_resume_pressed)
+	pause_menu.get_node('VBoxContainer/SettingsButton').pressed.connect(_on_settings_pressed.bind(pause_menu))
 	pause_menu.get_node('VBoxContainer/QuitButton').pressed.connect(get_tree().quit)
+	settings_menu.closed.connect(_on_settings_closed)
+	settings_menu.setup($Water, $Player, $"Ferry Simplified Experiment")
+
+func _on_settings_pressed(from_menu: CanvasLayer) -> void:
+	_settings_return_menu = from_menu
+	from_menu.visible = false
+	settings_menu.open()
+
+func _on_settings_closed() -> void:
+	if _settings_return_menu:
+		_settings_return_menu.visible = true
+		_settings_return_menu = null
 
 func _on_play_pressed() -> void:
 	game_started = true
@@ -73,8 +89,12 @@ func _input(event: InputEvent) -> void:
 		should_render_imgui = not should_render_imgui
 	elif event.is_action_pressed(&'toggle_fullscreen'):
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN if DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_WINDOWED else DisplayServer.WINDOW_MODE_WINDOWED)
-	elif event.is_action_pressed(&'ui_cancel') and game_started:
-		if pause_menu.visible:
+	elif event.is_action_pressed(&'ui_cancel'):
+		if settings_menu.visible:
+			settings_menu._on_back_pressed()
+		elif not game_started:
+			pass
+		elif pause_menu.visible:
 			_on_resume_pressed()
 		else:
 			pause_menu.visible = true

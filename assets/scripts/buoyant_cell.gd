@@ -5,7 +5,7 @@ extends MeshInstance3D
 @export var cell_density_kg_per_m3: float = 500; # 500 is about right for solid wood, though 300-900 are acceptable ranges
 @export var calc_f_gravity: bool = false; # True if this should simulate gravity on this cell. 0 if gravity is calculated on the whole rigidbody
 @export var engine_force: float = 0; # If not 0 provides thrust of the amount given at this cell in the local X direction
-@export var throttle: float = 1.0; # Scales engine_force, meant to be driven externally (eg. by a helm controller)
+@export var throttle: float = 0.0; # Scales engine_force, driven externally (eg. by a helm controller). 0 = engine idle
 @export var debug: bool = false; # True if this should simulate gravity on this cell. 0 if gravity is calculated on the whole rigidbody
 @export var active: bool = true; # If false, does nothing
 
@@ -27,9 +27,19 @@ func _physics_process(delta: float) -> void:
 		apply_engine_force_on_cell(delta)
 	
 func apply_engine_force_on_cell(delta: float) -> void:
-	#print("firing engine")
-	var engine_force_vec = to_global( Vector3(-engine_force * throttle, 0, 0))
-	parent.apply_force(engine_force_vec, parent.transform.basis * position)
+	if throttle == 0.0:
+		return
+	# The propeller only bites while it is under water.
+	var depth: float = water.get_wave_height(global_position) - global_position.y
+	if depth <= 0.0:
+		return
+	# Thrust is a DIRECTION along the ship's -X axis (to_global would add the
+	# cell's position and skew the force). Applied at the cell's horizontal
+	# offset but at center-of-mass height, so high engine power can't
+	# pitch-flip the ship.
+	var engine_force_vec: Vector3 = -global_transform.basis.x * engine_force * throttle
+	var force_location: Vector3 = parent.transform.basis * Vector3(position.x, 0, position.z)
+	parent.apply_force(engine_force_vec, force_location)
 
 	if debug:
 		DebugDraw3D.draw_arrow(global_position, global_position+(engine_force_vec * DEBUG_FORCE_SCALE), Color(1, 0, 0))

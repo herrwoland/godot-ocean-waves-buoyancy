@@ -20,6 +20,7 @@ uniform uint num_particles;
 uniform vec3 particle_scale;
 uniform float lifetime = 3.0; // Actual lifetime of a particle.
 uniform float lifetime_randomness : hint_range(0.0, 1.0) = 0.25;
+uniform float foam_threshold : hint_range(0.5, 0.99) = 0.9; // Foam amount needed to spawn spray. Lower = spray in calmer seas.
 
 group_uniforms cascade_data;
 uniform vec4 map_scales[MAX_CASCADES];               // Scales for displacement/normal maps. Packed: [uv scale, displacement scale, normal scale]
@@ -84,9 +85,9 @@ void process() {
 			vec3 normal = normalize(vec3(-gradient.x, 1.0, -gradient.y));
 			float foam = gradient.z;
 			float normal_factor = mix(0.25, 1.0, min((normal.y - 0.92) / (0.99 - 0.92), 1.0)); // [0.92..0.99] -> [0.25..1]
-			float foam_factor = mix(0.25, 1.0, min((foam - 0.9) / (1.0 - 0.9), 1.0));          // [0.90..1.00] -> [0.25..1]
+			float foam_factor = mix(0.25, 1.0, min((foam - foam_threshold) / (1.0 - foam_threshold), 1.0)); // [threshold..1.00] -> [0.25..1]
 
-			ACTIVE = normal_factor >= 0.0 && normal_factor <= 1.0 && foam > 0.9;
+			ACTIVE = normal_factor >= 0.0 && normal_factor <= 1.0 && foam > foam_threshold;
 			SCALE_FACTOR = normal_factor*foam_factor;
 			// Size of particle is based on foam amount and is flattened based on normal height.
 			PARTICLE_SCALE = vec3(foam_factor * (float(ACTIVE) + 1e-3));

@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://dx4r13gqfh13"]
 
 [ext_resource type="Script" uid="uid://ps3ogobs3y3b" path="res://assets/scripts/main.gd" id="1_skarq"]
+[ext_resource type="Shader" uid="uid://frqgg80eqd3c" path="res://assets/shaders/compute/sky.gdshader" id="2_getpj"]
 [ext_resource type="Script" uid="uid://dddasf5sla0ws" path="res://assets/water/wave_cascade_parameters.gd" id="2_pw5n6"]
-[ext_resource type="Texture2D" uid="uid://cnft723bala47" path="res://assets/skybox.png" id="3_0ksgj"]
 [ext_resource type="Script" uid="uid://4j6vkvpadkr7" path="res://assets/player/camera.gd" id="4_v2yip"]
 [ext_resource type="ArrayMesh" uid="uid://mkodygt504hm" path="res://assets/water/clipmap_low.obj" id="4_vivmo"]
 [ext_resource type="Material" uid="uid://byumtcccq4ew3" path="res://assets/water/mat_water.tres" id="5_lt75t"]
@@ -16,17 +16,43 @@
 [ext_resource type="Script" uid="uid://kwfe6bfkiqn2" path="res://assets/scripts/mass_calculation.gd" id="14_yaehf"]
 [ext_resource type="Script" uid="uid://cp8ogsskg7a4c" path="res://assets/scripts/rain_follow.gd" id="15_rainf"]
 [ext_resource type="PackedScene" uid="uid://c3q8m6t1p7f2a" path="res://assets/player/player.tscn" id="16_player"]
-[ext_resource type="PackedScene" path="res://assets/models/island.tscn" id="17_island"]
+[ext_resource type="PackedScene" uid="uid://c7pflpm1pnx7k" path="res://assets/models/island.tscn" id="17_island"]
 [ext_resource type="PackedScene" path="res://assets/ui/start_screen.tscn" id="18_start"]
 [ext_resource type="PackedScene" path="res://assets/ui/pause_menu.tscn" id="19_pause"]
 [ext_resource type="Script" uid="uid://b3s502b801kf" path="res://assets/scripts/helm_interactable.gd" id="20_helm"]
+[ext_resource type="PackedScene" path="res://assets/ui/settings_menu.tscn" id="21_settings"]
 
-[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_t7jwl"]
-panorama = ExtResource("3_0ksgj")
+[sub_resource type="Gradient" id="Gradient_ryguw"]
+colors = PackedColorArray(0, 0, 0, 1, 0.8307914, 0.99978524, 0.9999998, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_d13ii"]
+seed = 666
+frequency = 0.004
+fractal_weighted_strength = 0.13
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_1u8w0"]
+noise = SubResource("FastNoiseLite_d13ii")
+color_ramp = SubResource("Gradient_ryguw")
+seamless = true
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_0odxb"]
+shader = ExtResource("2_getpj")
+shader_parameter/use_directional_light = false
+shader_parameter/sun_color = Color(1, 0.95566666, 0.81, 1)
+shader_parameter/sun_energy = 5.0
+shader_parameter/cloud_color = Color(0.050613977, 0.06213665, 0.073644646, 1)
+shader_parameter/cloud_density = 5.0
+shader_parameter/cloud_depth = 3.5
+shader_parameter/cloud_sag = 2.0
+shader_parameter/noise_texture = SubResource("NoiseTexture2D_1u8w0")
+shader_parameter/noise_tiling = Vector2(1, 1)
+shader_parameter/wind_speed = Vector2(0.3, 0.3)
+shader_parameter/ground_bottom_color = Color(0.047639437, 0.14169171, 0.21317905, 1)
+shader_parameter/ground_curve = 0.04
+shader_parameter/exposure = 1.0
 
 [sub_resource type="Sky" id="Sky_vroi3"]
-sky_material = SubResource("PanoramaSkyMaterial_t7jwl")
-process_mode = 3
+sky_material = SubResource("ShaderMaterial_0odxb")
 
 [sub_resource type="Environment" id="Environment_icybu"]
 background_mode = 2
@@ -35,6 +61,7 @@ tonemap_mode = 3
 fog_enabled = true
 fog_light_color = Color(0.107337, 0.114064, 0.276683, 1)
 fog_light_energy = 0.0
+fog_sky_affect = 0.0
 fog_height = -4.0
 fog_height_density = 16.0
 fog_depth_curve = 0.25
@@ -187,7 +214,41 @@ initial_velocity_max = 25.0
 gravity = Vector3(0, -28, 0)
 scale_min = 0.7
 scale_max = 1.3
+sub_emitter_mode = 3
+sub_emitter_amount_at_collision = 1
 collision_mode = 2
+
+[sub_resource type="Curve" id="Curve_splashscale"]
+_data = [Vector2(0, 0.1), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_splashscale"]
+curve = SubResource("Curve_splashscale")
+
+[sub_resource type="Gradient" id="Gradient_splashfade"]
+offsets = PackedFloat32Array(0, 0.6, 1)
+colors = PackedColorArray(1, 1, 1, 0.55, 0.9, 0.95, 1, 0.25, 0.9, 0.95, 1, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_splashfade"]
+gradient = SubResource("Gradient_splashfade")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_splash"]
+lifetime_randomness = 0.25
+gravity = Vector3(0, 0, 0)
+scale_min = 0.5
+scale_max = 1.1
+scale_curve = SubResource("CurveTexture_splashscale")
+color_ramp = SubResource("GradientTexture1D_splashfade")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_splashring"]
+transparency = 1
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_color = Color(0.85, 0.92, 1, 0.6)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_splashring"]
+material = SubResource("StandardMaterial3D_splashring")
+size = Vector2(0.5, 0.5)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rainf"]
 transparency = 1
@@ -212,7 +273,7 @@ shadow_opacity = 0.8
 shadow_blur = 5.0
 
 [node name="Water" type="MeshInstance3D" parent="." unique_id=946478083]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -100, 0, 35)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -179, 0, 6)
 sorting_offset = 999.0
 material_override = ExtResource("5_lt75t")
 cast_shadow = 0
@@ -224,7 +285,6 @@ foam_color = Color(0.898039, 0.854902, 0.8, 1)
 parameters = Array[ExtResource("2_pw5n6")]([SubResource("Resource_vivmo"), SubResource("Resource_adqv5"), SubResource("Resource_luhq0"), SubResource("Resource_83u3u")])
 map_size = 512
 mesh_quality = 0
-updates_per_second = 60.0
 
 [node name="WaterSprayEmitter" type="GPUParticles3D" parent="Water" unique_id=333901123]
 transform = Transform3D(15, 0, 0, 0, 15, 0, 0, 0, 15, 0, 0, 0)
@@ -237,6 +297,7 @@ draw_pass_1 = SubResource("QuadMesh_06d3e")
 
 [node name="underwater" type="MeshInstance3D" parent="Water" unique_id=2064731118]
 transform = Transform3D(-1, 8.74228e-08, 0, -8.74228e-08, -1, 0, 0, 0, 1, 0, -1, 0)
+visible = false
 mesh = ExtResource("4_vivmo")
 surface_material_override/0 = SubResource("StandardMaterial3D_2cqfq")
 
@@ -260,7 +321,6 @@ mass = 1043780.0
 gravity_scale = 0.0
 center_of_mass_mode = 1
 inertia = Vector3(94394000, 12910900, 587128)
-linear_velocity = Vector3(2, 0, 0)
 script = ExtResource("14_yaehf")
 buoyant_cells = [NodePath("AS Cell"), NodePath("FS Cell"), NodePath("MS Cell"), NodePath("MP Cell"), NodePath("FP Cell"), NodePath("AP Cell"), NodePath("Aft Ballast"), NodePath("Fore Ballast")]
 mesh = NodePath("HullDragVolume")
@@ -299,7 +359,7 @@ mesh = SubResource("CylinderMesh_funnel")
 surface_material_override/0 = SubResource("StandardMaterial3D_funnel")
 
 [node name="FS Cell" type="MeshInstance3D" parent="Ferry Simplified Experiment" unique_id=829526709 node_paths=PackedStringArray("water", "parent")]
-transform = Transform3D(1, 5.32907e-15, 0, -1.55431e-15, 1, 2.13163e-14, 0, 0, 1, -16, -4.07992, -3.00001)
+transform = Transform3D(1, 6.217249e-15, 0, -1.5543122e-15, 1, 2.4868996e-14, 0, 0, 1, -16, -2.4097002, -3.0000114)
 visible = false
 mesh = SubResource("BoxMesh_2cqfq")
 script = ExtResource("14_vivmo")
@@ -309,7 +369,7 @@ cell_density_kg_per_m3 = 100.0
 calc_f_gravity = true
 
 [node name="FP Cell" type="MeshInstance3D" parent="Ferry Simplified Experiment" unique_id=780278309 node_paths=PackedStringArray("water", "parent")]
-transform = Transform3D(1, 5.32907e-15, 0, -1.55431e-15, 1, 2.13163e-14, 0, 0, 1, -16, -4.07992, 2.99999)
+transform = Transform3D(1, 6.217249e-15, 0, -1.5543122e-15, 1, 2.4868996e-14, 0, 0, 1, -16, -2.4097, 2.9999895)
 visible = false
 mesh = SubResource("BoxMesh_vivmo")
 script = ExtResource("14_vivmo")
@@ -319,7 +379,7 @@ cell_density_kg_per_m3 = 100.0
 calc_f_gravity = true
 
 [node name="MS Cell" type="MeshInstance3D" parent="Ferry Simplified Experiment" unique_id=386773209 node_paths=PackedStringArray("water", "parent")]
-transform = Transform3D(1, 5.32907e-15, 0, -1.55431e-15, 1, 2.13163e-14, 0, 0, 1, 0, -4.07992, -3.00001)
+transform = Transform3D(1, 6.217249e-15, 0, -1.5543122e-15, 1, 2.4868996e-14, 0, 0, 1, 0, -2.4097002, -3.000011)
 visible = false
 mesh = SubResource("BoxMesh_yaehf")
 script = ExtResource("14_vivmo")
@@ -329,7 +389,7 @@ cell_density_kg_per_m3 = 100.0
 calc_f_gravity = true
 
 [node name="MP Cell" type="MeshInstance3D" parent="Ferry Simplified Experiment" unique_id=1592496493 node_paths=PackedStringArray("water", "parent")]
-transform = Transform3D(1, 5.32907e-15, 0, -1.55431e-15, 1, 2.13163e-14, 0, 0, 1, 0, -4.07992, 2.99999)
+transform = Transform3D(1, 6.217249e-15, 0, -1.5543122e-15, 1, 2.4868996e-14, 0, 0, 1, 0, -2.4097, 2.9999886)
 visible = false
 mesh = SubResource("BoxMesh_074og")
 script = ExtResource("14_vivmo")
@@ -339,7 +399,7 @@ cell_density_kg_per_m3 = 100.0
 calc_f_gravity = true
 
 [node name="AS Cell" type="MeshInstance3D" parent="Ferry Simplified Experiment" unique_id=1900591819 node_paths=PackedStringArray("water", "parent")]
-transform = Transform3D(1, 5.32907e-15, 0, -1.55431e-15, 1, 2.13163e-14, 0, 0, 1, 14, -3.82992, -2.00001)
+transform = Transform3D(1, 6.217249e-15, 0, -1.5543122e-15, 1, 2.4868996e-14, 0, 0, 1, 13.999992, -0.063064575, -2.0000105)
 visible = false
 mesh = SubResource("BoxMesh_vivmo")
 script = ExtResource("14_vivmo")
@@ -349,7 +409,7 @@ cell_density_kg_per_m3 = 100.0
 calc_f_gravity = true
 
 [node name="AP Cell" type="MeshInstance3D" parent="Ferry Simplified Experiment" unique_id=1292476593 node_paths=PackedStringArray("water", "parent")]
-transform = Transform3D(1, 5.32907e-15, 0, -1.55431e-15, 1, 2.13163e-14, 0, 0, 1, 14, -3.82992, 1.99999)
+transform = Transform3D(1, 6.217249e-15, 0, -1.5543122e-15, 1, 2.4868996e-14, 0, 0, 1, 14, -0.063064575, 1.9999895)
 visible = false
 mesh = SubResource("BoxMesh_2cqfq")
 script = ExtResource("14_vivmo")
@@ -359,7 +419,7 @@ cell_density_kg_per_m3 = 100.0
 calc_f_gravity = true
 
 [node name="Aft Ballast" type="MeshInstance3D" parent="Ferry Simplified Experiment" unique_id=1541178696 node_paths=PackedStringArray("water", "parent")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.58, -7, 0)
+transform = Transform3D(1, 8.881784e-16, 0, -1.5543122e-15, 1, 3.5527137e-15, 0, 0, 1, 14.580002, -3.2331445, -9.536743e-07)
 visible = false
 mesh = SubResource("BoxMesh_cegan")
 script = ExtResource("14_vivmo")
@@ -367,10 +427,9 @@ water = NodePath("../../Water")
 parent = NodePath("..")
 cell_density_kg_per_m3 = 1300.0
 calc_f_gravity = true
-engine_force = 400000.0
 
 [node name="Fore Ballast" type="MeshInstance3D" parent="Ferry Simplified Experiment" unique_id=861071924 node_paths=PackedStringArray("water", "parent")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.58, -7, 0)
+transform = Transform3D(1, 8.881784e-16, 0, -1.5543122e-15, 1, 3.5527137e-15, 0, 0, 1, -16.580002, -3.2331448, -1.4305115e-06)
 visible = false
 mesh = SubResource("BoxMesh_cegan")
 script = ExtResource("14_vivmo")
@@ -392,13 +451,14 @@ script = ExtResource("4_v2yip")
 [node name="HelmPosition" type="Marker3D" parent="Ferry Simplified Experiment" unique_id=1908486165]
 transform = Transform3D(1, 8.881784e-16, 0, -1.5543122e-15, 1, 3.5527137e-15, 0, 0, 1, -0.013648987, 1, 0.13551521)
 
-[node name="HelmInteractable" type="Area3D" parent="Ferry Simplified Experiment" unique_id=332319211 node_paths=PackedStringArray("ship", "helm_marker")]
+[node name="HelmInteractable" type="Area3D" parent="Ferry Simplified Experiment" unique_id=332319211 node_paths=PackedStringArray("ship", "helm_marker", "highlight_mesh")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 collision_layer = 4
-collision_mask = 2
+collision_mask = 0
 script = ExtResource("20_helm")
 ship = NodePath("..")
 helm_marker = NodePath("../HelmPosition")
+highlight_mesh = NodePath("../Ferry/navigation")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Ferry Simplified Experiment/HelmInteractable" unique_id=430993038]
 transform = Transform3D(1, 1.7763568e-15, 0, -1.5543122e-15, 1, 7.1054274e-15, 0, 0, 1, -0.13716125, 0.25847006, -0.013819218)
@@ -429,6 +489,7 @@ calc_f_gravity = true
 [node name="Player" parent="." unique_id=939891512 node_paths=PackedStringArray("water") instance=ExtResource("16_player")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -83.44903, 6.867653, 9.36186)
 water = NodePath("../Water")
+sink_speed = 3.0
 
 [node name="Island" parent="." unique_id=1072612934 instance=ExtResource("17_island")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 120, 0, 120)
@@ -437,25 +498,36 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 120, 0, 120)
 
 [node name="PauseMenu" parent="." unique_id=1040037016 instance=ExtResource("19_pause")]
 
+[node name="SettingsMenu" parent="." unique_id=1501093407 instance=ExtResource("21_settings")]
+
 [node name="RainFollow" type="Node3D" parent="." unique_id=702590762 node_paths=PackedStringArray("target")]
 script = ExtResource("15_rainf")
 target = NodePath("../Player")
 
 [node name="Rain" type="GPUParticles3D" parent="RainFollow" unique_id=602890047]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 24.556145, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 29.43148, 0)
 cast_shadow = 0
 amount = 20000
 lifetime = 4.0
-preprocess = 3.0
+preprocess = 10.0
 randomness = 0.2
+visibility_aabb = AABB(-160, -120, -160, 320, 160, 320)
 transform_align = 2
+sub_emitter = NodePath("RainSplash")
 process_material = SubResource("ParticleProcessMaterial_rainf")
 draw_pass_1 = SubResource("BoxMesh_rainf")
+
+[node name="RainSplash" type="GPUParticles3D" parent="RainFollow/Rain" unique_id=618073784]
+emitting = false
+cast_shadow = 0
+amount = 8000
+lifetime = 0.45
+visibility_aabb = AABB(-160, -120, -160, 320, 160, 320)
+process_material = SubResource("ParticleProcessMaterial_splash")
+draw_pass_1 = SubResource("PlaneMesh_splashring")
 
 [node name="RainCollision" type="GPUParticlesCollisionHeightField3D" parent="RainFollow" unique_id=618073783]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -54.69391, 0)
 size = Vector3(200, 110.61218, 200)
 resolution = 1
 update_mode = 1
-
-[connection signal="body_entered" from="Ferry Simplified Experiment/HelmInteractable" to="Ferry Simplified Experiment/HelmInteractable" method="_on_body_entered"]
