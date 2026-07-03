@@ -212,7 +212,7 @@ shadow_opacity = 0.8
 shadow_blur = 5.0
 
 [node name="Water" type="MeshInstance3D" parent="." unique_id=946478083]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -78, 0, 52)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -100, 0, 35)
 sorting_offset = 999.0
 material_override = ExtResource("5_lt75t")
 cast_shadow = 0
@@ -289,7 +289,7 @@ mesh = SubResource("BoxMesh_cabin")
 surface_material_override/0 = SubResource("StandardMaterial3D_cabin")
 
 [node name="navigation" type="MeshInstance3D" parent="Ferry Simplified Experiment/Ferry" unique_id=587197864]
-transform = Transform3D(1, 3.5527137e-15, 0, -1.5543122e-15, 1, 1.4210855e-14, 0, 0, 1, -0.31343842, 0.94984293, -1.0390568)
+transform = Transform3D(1, 4.440892e-15, 0, -1.5543122e-15, 1, 1.7763568e-14, 0, 0, 1, -0.4371643, 0.94984293, 0.18908024)
 mesh = SubResource("BoxMesh_ryguw")
 surface_material_override/0 = SubResource("StandardMaterial3D_cabin")
 
@@ -395,7 +395,7 @@ transform = Transform3D(1, 8.881784e-16, 0, -1.5543122e-15, 1, 3.5527137e-15, 0,
 [node name="HelmInteractable" type="Area3D" parent="Ferry Simplified Experiment" unique_id=332319211 node_paths=PackedStringArray("ship", "helm_marker")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 collision_layer = 4
-collision_mask = 0
+collision_mask = 2
 script = ExtResource("20_helm")
 ship = NodePath("..")
 helm_marker = NodePath("../HelmPosition")
@@ -427,7 +427,7 @@ cell_density_kg_per_m3 = 300.0
 calc_f_gravity = true
 
 [node name="Player" parent="." unique_id=939891512 node_paths=PackedStringArray("water") instance=ExtResource("16_player")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -83.44903, 6.867653, 9.36186)
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -83.44903, 6.867653, 9.36186)
 water = NodePath("../Water")
 
 [node name="Island" parent="." unique_id=1072612934 instance=ExtResource("17_island")]

@@ -27,6 +27,7 @@ var state: State = State.WALK
 var piloted_ship: Node = null
 var helm_marker: Node3D = null
 var nearby_interactables: Array = []
+var pilot_cooldown_until_msec: int = 0
 
 const GRAVITY: float = 9.8
 
@@ -157,6 +158,8 @@ func _try_interact() -> void:
 		target.interact(self)
 
 func enter_pilot(ship: Node, marker: Node3D) -> void:
+	if state == State.PILOT or Time.get_ticks_msec() < pilot_cooldown_until_msec:
+		return # re-entry guard: re-enabling the collider below re-triggers the helm's body_entered
 	state = State.PILOT
 	piloted_ship = ship
 	helm_marker = marker
@@ -174,3 +177,4 @@ func exit_pilot() -> void:
 	piloted_ship = null
 	helm_marker = null
 	collider.disabled = false
+	pilot_cooldown_until_msec = Time.get_ticks_msec() + 800
