@@ -214,16 +214,18 @@ initial_velocity_max = 25.0
 gravity = Vector3(0, -28, 0)
 scale_min = 0.7
 scale_max = 1.3
+collision_mode = 2
 sub_emitter_mode = 3
 sub_emitter_amount_at_collision = 1
-collision_mode = 2
 
-[sub_resource type="Curve" id="Curve_splashscale"]
-_data = [Vector2(0, 0.1), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
-point_count = 2
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rainf"]
+transparency = 1
+shading_mode = 0
+albedo_color = Color(0.7, 0.8, 0.9, 0.35)
 
-[sub_resource type="CurveTexture" id="CurveTexture_splashscale"]
-curve = SubResource("Curve_splashscale")
+[sub_resource type="BoxMesh" id="BoxMesh_rainf"]
+material = SubResource("StandardMaterial3D_rainf")
+size = Vector3(0.03, 0.6, 0.03)
 
 [sub_resource type="Gradient" id="Gradient_splashfade"]
 offsets = PackedFloat32Array(0, 0.6, 1)
@@ -231,6 +233,13 @@ colors = PackedColorArray(1, 1, 1, 0.55, 0.9, 0.95, 1, 0.25, 0.9, 0.95, 1, 0)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_splashfade"]
 gradient = SubResource("Gradient_splashfade")
+
+[sub_resource type="Curve" id="Curve_splashscale"]
+_data = [Vector2(0, 0.1), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_splashscale"]
+curve = SubResource("Curve_splashscale")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_splash"]
 lifetime_randomness = 0.25
@@ -250,15 +259,6 @@ albedo_color = Color(0.85, 0.92, 1, 0.6)
 material = SubResource("StandardMaterial3D_splashring")
 size = Vector2(0.5, 0.5)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rainf"]
-transparency = 1
-shading_mode = 0
-albedo_color = Color(0.7, 0.8, 0.9, 0.35)
-
-[sub_resource type="BoxMesh" id="BoxMesh_rainf"]
-material = SubResource("StandardMaterial3D_rainf")
-size = Vector3(0.03, 0.6, 0.03)
-
 [node name="Main" type="Node3D" unique_id=503649113]
 script = ExtResource("1_skarq")
 
@@ -273,7 +273,7 @@ shadow_opacity = 0.8
 shadow_blur = 5.0
 
 [node name="Water" type="MeshInstance3D" parent="." unique_id=946478083]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -179, 0, 6)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11, 0, -44)
 sorting_offset = 999.0
 material_override = ExtResource("5_lt75t")
 cast_shadow = 0
@@ -489,6 +489,7 @@ calc_f_gravity = true
 [node name="Player" parent="." unique_id=939891512 node_paths=PackedStringArray("water") instance=ExtResource("16_player")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -83.44903, 6.867653, 9.36186)
 water = NodePath("../Water")
+jump_velocity = 7.0
 sink_speed = 3.0
 
 [node name="Island" parent="." unique_id=1072612934 instance=ExtResource("17_island")]
@@ -508,26 +509,26 @@ target = NodePath("../Player")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 29.43148, 0)
 cast_shadow = 0
 amount = 20000
+sub_emitter = NodePath("RainSplash")
 lifetime = 4.0
 preprocess = 10.0
 randomness = 0.2
 visibility_aabb = AABB(-160, -120, -160, 320, 160, 320)
 transform_align = 2
-sub_emitter = NodePath("RainSplash")
 process_material = SubResource("ParticleProcessMaterial_rainf")
 draw_pass_1 = SubResource("BoxMesh_rainf")
 
 [node name="RainSplash" type="GPUParticles3D" parent="RainFollow/Rain" unique_id=618073784]
-emitting = false
 cast_shadow = 0
+emitting = false
 amount = 8000
 lifetime = 0.45
 visibility_aabb = AABB(-160, -120, -160, 320, 160, 320)
 process_material = SubResource("ParticleProcessMaterial_splash")
 draw_pass_1 = SubResource("PlaneMesh_splashring")
 
-[node name="RainCollision" type="GPUParticlesCollisionHeightField3D" parent="RainFollow" unique_id=618073783]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -54.69391, 0)
-size = Vector3(200, 110.61218, 200)
+[node name="RainCollision" type="GPUParticlesCollisionHeightField3D" parent="RainFollow/Rain" unique_id=618073783]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -83.77453, 0)
+size = Vector3(200, 111.3139, 200)
 resolution = 1
 update_mode = 1
