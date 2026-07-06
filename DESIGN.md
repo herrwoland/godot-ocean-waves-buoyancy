@@ -1,0 +1,152 @@
+# DESIGN — Untitled Ocean Delivery Game
+
+A first-person, melancholic delivery game across five days on a hostile, indifferent sea.
+You are a small creature surviving a huge land. Every day the world gets stranger.
+
+Tone references: *Dredge*, *No One Lives Under the Lighthouse*, Arnold Böcklin — *Isle of the Dead*.
+
+---
+
+## 1. Core Loop (one in-game day)
+
+1. **Wake up** in the shack. A letter has been thrown in from the mailbox slot.
+2. **Read the letter** — it contains the pickup coordinates. The paper is carried with you and can be re-read any time (diegetic — no HUD).
+3. **Walk the beach** to the ship. Board, take the helm.
+4. **Sail** to the pickup coordinates. The brass device on the ship shows current coordinates, live.
+5. **Dive** — packages are always underwater. Retrieve the package.
+6. **Inspect the package** — the delivery coordinates are written on it. Re-inspect any time.
+7. **Sail** to the delivery coordinates and hand off the package.
+8. **Sail home**, walk to the shack, **sleep**. The game saves ONLY here. Next day begins.
+
+You cannot sleep if the mission is unfinished.
+
+## 2. Structure — Five Days
+
+Each day is a `DayConfig` resource (data, not code):
+pickup coords, delivery text/coords on the package, letter text, strangeness swaps to fire,
+optional special scene, optional scripted cutscene triggers.
+
+| Day | Beats (draft — tune freely) |
+|-----|------------------------------|
+| 1 | Clean run. Teaches the loop by shape alone. Calm-ish sea. |
+| 2 | Scripted unrepeatable scare: something enormous passes under the ship — silhouette only, never again. First mild strangeness on waking (small props wrong). |
+| 3 | First big swap visible on waking (e.g. lighthouse changed). Device digits flicker/drift briefly during sailing. Hunters more aggressive. |
+| 4 | **Isle of the Dead** day: island resembling Böcklin's painting; deep well at its center; giant eel circling inside (Mario 64 homage). Package at the bottom of the well. |
+| 5 | The letter breaks the pattern: delivery coordinates are **your own shack**. When you arrive, a fish hovers on the shore in front of the house. Climbing onto its back triggers the ending cutscene: the fish flies you to the moon. The game ends. |
+
+Strangeness fires at transitions (wake up, return from a trip) — transformations are never witnessed, only discovered. Examples: ship→fish, shack→fish, giant lighthouse altered. Prefer few devastating swaps over many mild ones.
+
+## 3. World
+
+- Sandy shore with the shack; the only walkable land. Surrounded by a stony beach walled off by 20–30 m natural stone walls. One way to go.
+- An absolutely huge lighthouse near the house on the rocks; its light sweeps far into the distance.
+- Endless ocean, no other shores. Stormy, thick black clouds.
+- Giant swimming creatures; some hunt you when you dive too deep.
+- Giant ships on the far horizon, unreachable (candidate delivery framing / set dressing).
+- Big feeling of melancholia. The world is hostile but indifferent.
+
+## 4. Mechanics
+
+### Navigation — coordinates only
+- Ship device (brass instrument) shows live coordinates via `CoordinateSystem` (world XZ → displayed numbers, offset/scaled to read like an instrument, not engine units).
+- Letter shows pickup coords; the package shows delivery coords. No map, no markers, no HUD.
+- Later days: device digits occasionally flicker to wrong values (madness, cheap + effective).
+
+### Diving, oxygen, death
+- No oxygen meter: screen desaturation + vignette + heartbeat audio + existing underwater low-pass filter escalate as air runs out.
+- Danger is depth-based and readable by darkness: hunters aggro below a depth threshold.
+- **Death (drowning or eaten): you wake panting in your bed, same day restarts** (packages reset). No fail screen. The game never sends you back further than the current morning.
+
+### Item inspection (letter, paper, package)
+Standard "hold-to-inspect" pattern (Resident Evil / Gone Home style):
+- Interact picks the item into an **inspect state**: player input frozen, item lerps to a socket ~0.5 m in front of the camera, slight DOF/dim on the world behind.
+- Mouse drag rotates the item; scroll zooms; E/Esc puts it away.
+- Implemented as a small `Inspectable` component + one `InspectionController` on the player camera. Text on items is actual texture/mesh text readable up close (works at 640×480 — test font size on the package early).
+
+### Cutscenes
+- Small scripted moments at trigger points (Area3D or mission-phase signals), plus the day-5 ending (fish flight to the moon).
+- Implementation: `CutscenePlayer` autoload wrapping AnimationPlayer + a dedicated Camera3D; cutscenes defined per-scene, triggered via EventBus. Skippable? — decide later (suggest: no, they're short).
+
+### Saving
+- Save ONLY on sleep: `user://save.cfg` — day number + settings (settings already persist separately).
+- Death reload = re-enter the saved morning state.
+
+### Ship
+- Stairs/ladders on both sides of the hull (part of ship model or separate): Area3D + interact while swimming lerps you onto the deck. Same pattern as helm enter/exit.
+
+## 5. Code Architecture
+
+Existing foundation to build on: FFT ocean + `get_wave_height()`, buoyancy ship + helm piloting,
+player walk/swim/pilot state machine, interactable pattern (Area3D + `interact()` + highlight),
+settings/menus/theme, PS1 post-process, underwater audio filter.
+
+New systems:
+
+```
+autoloads:
+  GameState        current_day, phase, flags; save/load (sleep only)
+  EventBus         signal hub: day_started, letter_read, package_picked_up,
+                   package_delivered, returned_home, player_died, strangeness_triggered
+  CutscenePlayer   plays scripted sequences, owns cutscene camera
+
+resources:
+  DayConfig        per-day data: coords, letter text, swaps, special scene, cutscenes
+                   campaign = Array[DayConfig]
+
+world systems:
+  SanityDirector   listens for day_started / triggers; tells SwappableProps to swap
+  SwappableProp    Array[PackedScene] variants (normal → strange → fish); swap(tier)
+  CreatureDirector spawns/despawns ambient swimmers around player
+  HunterBehavior   depth-triggered pursuit steering
+  CoordinateSystem static helper: world XZ <-> display coords
+
+player additions:
+  InspectionController   hold-to-inspect state (freezes movement, rotates item)
+  OxygenController       breath timer -> visual/audio escalation -> death signal
+
+interactables (existing pattern):
+  Bed (sleep/save gate), Letter, Paper, Package, ShipLadder, HelmInteractable (done)
+```
+
+Mission phase enum: `WAKE → HAS_LETTER → PICKED_UP → DELIVERED → CAN_SLEEP`.
+Everything reacts to EventBus signals; nothing polls GameState.
+
+Suggested script layout: `assets/scripts/core/`, `assets/scripts/world/`, `assets/scripts/player/`, `assets/scripts/interactables/` (migrate existing scripts opportunistically, not in one big move).
+
+## 6. Build Milestones (each ends playable)
+
+1. **Day-cycle skeleton** — GameState/EventBus, bed/sleep/save, letter with placeholder text, full phase loop with debug-box props.
+2. **Mission objects** — inspection system (letter/paper/package), ship coords device, underwater package pickup, delivery point.
+3. **World layout** — shore, rock walls, lighthouse placement, ship stairs, walk-only boundaries.
+4. **Diving danger** — oxygen escalation, hunters, death→morning loop.
+5. **Strangeness system** — SanityDirector + SwappableProps, day 2–3 content.
+6. **Island day** — Isle of the Dead, the well, the eel.
+7. **Tone & ending** — cutscenes (incl. fish-to-moon finale), storm audio pass, day 5, credits.
+
+## 7. Asset List (user-made models)
+
+Already have: ship, lighthouse, multiple giant fish.
+
+Needed next (milestones 1–3):
+- Shack: exterior + simple interior (bed, door, table, mailbox/letter slot)
+- Letter + coordinate paper (readable text at close range)
+- Package: waterproof bundle/crate, delivery coords written on it (readable when inspected)
+- Ship coordinate device (brass instrument, readable numbers)
+- Ship stairs/ladders (both sides) if not part of ship model
+- Rock wall modules (20–30 m natural stone) for coast boundary
+- Delivery marker (bell buoy or basket-on-rope from a giant ship)
+
+Later (milestones 4–7):
+- Hunter creature variant(s) — may reuse giant fish
+- Isle of the Dead island, well interior, giant eel
+- Strangeness variants: ship-fish, shack-fish, altered lighthouse (+ small prop swaps)
+- The hovering shore fish (ending) + moon flight cutscene assets
+- Distant giant ship silhouettes
+
+## 8. Open Questions (decide when relevant)
+
+- Delivery hand-off staging: buoy vs. basket-from-giant-ship vs. underwater chute (leaning basket — connects the distant ships to the player).
+- Cutscene skippability (suggest no; keep them short).
+- Whether day 4's eel is lethal or only a terror (suggest: lethal only if touched — Mario 64 rules).
+- Wall-calendar or other diegetic day indicator in the shack (crossed-out days).
+- Title.
