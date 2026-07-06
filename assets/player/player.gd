@@ -30,8 +30,27 @@ var hovered_interactable: Object = null
 
 const GRAVITY: float = 9.8
 
+@export var underwater_cutoff_hz: float = 600.0 # low-pass cutoff while the camera is submerged
+
+var _lowpass_idx: int = -1
+var _ears_underwater: bool = false
+
 func _ready() -> void:
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	# Muffle all audio while underwater via a low-pass filter on the Master bus.
+	var lowpass := AudioEffectLowPassFilter.new()
+	lowpass.cutoff_hz = underwater_cutoff_hz
+	_lowpass_idx = AudioServer.get_bus_effect_count(0)
+	AudioServer.add_bus_effect(0, lowpass)
+	AudioServer.set_bus_effect_enabled(0, _lowpass_idx, false)
+
+func _update_underwater_audio() -> void:
+	if not water:
+		return
+	var underwater: bool = camera.global_position.y < water.get_wave_height(camera.global_position)
+	if underwater != _ears_underwater:
+		_ears_underwater = underwater
+		AudioServer.set_bus_effect_enabled(0, _lowpass_idx, underwater)
 
 func _update_interact_hover() -> void:
 	var target: Object = null
@@ -60,6 +79,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _physics_process(delta: float) -> void:
 	_process_turn_keys(delta)
+	_update_underwater_audio()
 	if state != State.PILOT:
 		_update_interact_hover()
 	match state:
