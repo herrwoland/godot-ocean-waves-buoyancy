@@ -26,9 +26,6 @@
 [ext_resource type="Shader" uid="uid://bo8roxh5bsnai" path="res://assets/shaders/post/ps1_post.gdshader" id="24_ps1"]
 [ext_resource type="Script" path="res://assets/ui/fps_meter.gd" id="25_fps"]
 
-[sub_resource type="Gradient" id="Gradient_ryguw"]
-colors = PackedColorArray(0, 0, 0, 1, 0.8307914, 0.99978524, 0.9999998, 1)
-
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_d13ii"]
 seed = 666
 frequency = 0.004
@@ -36,23 +33,25 @@ fractal_weighted_strength = 0.13
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_1u8w0"]
 noise = SubResource("FastNoiseLite_d13ii")
-color_ramp = SubResource("Gradient_ryguw")
 seamless = true
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_0odxb"]
 shader = ExtResource("2_getpj")
-shader_parameter/use_directional_light = false
-shader_parameter/sun_color = Color(1, 0.95566666, 0.81, 1)
-shader_parameter/sun_energy = 5.0
-shader_parameter/cloud_color = Color(0.050613977, 0.06213665, 0.073644646, 1)
-shader_parameter/cloud_density = 5.0
-shader_parameter/cloud_depth = 3.5
-shader_parameter/cloud_sag = 2.0
 shader_parameter/noise_texture = SubResource("NoiseTexture2D_1u8w0")
-shader_parameter/noise_tiling = Vector2(1, 1)
-shader_parameter/wind_speed = Vector2(0.3, 0.3)
-shader_parameter/ground_bottom_color = Color(0.047639437, 0.14169171, 0.21317905, 1)
-shader_parameter/ground_curve = 0.04
+shader_parameter/cloud_scale = 0.12
+shader_parameter/coverage = 0.8
+shader_parameter/density = 7.0
+shader_parameter/warp_strength = 0.3
+shader_parameter/wind_direction = Vector2(1, 0.35)
+shader_parameter/wind_speed = 0.015
+shader_parameter/scud_speed_mult = 2.2
+shader_parameter/cloud_lit_color = Color(0.3, 0.31, 0.33, 1)
+shader_parameter/cloud_dark_color = Color(0.035, 0.04, 0.055, 1)
+shader_parameter/zenith_color = Color(0.05, 0.06, 0.08, 1)
+shader_parameter/horizon_color = Color(0.3, 0.31, 0.32, 1)
+shader_parameter/ground_color = Color(0.02, 0.03, 0.04, 1)
+shader_parameter/sun_glow = 0.35
+shader_parameter/lightning_strength = 0.35
 shader_parameter/exposure = 1.0
 
 [sub_resource type="Sky" id="Sky_vroi3"]
