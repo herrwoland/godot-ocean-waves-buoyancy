@@ -35,6 +35,10 @@ func _ready() -> void:
 func _config() -> DayConfig:
 	return days[clampi(GameState.current_day, 1, days.size()) - 1]
 
+## Public accessor for other systems (eg. the SanityDirector).
+func current_config() -> DayConfig:
+	return _config()
+
 func _on_day_started(_day: int) -> void:
 	var cfg := _config()
 
@@ -123,10 +127,29 @@ func _build_placeholder_days() -> void:
 		Vector3(60, 0, 320),
 		Vector3(-112, 1, 12), # day 5: home
 	]
+	# Full strangeness state per morning (prop_id -> variant tier), plus swaps
+	# that fire when the player returns home. Placeholder content — the real
+	# transformations arrive with the user's models.
+	var wake_swaps: Array[Dictionary] = [
+		{&'ship_funnel': 0, &'shack_roof': 0},
+		{&'ship_funnel': 1, &'shack_roof': 0},
+		{&'ship_funnel': 1, &'shack_roof': 0},
+		{&'ship_funnel': 1, &'shack_roof': 1},
+		{&'ship_funnel': 1, &'shack_roof': 1},
+	]
+	var return_swaps: Array[Dictionary] = [
+		{},
+		{},
+		{&'shack_roof': 1}, # day 3: the roof is wrong when you come back
+		{},
+		{},
+	]
 	for i in 5:
 		var cfg := DayConfig.new()
 		cfg.day = i + 1
 		cfg.letter_text = texts[i]
 		cfg.pickup_position = pickups[i]
 		cfg.delivery_position = deliveries[i]
+		cfg.wake_swaps = wake_swaps[i]
+		cfg.return_home_swaps = return_swaps[i]
 		days.append(cfg)

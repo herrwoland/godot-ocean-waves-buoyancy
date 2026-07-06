@@ -31,6 +31,8 @@
 [ext_resource type="Script" path="res://assets/scripts/world/lighthouse_light.gd" id="33_lhlight"]
 [ext_resource type="Script" path="res://assets/scripts/interactables/ship_ladder.gd" id="34_ladder"]
 [ext_resource type="Script" path="res://assets/scripts/world/creature_director.gd" id="35_creatures"]
+[ext_resource type="Script" path="res://assets/scripts/world/swappable_prop.gd" id="36_swap"]
+[ext_resource type="Script" path="res://assets/scripts/world/sanity_director.gd" id="37_sanity"]
 [ext_resource type="Script" path="res://assets/scripts/interactables/bed.gd" id="28_bed"]
 [ext_resource type="Script" path="res://assets/scripts/interactables/mission_point.gd" id="29_mpoint"]
 [ext_resource type="Script" path="res://assets/scripts/interactables/home_zone.gd" id="30_home"]
@@ -170,6 +172,9 @@ height = 3.5
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_funnel"]
 albedo_color = Color(0.65, 0.1, 0.1, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_funnelpale"]
+albedo_color = Color(0.72, 0.68, 0.6, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_2cqfq"]
 size = Vector3(12, 4, 3.5)
@@ -505,10 +510,24 @@ transform = Transform3D(1, 4.440892e-15, 0, -1.5543122e-15, 1, 1.7763568e-14, 0,
 mesh = SubResource("BoxMesh_ryguw")
 surface_material_override/0 = SubResource("StandardMaterial3D_cabin")
 
-[node name="Funnel" type="MeshInstance3D" parent="Ferry Simplified Experiment/Ferry" unique_id=697841285]
+[node name="FunnelProp" type="Node3D" parent="Ferry Simplified Experiment/Ferry"]
+script = ExtResource("36_swap")
+prop_id = &"ship_funnel"
+
+[node name="Variant0" type="Node3D" parent="Ferry Simplified Experiment/Ferry/FunnelProp"]
+
+[node name="Funnel" type="MeshInstance3D" parent="Ferry Simplified Experiment/Ferry/FunnelProp/Variant0" unique_id=697841285]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 5.75, 0)
 mesh = SubResource("CylinderMesh_funnel")
 surface_material_override/0 = SubResource("StandardMaterial3D_funnel")
+
+[node name="Variant1" type="Node3D" parent="Ferry Simplified Experiment/Ferry/FunnelProp"]
+visible = false
+
+[node name="FunnelCrooked" type="MeshInstance3D" parent="Ferry Simplified Experiment/Ferry/FunnelProp/Variant1"]
+transform = Transform3D(0.9397, -0.4788, 0, 0.342, 1.3156, 0, 0, 0, 1, 10, 6.3, 0)
+mesh = SubResource("CylinderMesh_funnel")
+surface_material_override/0 = SubResource("StandardMaterial3D_funnelpale")
 
 [node name="FS Cell" type="MeshInstance3D" parent="Ferry Simplified Experiment" unique_id=829526709 node_paths=PackedStringArray("water", "parent")]
 transform = Transform3D(1, 6.217249e-15, 0, -1.5543122e-15, 1, 2.4868996e-14, 0, 0, 1, -16, -2.4097002, -3.0000114)
@@ -779,8 +798,23 @@ surface_material_override/0 = SubResource("StandardMaterial3D_shackwall")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.15, 0)
 shape = SubResource("BoxShape3D_roof")
 
-[node name="RoofMesh" type="MeshInstance3D" parent="Shack"]
+[node name="ShackRoofProp" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -132, 3, 10)
+script = ExtResource("36_swap")
+prop_id = &"shack_roof"
+
+[node name="Variant0" type="Node3D" parent="ShackRoofProp"]
+
+[node name="RoofMesh" type="MeshInstance3D" parent="ShackRoofProp/Variant0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.15, 0)
+mesh = SubResource("BoxMesh_roof")
+surface_material_override/0 = SubResource("StandardMaterial3D_shackwall")
+
+[node name="Variant1" type="Node3D" parent="ShackRoofProp"]
+visible = false
+
+[node name="RoofDrifting" type="MeshInstance3D" parent="ShackRoofProp/Variant1"]
+transform = Transform3D(0.978, -0.208, 0, 0.208, 0.978, 0, 0, 0, 1, 0.4, 4.7, 0.3)
 mesh = SubResource("BoxMesh_roof")
 surface_material_override/0 = SubResource("StandardMaterial3D_shackwall")
 
@@ -1069,3 +1103,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, -2.5)
 script = ExtResource("35_creatures")
 player = NodePath("../Player")
 water = NodePath("../Water")
+
+[node name="SanityDirector" type="Node" parent="."]
+script = ExtResource("37_sanity")
