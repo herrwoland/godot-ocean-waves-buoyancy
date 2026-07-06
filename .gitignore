@@ -16,3 +16,5 @@ data_*/
 mono_crash.*.json
 
 build/
+# Reference copy of the upstream GodotOceanWaves project (donor for water values)
+GodotOceanWaves/
