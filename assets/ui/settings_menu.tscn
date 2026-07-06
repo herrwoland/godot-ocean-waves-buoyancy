@@ -19,31 +19,31 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -260.0
-offset_top = -280.0
-offset_right = 260.0
-offset_bottom = 280.0
+offset_left = -160.0
+offset_top = -215.0
+offset_right = 160.0
+offset_bottom = 215.0
 
 [node name="Margin" type="MarginContainer" parent="Panel"]
 layout_mode = 2
-theme_override_constants/margin_left = 24
-theme_override_constants/margin_top = 16
-theme_override_constants/margin_right = 24
-theme_override_constants/margin_bottom = 16
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 8
 
 [node name="VBox" type="VBoxContainer" parent="Panel/Margin"]
 layout_mode = 2
-theme_override_constants/separation = 6
+theme_override_constants/separation = 2
 
 [node name="Title" type="Label" parent="Panel/Margin/VBox"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 28
+theme_type_variation = &"TitleLabel"
 horizontal_alignment = 1
 text = "Settings"
 
 [node name="DisplayHeader" type="Label" parent="Panel/Margin/VBox"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 18
+theme_type_variation = &"HeaderLabel"
 text = "Display"
 
 [node name="DisplayGrid" type="GridContainer" parent="Panel/Margin/VBox"]
@@ -70,7 +70,7 @@ layout_mode = 2
 
 [node name="GraphicsHeader" type="Label" parent="Panel/Margin/VBox"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 18
+theme_type_variation = &"HeaderLabel"
 text = "Graphics"
 
 [node name="GraphicsGrid" type="GridContainer" parent="Panel/Margin/VBox"]
@@ -84,7 +84,7 @@ text = "Render Scale"
 
 [node name="RenderScaleSlider" type="HSlider" parent="Panel/Margin/VBox/GraphicsGrid"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(220, 0)
+custom_minimum_size = Vector2(130, 0)
 layout_mode = 2
 size_flags_vertical = 4
 min_value = 0.5
@@ -110,9 +110,18 @@ text = "Ocean Mesh Quality"
 unique_name_in_owner = true
 layout_mode = 2
 
+[node name="Ps1Label" type="Label" parent="Panel/Margin/VBox/GraphicsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "PS1 Mode"
+
+[node name="Ps1Check" type="CheckButton" parent="Panel/Margin/VBox/GraphicsGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+
 [node name="AudioHeader" type="Label" parent="Panel/Margin/VBox"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 18
+theme_type_variation = &"HeaderLabel"
 text = "Audio"
 
 [node name="AudioGrid" type="GridContainer" parent="Panel/Margin/VBox"]
@@ -126,7 +135,7 @@ text = "Master Volume"
 
 [node name="VolumeSlider" type="HSlider" parent="Panel/Margin/VBox/AudioGrid"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(220, 0)
+custom_minimum_size = Vector2(130, 0)
 layout_mode = 2
 size_flags_vertical = 4
 max_value = 1.0
@@ -135,7 +144,7 @@ value = 1.0
 
 [node name="ControlsHeader" type="Label" parent="Panel/Margin/VBox"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 18
+theme_type_variation = &"HeaderLabel"
 text = "Controls"
 
 [node name="ControlsGrid" type="GridContainer" parent="Panel/Margin/VBox"]
@@ -149,7 +158,7 @@ text = "Mouse Sensitivity"
 
 [node name="SensitivitySlider" type="HSlider" parent="Panel/Margin/VBox/ControlsGrid"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(220, 0)
+custom_minimum_size = Vector2(130, 0)
 layout_mode = 2
 size_flags_vertical = 4
 min_value = 0.5
@@ -164,7 +173,7 @@ text = "Field of View"
 
 [node name="FovSlider" type="HSlider" parent="Panel/Margin/VBox/ControlsGrid"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(220, 0)
+custom_minimum_size = Vector2(130, 0)
 layout_mode = 2
 size_flags_vertical = 4
 min_value = 50.0
@@ -174,7 +183,7 @@ value = 75.0
 
 [node name="GameplayHeader" type="Label" parent="Panel/Margin/VBox"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 18
+theme_type_variation = &"HeaderLabel"
 text = "Gameplay"
 
 [node name="GameplayGrid" type="GridContainer" parent="Panel/Margin/VBox"]
@@ -188,7 +197,7 @@ text = "Ship Engine Power"
 
 [node name="EnginePowerSlider" type="HSlider" parent="Panel/Margin/VBox/GameplayGrid"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(220, 0)
+custom_minimum_size = Vector2(130, 0)
 layout_mode = 2
 size_flags_vertical = 4
 min_value = 50000.0

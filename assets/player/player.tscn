@@ -2,50 +2,36 @@
 
 [ext_resource type="Script" uid="uid://tusxajaaj8mt" path="res://assets/player/player.gd" id="1_player"]
 [ext_resource type="Script" uid="uid://daqw81ug7ha8c" path="res://assets/player/crosshair.gd" id="2_crosshair"]
+[ext_resource type="Texture2D" uid="uid://dtm5tyuh2slqt" path="res://assets/water/sea_spray.png" id="2_v2miy"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_player"]
 radius = 0.4
 height = 1.8
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_splash"]
+particle_flag_align_y = true
 emission_shape = 1
 emission_sphere_radius = 0.5
 direction = Vector3(0, 3, 0)
 spread = 35.0
 initial_velocity_min = 3.5
 initial_velocity_max = 6.5
-scale_min = 0.5
-scale_max = 1.4
+scale_min = 0.099999994
+scale_max = 5.0
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_splash"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ouxva"]
+render_priority = 2
 transparency = 1
 shading_mode = 0
-albedo_color = Color(0.85, 0.93, 1, 0.65)
+albedo_texture = ExtResource("2_v2miy")
+texture_filter = 0
+billboard_mode = 3
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
 
-[sub_resource type="SphereMesh" id="SphereMesh_splash"]
-material = SubResource("StandardMaterial3D_splash")
-radius = 0.05
-height = 0.1
-
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_ripples"]
-emission_shape = 3
-emission_box_extents = Vector3(0.7, 0.05, 0.7)
-direction = Vector3(0, 1, 0)
-spread = 60.0
-initial_velocity_min = 0.3
-initial_velocity_max = 0.9
-gravity = Vector3(0, -1.5, 0)
-scale_min = 0.4
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ripples"]
-transparency = 1
-shading_mode = 0
-albedo_color = Color(0.9, 0.95, 1, 0.4)
-
-[sub_resource type="SphereMesh" id="SphereMesh_ripples"]
-material = SubResource("StandardMaterial3D_ripples")
-radius = 0.035
-height = 0.07
+[sub_resource type="QuadMesh" id="QuadMesh_d5dr7"]
+material = SubResource("StandardMaterial3D_ouxva")
 
 [node name="Player" type="CharacterBody3D" unique_id=555801128]
 collision_layer = 2
@@ -59,6 +45,7 @@ shape = SubResource("CapsuleShape3D_player")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
 
 [node name="Camera3D" type="Camera3D" parent="Head" unique_id=856815090]
+cull_mask = 1047551
 current = true
 
 [node name="InteractRay" type="RayCast3D" parent="Head/Camera3D" unique_id=190894075]
@@ -71,20 +58,22 @@ debug_shape_custom_color = Color(0.8835159, 0.06592726, 0, 1)
 [node name="SplashParticles" type="GPUParticles3D" parent="." unique_id=345984492]
 top_level = true
 emitting = false
-amount = 150
+amount = 50
 lifetime = 0.8
 one_shot = true
 explosiveness = 1.0
 process_material = SubResource("ParticleProcessMaterial_splash")
-draw_pass_1 = SubResource("SphereMesh_splash")
+draw_pass_1 = SubResource("QuadMesh_d5dr7")
 
 [node name="SurfaceRipples" type="GPUParticles3D" parent="." unique_id=667955072]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3637675, -0.25465727)
 top_level = true
 emitting = false
 amount = 40
-lifetime = 1.2
-process_material = SubResource("ParticleProcessMaterial_ripples")
-draw_pass_1 = SubResource("SphereMesh_ripples")
+lifetime = 0.5
+one_shot = true
+process_material = SubResource("ParticleProcessMaterial_splash")
+draw_pass_1 = SubResource("QuadMesh_d5dr7")
 
 [node name="HUD" type="CanvasLayer" parent="." unique_id=962690463]
 
@@ -93,4 +82,6 @@ layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("2_crosshair")

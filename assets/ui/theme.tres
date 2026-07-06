@@ -1,0 +1,11 @@
+[gd_resource type="Theme" load_steps=2 format=3]
+
+[ext_resource type="FontFile" path="res://assets/fonts/GeistPixel-Regular-VariableFont_ELSH.ttf" id="1_font"]
+
+[resource]
+default_font = ExtResource("1_font")
+default_font_size = 12
+HeaderLabel/base_type = &"Label"
+HeaderLabel/font_sizes/font_size = 13
+TitleLabel/base_type = &"Label"
+TitleLabel/font_sizes/font_size = 24

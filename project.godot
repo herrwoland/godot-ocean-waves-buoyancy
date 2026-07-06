@@ -38,8 +38,10 @@ settings/3d/rendering/render_mode=2
 
 [display]
 
-window/stretch/mode="canvas_items"
-window/stretch/aspect="ignore"
+window/size/viewport_width=640
+window/size/viewport_height=480
+window/stretch/mode="viewport"
+window/stretch/aspect="keep_height"
 window/vsync/vsync_mode=2
 window/quality/msaa_2d=0
 window/quality/msaa_3d=1
@@ -53,6 +55,10 @@ movie_writer/mjpeg_quality=1.0
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/imgui-godot/plugin.cfg")
+
+[gui]
+
+theme/custom="res://assets/ui/theme.tres"
 
 [input]
 

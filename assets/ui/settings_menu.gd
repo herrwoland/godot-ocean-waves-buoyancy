@@ -13,12 +13,14 @@ const MESH_QUALITY_NAMES: Array[String] = ["Low", "High", "High 8K"]
 var water: Node
 var player: Node
 var ship: Node
+var retro_post: CanvasLayer
 
 @onready var fullscreen_check: CheckButton = %FullscreenCheck
 @onready var vsync_check: CheckButton = %VsyncCheck
 @onready var render_scale_slider: HSlider = %RenderScaleSlider
 @onready var wave_res_option: OptionButton = %WaveResOption
 @onready var mesh_quality_option: OptionButton = %MeshQualityOption
+@onready var ps1_check: CheckButton = %Ps1Check
 @onready var volume_slider: HSlider = %VolumeSlider
 @onready var sensitivity_slider: HSlider = %SensitivitySlider
 @onready var fov_slider: HSlider = %FovSlider
@@ -36,6 +38,7 @@ func _ready() -> void:
 	render_scale_slider.value_changed.connect(_on_render_scale_changed)
 	wave_res_option.item_selected.connect(_on_wave_res_selected)
 	mesh_quality_option.item_selected.connect(_on_mesh_quality_selected)
+	ps1_check.toggled.connect(_on_ps1_toggled)
 	volume_slider.value_changed.connect(_on_volume_changed)
 	sensitivity_slider.value_changed.connect(_on_sensitivity_changed)
 	fov_slider.value_changed.connect(_on_fov_changed)
@@ -43,10 +46,11 @@ func _ready() -> void:
 	back_button.pressed.connect(_on_back_pressed)
 
 ## Called by main once the world nodes exist. Loads saved settings and applies them.
-func setup(water_node: Node, player_node: Node, ship_node: Node) -> void:
+func setup(water_node: Node, player_node: Node, ship_node: Node, retro_post_node: CanvasLayer) -> void:
 	water = water_node
 	player = player_node
 	ship = ship_node
+	retro_post = retro_post_node
 	_load_settings()
 
 func open() -> void:
@@ -59,6 +63,7 @@ func _sync_controls_to_current_values() -> void:
 	render_scale_slider.set_value_no_signal(get_viewport().scaling_3d_scale)
 	wave_res_option.select(WAVE_RESOLUTIONS.find(water.map_size))
 	mesh_quality_option.select(water.mesh_quality)
+	ps1_check.set_pressed_no_signal(retro_post.visible)
 	volume_slider.set_value_no_signal(db_to_linear(AudioServer.get_bus_volume_db(0)))
 	sensitivity_slider.set_value_no_signal(player.mouse_sensitivity * 1000.0)
 	fov_slider.set_value_no_signal(player.camera.fov)
@@ -82,6 +87,10 @@ func _on_wave_res_selected(index: int) -> void:
 
 func _on_mesh_quality_selected(index: int) -> void:
 	water.mesh_quality = index
+	_save_settings()
+
+func _on_ps1_toggled(on: bool) -> void:
+	retro_post.visible = on
 	_save_settings()
 
 func _on_volume_changed(value: float) -> void:
@@ -112,6 +121,7 @@ func _save_settings() -> void:
 	config.set_value("graphics", "render_scale", render_scale_slider.value)
 	config.set_value("graphics", "wave_resolution", WAVE_RESOLUTIONS[maxi(wave_res_option.selected, 0)])
 	config.set_value("graphics", "mesh_quality", maxi(mesh_quality_option.selected, 0))
+	config.set_value("graphics", "ps1_mode", ps1_check.button_pressed)
 	config.set_value("audio", "master_volume", volume_slider.value)
 	config.set_value("controls", "mouse_sensitivity", sensitivity_slider.value)
 	config.set_value("controls", "fov", fov_slider.value)
@@ -130,6 +140,7 @@ func _load_settings() -> void:
 	get_viewport().scaling_3d_scale = config.get_value("graphics", "render_scale", 1.0)
 	water.map_size = config.get_value("graphics", "wave_resolution", 512)
 	water.mesh_quality = config.get_value("graphics", "mesh_quality", 0)
+	retro_post.visible = config.get_value("graphics", "ps1_mode", true)
 	var volume: float = config.get_value("audio", "master_volume", 1.0)
 	AudioServer.set_bus_volume_db(0, linear_to_db(maxf(volume, 0.001)))
 	AudioServer.set_bus_mute(0, volume <= 0.001)

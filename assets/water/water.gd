@@ -6,6 +6,7 @@ extends MeshInstance3D
 
 const WATER_MAT := preload('res://assets/water/mat_water.tres')
 const SPRAY_MAT := preload('res://assets/water/mat_spray.tres')
+const HEIGHTFIELD_PROXY_MAT := preload('res://assets/water/mat_heightfield_proxy.tres')
 const WATER_MESH_HIGH8K := preload('res://assets/water/clipmap_high_8k.obj')
 const WATER_MESH_HIGH := preload('res://assets/water/clipmap_high.obj')
 const WATER_MESH_LOW := preload('res://assets/water/clipmap_low.obj')
@@ -155,6 +156,7 @@ func _update_scales_uniform() -> void:
 	# No global shader parameter for arrays :(
 	WATER_MAT.set_shader_parameter(&'map_scales', map_scales)
 	SPRAY_MAT.set_shader_parameter(&'map_scales', map_scales)
+	HEIGHTFIELD_PROXY_MAT.set_shader_parameter(&'map_scales', map_scales)
 
 func _update_water(delta : float) -> void:
 	if wave_generator == null: _setup_wave_generator()
