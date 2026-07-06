@@ -28,6 +28,8 @@
 [ext_resource type="Script" path="res://assets/scripts/core/mission_controller.gd" id="26_mission"]
 [ext_resource type="Script" path="res://assets/scripts/interactables/inspectable.gd" id="27_letter"]
 [ext_resource type="Script" path="res://assets/scripts/world/coord_device.gd" id="32_device"]
+[ext_resource type="Script" path="res://assets/scripts/world/lighthouse_light.gd" id="33_lhlight"]
+[ext_resource type="Script" path="res://assets/scripts/interactables/ship_ladder.gd" id="34_ladder"]
 [ext_resource type="Script" path="res://assets/scripts/interactables/bed.gd" id="28_bed"]
 [ext_resource type="Script" path="res://assets/scripts/interactables/mission_point.gd" id="29_mpoint"]
 [ext_resource type="Script" path="res://assets/scripts/interactables/home_zone.gd" id="30_home"]
@@ -336,6 +338,73 @@ radius = 2.0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_package"]
 albedo_color = Color(0.45, 0.33, 0.2, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_stone"]
+albedo_color = Color(0.33, 0.34, 0.36, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rockwall"]
+albedo_color = Color(0.22, 0.23, 0.26, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_beachstrip"]
+size = Vector3(60, 4, 25)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_beachstrip"]
+size = Vector3(60, 4, 25)
+
+[sub_resource type="BoxMesh" id="BoxMesh_beachwest"]
+size = Vector3(25, 4, 110)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_beachwest"]
+size = Vector3(25, 4, 110)
+
+[sub_resource type="BoxMesh" id="BoxMesh_wall_west"]
+size = Vector3(12, 28, 120)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wall_west"]
+size = Vector3(12, 28, 120)
+
+[sub_resource type="BoxMesh" id="BoxMesh_wall_ns"]
+size = Vector3(65, 28, 12)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wall_ns"]
+size = Vector3(65, 28, 12)
+
+[sub_resource type="BoxMesh" id="BoxMesh_wall_spur"]
+size = Vector3(30, 28, 12)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wall_spur"]
+size = Vector3(30, 28, 12)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_lighthouse"]
+top_radius = 4.5
+bottom_radius = 7.0
+height = 80.0
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_lighthouse"]
+height = 80.0
+radius = 6.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lighthouse"]
+albedo_color = Color(0.75, 0.72, 0.68, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_lamp"]
+radius = 2.2
+height = 4.4
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lamp"]
+emission_enabled = true
+emission = Color(1, 0.9, 0.6, 1)
+emission_energy_multiplier = 8.0
+albedo_color = Color(1, 0.95, 0.8, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_ladder"]
+size = Vector3(0.5, 4.5, 0.2)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_ladder"]
+radius = 2.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ladder"]
+albedo_color = Color(0.15, 0.14, 0.13, 1)
 
 [node name="Main" type="Node3D" unique_id=503649113]
 script = ExtResource("1_skarq")
@@ -852,3 +921,145 @@ shape = SubResource("SphereShape3D_package")
 [node name="PackageMesh" type="MeshInstance3D" parent="Package"]
 mesh = SubResource("BoxMesh_package")
 surface_material_override/0 = SubResource("StandardMaterial3D_package")
+
+[node name="StonyBeach" type="StaticBody3D" parent="."]
+
+[node name="NorthStripShape" type="CollisionShape3D" parent="StonyBeach"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -130, 1, -32.5)
+shape = SubResource("BoxShape3D_beachstrip")
+
+[node name="NorthStripMesh" type="MeshInstance3D" parent="StonyBeach"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -130, 1, -32.5)
+mesh = SubResource("BoxMesh_beachstrip")
+surface_material_override/0 = SubResource("StandardMaterial3D_stone")
+
+[node name="SouthStripShape" type="CollisionShape3D" parent="StonyBeach"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -130, 1, 52.5)
+shape = SubResource("BoxShape3D_beachstrip")
+
+[node name="SouthStripMesh" type="MeshInstance3D" parent="StonyBeach"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -130, 1, 52.5)
+mesh = SubResource("BoxMesh_beachstrip")
+surface_material_override/0 = SubResource("StandardMaterial3D_stone")
+
+[node name="WestStripShape" type="CollisionShape3D" parent="StonyBeach"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -172.5, 1, 10)
+shape = SubResource("BoxShape3D_beachwest")
+
+[node name="WestStripMesh" type="MeshInstance3D" parent="StonyBeach"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -172.5, 1, 10)
+mesh = SubResource("BoxMesh_beachwest")
+surface_material_override/0 = SubResource("StandardMaterial3D_stone")
+
+[node name="RockWalls" type="StaticBody3D" parent="."]
+
+[node name="WestWallShape" type="CollisionShape3D" parent="RockWalls"]
+transform = Transform3D(0.99255, 0, -0.12187, 0, 1, 0, 0.12187, 0, 0.99255, -181, 14, 10)
+shape = SubResource("BoxShape3D_wall_west")
+
+[node name="WestWallMesh" type="MeshInstance3D" parent="RockWalls"]
+transform = Transform3D(0.99255, 0, -0.12187, 0, 1, 0, 0.12187, 0, 0.99255, -181, 14, 10)
+mesh = SubResource("BoxMesh_wall_west")
+surface_material_override/0 = SubResource("StandardMaterial3D_rockwall")
+
+[node name="NorthWallShape" type="CollisionShape3D" parent="RockWalls"]
+transform = Transform3D(0.99255, 0, 0.12187, 0, 1, 0, -0.12187, 0, 0.99255, -138, 14, -44)
+shape = SubResource("BoxShape3D_wall_ns")
+
+[node name="NorthWallMesh" type="MeshInstance3D" parent="RockWalls"]
+transform = Transform3D(0.99255, 0, 0.12187, 0, 1, 0, -0.12187, 0, 0.99255, -138, 14, -44)
+mesh = SubResource("BoxMesh_wall_ns")
+surface_material_override/0 = SubResource("StandardMaterial3D_rockwall")
+
+[node name="SouthWallShape" type="CollisionShape3D" parent="RockWalls"]
+transform = Transform3D(0.99255, 0, -0.12187, 0, 1, 0, 0.12187, 0, 0.99255, -138, 14, 64)
+shape = SubResource("BoxShape3D_wall_ns")
+
+[node name="SouthWallMesh" type="MeshInstance3D" parent="RockWalls"]
+transform = Transform3D(0.99255, 0, -0.12187, 0, 1, 0, 0.12187, 0, 0.99255, -138, 14, 64)
+mesh = SubResource("BoxMesh_wall_ns")
+surface_material_override/0 = SubResource("StandardMaterial3D_rockwall")
+
+[node name="NorthSpurShape" type="CollisionShape3D" parent="RockWalls"]
+transform = Transform3D(0.96593, 0, 0.25882, 0, 1, 0, -0.25882, 0, 0.96593, -103, 14, -46)
+shape = SubResource("BoxShape3D_wall_spur")
+
+[node name="NorthSpurMesh" type="MeshInstance3D" parent="RockWalls"]
+transform = Transform3D(0.96593, 0, 0.25882, 0, 1, 0, -0.25882, 0, 0.96593, -103, 14, -46)
+mesh = SubResource("BoxMesh_wall_spur")
+surface_material_override/0 = SubResource("StandardMaterial3D_rockwall")
+
+[node name="SouthSpurShape" type="CollisionShape3D" parent="RockWalls"]
+transform = Transform3D(0.96593, 0, -0.25882, 0, 1, 0, 0.25882, 0, 0.96593, -103, 14, 66)
+shape = SubResource("BoxShape3D_wall_spur")
+
+[node name="SouthSpurMesh" type="MeshInstance3D" parent="RockWalls"]
+transform = Transform3D(0.96593, 0, -0.25882, 0, 1, 0, 0.25882, 0, 0.96593, -103, 14, 66)
+mesh = SubResource("BoxMesh_wall_spur")
+surface_material_override/0 = SubResource("StandardMaterial3D_rockwall")
+
+[node name="Lighthouse" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -150, 26, -70)
+
+[node name="TowerBody" type="StaticBody3D" parent="Lighthouse"]
+
+[node name="TowerShape" type="CollisionShape3D" parent="Lighthouse/TowerBody"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 40, 0)
+shape = SubResource("CylinderShape3D_lighthouse")
+
+[node name="TowerMesh" type="MeshInstance3D" parent="Lighthouse/TowerBody"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 40, 0)
+mesh = SubResource("CylinderMesh_lighthouse")
+surface_material_override/0 = SubResource("StandardMaterial3D_lighthouse")
+
+[node name="LampPivot" type="Node3D" parent="Lighthouse"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 82, 0)
+script = ExtResource("33_lhlight")
+
+[node name="Lamp" type="MeshInstance3D" parent="Lighthouse/LampPivot"]
+mesh = SubResource("SphereMesh_lamp")
+surface_material_override/0 = SubResource("StandardMaterial3D_lamp")
+
+[node name="Beam" type="SpotLight3D" parent="Lighthouse/LampPivot"]
+light_color = Color(1, 0.92, 0.7, 1)
+light_energy = 12.0
+light_volumetric_fog_energy = 4.0
+spot_range = 900.0
+spot_attenuation = 0.6
+spot_angle = 4.0
+
+[node name="LadderPort" type="Area3D" parent="Ferry Simplified Experiment" node_paths=PackedStringArray("deck_point")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, 4.3)
+collision_layer = 4
+collision_mask = 0
+script = ExtResource("34_ladder")
+deck_point = NodePath("../LadderPortDeck")
+
+[node name="LadderPortShape" type="CollisionShape3D" parent="Ferry Simplified Experiment/LadderPort"]
+shape = SubResource("SphereShape3D_ladder")
+
+[node name="LadderPortMesh" type="MeshInstance3D" parent="Ferry Simplified Experiment/LadderPort"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -0.15)
+mesh = SubResource("BoxMesh_ladder")
+surface_material_override/0 = SubResource("StandardMaterial3D_ladder")
+
+[node name="LadderPortDeck" type="Marker3D" parent="Ferry Simplified Experiment"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 2.5)
+
+[node name="LadderStarboard" type="Area3D" parent="Ferry Simplified Experiment" node_paths=PackedStringArray("deck_point")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, -4.3)
+collision_layer = 4
+collision_mask = 0
+script = ExtResource("34_ladder")
+deck_point = NodePath("../LadderStarboardDeck")
+
+[node name="LadderStarboardShape" type="CollisionShape3D" parent="Ferry Simplified Experiment/LadderStarboard"]
+shape = SubResource("SphereShape3D_ladder")
+
+[node name="LadderStarboardMesh" type="MeshInstance3D" parent="Ferry Simplified Experiment/LadderStarboard"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0.15)
+mesh = SubResource("BoxMesh_ladder")
+surface_material_override/0 = SubResource("StandardMaterial3D_ladder")
+
+[node name="LadderStarboardDeck" type="Marker3D" parent="Ferry Simplified Experiment"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, -2.5)
