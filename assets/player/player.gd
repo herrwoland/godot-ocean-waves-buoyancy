@@ -27,6 +27,8 @@ var state: State = State.WALK
 var piloted_ship: Node = null
 var helm_marker: Node3D = null
 var hovered_interactable: Object = null
+var inspecting: bool = false # set by InspectionController; freezes movement and look
+var interact_cooldown_until_msec: int = 0
 
 const GRAVITY: float = 9.8
 
@@ -68,6 +70,8 @@ func _update_interact_hover() -> void:
 	hovered_interactable = target
 
 func _unhandled_input(event: InputEvent) -> void:
+	if inspecting:
+		return # the InspectionController owns input while an item is held up
 	if state == State.PILOT and Input.get_mouse_mode() != Input.MOUSE_MODE_CAPTURED:
 		return
 	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
@@ -78,8 +82,12 @@ func _unhandled_input(event: InputEvent) -> void:
 		_try_interact()
 
 func _physics_process(delta: float) -> void:
-	_process_turn_keys(delta)
 	_update_underwater_audio()
+	if inspecting:
+		velocity = Vector3.ZERO
+		move_and_slide()
+		return
+	_process_turn_keys(delta)
 	if state != State.PILOT:
 		_update_interact_hover()
 	match state:
@@ -193,6 +201,8 @@ func _play_splash(surface_y: float) -> void:
 func _try_interact() -> void:
 	if state == State.PILOT:
 		return # piloting is only exited via the jump (space) key
+	if Time.get_ticks_msec() < interact_cooldown_until_msec:
+		return # eg. the press that just closed an inspection
 	if hovered_interactable and hovered_interactable.has_method(&'interact'):
 		hovered_interactable.interact(self)
 

@@ -26,7 +26,8 @@
 [ext_resource type="Shader" uid="uid://bo8roxh5bsnai" path="res://assets/shaders/post/ps1_post.gdshader" id="24_ps1"]
 [ext_resource type="Script" uid="uid://cfdhchsvnkb3e" path="res://assets/ui/fps_meter.gd" id="25_fps"]
 [ext_resource type="Script" path="res://assets/scripts/core/mission_controller.gd" id="26_mission"]
-[ext_resource type="Script" path="res://assets/scripts/interactables/letter.gd" id="27_letter"]
+[ext_resource type="Script" path="res://assets/scripts/interactables/inspectable.gd" id="27_letter"]
+[ext_resource type="Script" path="res://assets/scripts/world/coord_device.gd" id="32_device"]
 [ext_resource type="Script" path="res://assets/scripts/interactables/bed.gd" id="28_bed"]
 [ext_resource type="Script" path="res://assets/scripts/interactables/mission_point.gd" id="29_mpoint"]
 [ext_resource type="Script" path="res://assets/scripts/interactables/home_zone.gd" id="30_home"]
@@ -327,6 +328,15 @@ albedo_color = Color(0.2, 0.75, 0.3, 1)
 [sub_resource type="BoxShape3D" id="BoxShape3D_homezone"]
 size = Vector3(18, 8, 18)
 
+[sub_resource type="BoxMesh" id="BoxMesh_package"]
+size = Vector3(0.8, 0.6, 0.8)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_package"]
+radius = 2.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_package"]
+albedo_color = Color(0.45, 0.33, 0.2, 1)
+
 [node name="Main" type="Node3D" unique_id=503649113]
 script = ExtResource("1_skarq")
 
@@ -521,6 +531,16 @@ cull_mask = 1047551
 far = 10000.0
 script = ExtResource("4_v2yip")
 
+[node name="CoordDevice" type="Label3D" parent="Ferry Simplified Experiment"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 2.3, -1)
+billboard = 1
+pixel_size = 0.008
+modulate = Color(1, 0.75, 0.35, 1)
+font_size = 48
+outline_size = 12
+text = "0000.0 N  0000.0 W"
+script = ExtResource("32_device")
+
 [node name="HelmPosition" type="Marker3D" parent="Ferry Simplified Experiment" unique_id=1908486165]
 transform = Transform3D(1, 8.881784e-16, 0, -1.5543122e-15, 1, 3.5527137e-15, 0, 0, 1, -0.013648987, 1, 0.13551521)
 
@@ -712,6 +732,16 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -129.4, 3.3, 10)
 collision_layer = 4
 collision_mask = 0
 script = ExtResource("27_letter")
+item_name = "The Letter"
+mission_role = 1
+
+[node name="ItemLabel" type="Label3D" parent="LetterPoint"]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0.03, 0)
+pixel_size = 0.0012
+modulate = Color(0.1, 0.08, 0.06, 1)
+font_size = 24
+outline_size = 0
+text = ""
 
 [node name="LetterShape" type="CollisionShape3D" parent="LetterPoint"]
 shape = SubResource("BoxShape3D_letter")
@@ -751,7 +781,7 @@ billboard = 1
 font_size = 128
 outline_size = 24
 pixel_size = 0.02
-text = "PICKUP"
+text = "MARKER"
 
 [node name="DeliveryPoint" type="Area3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40, 0, -160)
@@ -788,7 +818,7 @@ anchor_bottom = 1.0
 mouse_filter = 2
 color = Color(0, 0, 0, 1)
 
-[node name="MissionController" type="Node" parent="." node_paths=PackedStringArray("player", "ferry", "player_spawn", "letter_point", "pickup_point", "delivery_point", "note_view", "sleep_fade")]
+[node name="MissionController" type="Node" parent="." node_paths=PackedStringArray("player", "ferry", "player_spawn", "letter_point", "pickup_point", "delivery_point", "package", "note_view", "sleep_fade")]
 script = ExtResource("26_mission")
 player = NodePath("../Player")
 ferry = NodePath("../Ferry Simplified Experiment")
@@ -796,5 +826,29 @@ player_spawn = NodePath("../PlayerSpawn")
 letter_point = NodePath("../LetterPoint")
 pickup_point = NodePath("../PickupPoint")
 delivery_point = NodePath("../DeliveryPoint")
+package = NodePath("../Package")
 note_view = NodePath("../NoteView")
 sleep_fade = NodePath("../SleepFade/FadeRect")
+
+[node name="Package" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 150, -6, 60)
+collision_layer = 4
+collision_mask = 0
+script = ExtResource("27_letter")
+item_name = "The Package"
+mission_role = 2
+
+[node name="ItemLabel" type="Label3D" parent="Package"]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0.32, 0)
+pixel_size = 0.0015
+modulate = Color(0.95, 0.9, 0.8, 1)
+font_size = 28
+outline_size = 0
+text = ""
+
+[node name="PackageShape" type="CollisionShape3D" parent="Package"]
+shape = SubResource("SphereShape3D_package")
+
+[node name="PackageMesh" type="MeshInstance3D" parent="Package"]
+mesh = SubResource("BoxMesh_package")
+surface_material_override/0 = SubResource("StandardMaterial3D_package")

@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://tusxajaaj8mt" path="res://assets/player/player.gd" id="1_player"]
 [ext_resource type="Script" uid="uid://daqw81ug7ha8c" path="res://assets/player/crosshair.gd" id="2_crosshair"]
 [ext_resource type="Texture2D" uid="uid://dtm5tyuh2slqt" path="res://assets/water/sea_spray.png" id="2_v2miy"]
+[ext_resource type="Script" path="res://assets/player/inspection_controller.gd" id="3_inspect"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_player"]
 radius = 0.4
@@ -54,6 +55,54 @@ collision_mask = 4
 collide_with_areas = true
 collide_with_bodies = false
 debug_shape_custom_color = Color(0.8835159, 0.06592726, 0, 1)
+
+[node name="InspectSocket" type="Marker3D" parent="Head/Camera3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.55)
+
+[node name="InspectOverlay" type="CanvasLayer" parent="."]
+visible = false
+
+[node name="Dim" type="ColorRect" parent="InspectOverlay"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+color = Color(0, 0, 0, 0.55)
+
+[node name="ItemName" type="Label" parent="InspectOverlay"]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -150.0
+offset_top = -58.0
+offset_right = 150.0
+offset_bottom = -38.0
+horizontal_alignment = 1
+
+[node name="InspectHint" type="Label" parent="InspectOverlay"]
+modulate = Color(1, 1, 1, 0.45)
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -200.0
+offset_top = -32.0
+offset_right = 200.0
+offset_bottom = -14.0
+theme_type_variation = &"HeaderLabel"
+horizontal_alignment = 1
+text = "drag — turn    scroll — closer    E — put away"
+
+[node name="InspectionController" type="Node" parent="." node_paths=PackedStringArray("player", "camera", "socket", "overlay", "item_label")]
+script = ExtResource("3_inspect")
+player = NodePath("..")
+camera = NodePath("../Head/Camera3D")
+socket = NodePath("../Head/Camera3D/InspectSocket")
+overlay = NodePath("../InspectOverlay")
+item_label = NodePath("../InspectOverlay/ItemName")
 
 [node name="SplashParticles" type="GPUParticles3D" parent="." unique_id=345984492]
 top_level = true

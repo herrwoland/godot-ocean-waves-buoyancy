@@ -12,8 +12,12 @@ const CoordinateSystem := preload("res://assets/scripts/core/coordinate_system.g
 @export var letter_point: Node3D
 @export var pickup_point: Node3D
 @export var delivery_point: Node3D
+@export var package: Node3D
 @export var note_view: CanvasLayer
 @export var sleep_fade: ColorRect
+
+const PACKAGE_DEPTH := 6.0 # how far below the surface packages rest
+const LETTER_HOME := Vector3(-129.4, 3.3, 10)
 
 var days: Array[DayConfig] = []
 var _ferry_start: Transform3D
@@ -41,9 +45,15 @@ func _on_day_started(_day: int) -> void:
 	ferry.linear_velocity = Vector3.ZERO
 	ferry.angular_velocity = Vector3.ZERO
 
-	# Stage the mission props.
-	letter_point.visible = true
-	letter_point.note_text = "%s\n\nPickup:  %s" % [cfg.letter_text, CoordinateSystem.format_position(cfg.pickup_position)]
+	# Nothing is carried on a new morning.
+	get_tree().get_first_node_in_group(&'inspection_controller').reset_day()
+
+	# Stage the mission props. The letter carries the pickup coordinates; the
+	# package rests below the surface marker and carries the delivery ones.
+	letter_point.restage(get_parent(), LETTER_HOME)
+	letter_point.set_label_text("%s\n\nPickup:\n%s" % [cfg.letter_text, CoordinateSystem.format_position(cfg.pickup_position)])
+	package.restage(get_parent(), cfg.pickup_position + Vector3.DOWN * PACKAGE_DEPTH)
+	package.set_label_text("DELIVER TO:\n%s" % CoordinateSystem.format_position(cfg.delivery_position))
 	pickup_point.global_position = cfg.pickup_position
 	pickup_point.set_active(true)
 	delivery_point.global_position = cfg.delivery_position
@@ -51,14 +61,10 @@ func _on_day_started(_day: int) -> void:
 
 func _on_package_picked_up() -> void:
 	pickup_point.set_active(false)
-	var delivery_coords: String = CoordinateSystem.format_position(_config().delivery_position)
-	# Until the package-inspection system exists (Milestone 2), the letter
-	# doubles as the carried paper: append the delivery coordinates to it.
-	letter_point.note_text += "\n\nStenciled on the crate:\nDeliver to:  %s" % delivery_coords
-	note_view.show_note("The crate is heavier than it looks.\nStenciled on its side:\n\nDeliver to:  %s" % delivery_coords)
 
 func _on_package_delivered() -> void:
 	delivery_point.set_active(false)
+	get_tree().get_first_node_in_group(&'inspection_controller').consume(package)
 	note_view.show_note("It is out of your hands now.\n\nGo home.")
 
 ## Called by the bed. Fades out, advances the day (final day: placeholder end),

@@ -17,10 +17,9 @@ func interact(_player: Node) -> void:
 	var note_view: CanvasLayer = get_tree().get_first_node_in_group(&'note_view')
 	if kind == Kind.PICKUP:
 		if GameState.phase == GameState.Phase.HAS_LETTER:
-			GameState.set_phase(GameState.Phase.PICKED_UP)
-			EventBus.package_picked_up.emit()
+			note_view.show_note("The marker groans against its chain.\n\nWhatever it marks is below.\nDive.")
 		elif GameState.phase == GameState.Phase.WAKE:
-			note_view.show_note("A sealed crate bobs in the swell.\n\nWithout instructions it means nothing.\n(Read the letter first.)")
+			note_view.show_note("A rusted marker bobs in the swell.\n\nWithout instructions it means nothing.\n(Read the letter first.)")
 	else:
 		if GameState.phase == GameState.Phase.PICKED_UP:
 			GameState.set_phase(GameState.Phase.DELIVERED)
