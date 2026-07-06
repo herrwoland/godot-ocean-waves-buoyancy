@@ -28,6 +28,7 @@ func _ready() -> void:
 	_ferry_start = ferry.global_transform
 	EventBus.package_picked_up.connect(_on_package_picked_up)
 	EventBus.package_delivered.connect(_on_package_delivered)
+	EventBus.player_died.connect(_on_player_died)
 	EventBus.day_started.connect(_on_day_started)
 	GameState.start_day.call_deferred()
 
@@ -66,6 +67,23 @@ func _on_package_delivered() -> void:
 	delivery_point.set_active(false)
 	get_tree().get_first_node_in_group(&'inspection_controller').consume(package)
 	note_view.show_note("It is out of your hands now.\n\nGo home.")
+
+var _dying := false
+
+## Death is never a game over: fast fade to black, then the SAME morning
+## restages and you wake panting in your bed.
+func _on_player_died() -> void:
+	if _dying:
+		return
+	_dying = true
+	var tween := create_tween()
+	tween.tween_property(sleep_fade, "modulate:a", 1.0, 0.5)
+	tween.tween_callback(func() -> void:
+		GameState.start_day()
+		note_view.show_note("You wake, panting.\n\nThe same grey morning. The same letter."))
+	tween.tween_interval(0.4)
+	tween.tween_property(sleep_fade, "modulate:a", 0.0, 1.0)
+	tween.tween_callback(func() -> void: _dying = false)
 
 ## Called by the bed. Fades out, advances the day (final day: placeholder end),
 ## saves, then fades back into the next morning.
