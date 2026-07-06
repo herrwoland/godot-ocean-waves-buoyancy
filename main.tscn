@@ -551,5 +551,5 @@ draw_pass_1 = SubResource("PlaneMesh_splashring")
 [node name="RainCollision" type="GPUParticlesCollisionHeightField3D" parent="RainFollow/Rain" unique_id=618073783]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -83.77453, 0)
 size = Vector3(200, 111.3139, 200)
-resolution = 1
+resolution = 0
 update_mode = 1

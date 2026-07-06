@@ -96,6 +96,12 @@ func get_displacement_map_image(cascade:int = 0, img:Image = null) -> Image:
 		)
 	return img
 	
+## Asynchronously reads back one cascade's displacement layer without stalling
+## the GPU pipeline (unlike texture_get_data). `callback` receives the raw
+## RGBAH bytes a few frames later.
+func retrieve_displacement_map_async(cascade: int, callback: Callable) -> void:
+	context.device.texture_get_data_async(descriptors[&'displacement_map'].rid, cascade, callback)
+
 ## Updates and retrieves displacement data (call this after simulation)
 func retrieve_displacement_map(cascade:int, img:Image = null) -> Image:
 	# Ensure proper synchronization

@@ -122,11 +122,25 @@ func _process(delta : float) -> void:
 		_update_water(update_delta)
 	time += delta
 	
-	# Resample displacement
+	# Resample displacement (async: the data arrives a few frames later, which
+	# buoyancy easily tolerates, and avoids a full GPU pipeline stall).
 	_accumulator += delta;
 	if _accumulator >= _displacement_update_rate:
 		_accumulator -= _displacement_update_rate
-		_img = wave_generator.retrieve_displacement_map(0, _img)
+		wave_generator.retrieve_displacement_map_async(0, _on_displacement_map_data)
+
+func _on_displacement_map_data(data: PackedByteArray) -> void:
+	var size: int = wave_generator.map_size if is_instance_valid(wave_generator) else 0
+	if size == 0 or data.size() != size * size * 8: # stale readback (eg. resolution just changed)
+		return
+	if _img == null or _img.get_width() != size:
+		_img = Image.create_from_data(size, size, false, Image.FORMAT_RGBAH, data)
+	else:
+		_img.set_data(size, size, false, Image.FORMAT_RGBAH, data)
+	_img.convert(Image.FORMAT_RGBAF) # Convert to workable format
+	# map_size may have changed (eg. via settings menu); keep cached dims in sync.
+	_img_width = size
+	_img_height = size
 
 func _setup_wave_generator() -> void:
 	if parameters.size() <= 0: return

@@ -24,7 +24,7 @@ var _settings_return_menu: CanvasLayer = null
 
 func _init() -> void:
 	if Engine.is_editor_hint(): return
-	if DisplayServer.window_get_vsync_mode() == DisplayServer.VSYNC_ENABLED:
+	if DisplayServer.window_get_vsync_mode() != DisplayServer.VSYNC_DISABLED:
 		DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
 	DisplayServer.window_set_size(DisplayServer.screen_get_size() * 0.75)
 	DisplayServer.window_set_position(DisplayServer.screen_get_size() * 0.25 / 2.0)
