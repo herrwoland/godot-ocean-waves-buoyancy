@@ -33,7 +33,7 @@ particles_anim_loop = false
 [sub_resource type="QuadMesh" id="QuadMesh_d5dr7"]
 material = SubResource("StandardMaterial3D_ouxva")
 
-[node name="Player" type="CharacterBody3D" unique_id=555801128]
+[node name="Player" type="CharacterBody3D" unique_id=555801128 groups=["player"]]
 collision_layer = 2
 script = ExtResource("1_player")
 

@@ -17,14 +17,20 @@
 [ext_resource type="Script" uid="uid://cp8ogsskg7a4c" path="res://assets/scripts/rain_follow.gd" id="15_rainf"]
 [ext_resource type="PackedScene" uid="uid://c3q8m6t1p7f2a" path="res://assets/player/player.tscn" id="16_player"]
 [ext_resource type="PackedScene" uid="uid://c7pflpm1pnx7k" path="res://assets/models/island.tscn" id="17_island"]
-[ext_resource type="PackedScene" path="res://assets/ui/start_screen.tscn" id="18_start"]
+[ext_resource type="PackedScene" uid="uid://cf2rcpsk3hrt1" path="res://assets/ui/start_screen.tscn" id="18_start"]
 [ext_resource type="PackedScene" path="res://assets/ui/pause_menu.tscn" id="19_pause"]
 [ext_resource type="Script" uid="uid://b3s502b801kf" path="res://assets/scripts/helm_interactable.gd" id="20_helm"]
 [ext_resource type="PackedScene" path="res://assets/ui/settings_menu.tscn" id="21_settings"]
 [ext_resource type="ArrayMesh" uid="uid://ix4vp1y05f1s" path="res://assets/water/clipmap_high.obj" id="22_cliphigh"]
 [ext_resource type="Material" path="res://assets/water/mat_heightfield_proxy.tres" id="23_proxy"]
 [ext_resource type="Shader" uid="uid://bo8roxh5bsnai" path="res://assets/shaders/post/ps1_post.gdshader" id="24_ps1"]
-[ext_resource type="Script" path="res://assets/ui/fps_meter.gd" id="25_fps"]
+[ext_resource type="Script" uid="uid://cfdhchsvnkb3e" path="res://assets/ui/fps_meter.gd" id="25_fps"]
+[ext_resource type="Script" path="res://assets/scripts/core/mission_controller.gd" id="26_mission"]
+[ext_resource type="Script" path="res://assets/scripts/interactables/letter.gd" id="27_letter"]
+[ext_resource type="Script" path="res://assets/scripts/interactables/bed.gd" id="28_bed"]
+[ext_resource type="Script" path="res://assets/scripts/interactables/mission_point.gd" id="29_mpoint"]
+[ext_resource type="Script" path="res://assets/scripts/interactables/home_zone.gd" id="30_home"]
+[ext_resource type="PackedScene" path="res://assets/ui/note_view.tscn" id="31_note"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_d13ii"]
 seed = 666
@@ -45,13 +51,13 @@ shader_parameter/warp_strength = 0.3
 shader_parameter/wind_direction = Vector2(1, 0.35)
 shader_parameter/wind_speed = 0.015
 shader_parameter/scud_speed_mult = 2.2
-shader_parameter/cloud_lit_color = Color(0.3, 0.31, 0.33, 1)
+shader_parameter/cloud_lit_color = Color(0.364, 0.37600002, 0.4, 1)
 shader_parameter/cloud_dark_color = Color(0.035, 0.04, 0.055, 1)
 shader_parameter/zenith_color = Color(0.05, 0.06, 0.08, 1)
 shader_parameter/horizon_color = Color(0.3, 0.31, 0.32, 1)
 shader_parameter/ground_color = Color(0.02, 0.03, 0.04, 1)
 shader_parameter/sun_glow = 0.35
-shader_parameter/lightning_strength = 0.35
+shader_parameter/lightning_strength = 0.4310000204725
 shader_parameter/exposure = 1.0
 
 [sub_resource type="Sky" id="Sky_vroi3"]
@@ -72,7 +78,7 @@ fog_depth_begin = 200.0
 fog_depth_end = 350.0
 volumetric_fog_enabled = true
 volumetric_fog_density = 0.003
-volumetric_fog_length = 256.0
+volumetric_fog_length = 125.03
 
 [sub_resource type="Resource" id="Resource_adqv5"]
 script = ExtResource("2_pw5n6")
@@ -252,6 +258,75 @@ albedo_color = Color(0.85, 0.92, 1, 0.6)
 material = SubResource("StandardMaterial3D_splashring")
 size = Vector2(0.5, 0.5)
 
+[sub_resource type="BoxMesh" id="BoxMesh_shore"]
+size = Vector3(60, 4, 60)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_shore"]
+size = Vector3(60, 4, 60)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_shore"]
+albedo_color = Color(0.72, 0.65, 0.5, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_shackwall"]
+albedo_color = Color(0.42, 0.35, 0.28, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_wall_back"]
+size = Vector3(0.3, 3, 7)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wall_back"]
+size = Vector3(0.3, 3, 7)
+
+[sub_resource type="BoxMesh" id="BoxMesh_wall_front"]
+size = Vector3(0.3, 3, 2.5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wall_front"]
+size = Vector3(0.3, 3, 2.5)
+
+[sub_resource type="BoxMesh" id="BoxMesh_wall_side"]
+size = Vector3(7, 3, 0.3)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wall_side"]
+size = Vector3(7, 3, 0.3)
+
+[sub_resource type="BoxMesh" id="BoxMesh_roof"]
+size = Vector3(7.6, 0.3, 7.6)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_roof"]
+size = Vector3(7.6, 0.3, 7.6)
+
+[sub_resource type="BoxMesh" id="BoxMesh_bed"]
+size = Vector3(2, 0.6, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_bed"]
+size = Vector3(2, 0.6, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bed"]
+albedo_color = Color(0.5, 0.15, 0.15, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_letter"]
+size = Vector3(0.35, 0.05, 0.45)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_letter"]
+size = Vector3(0.7, 0.5, 0.8)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_letter"]
+albedo_color = Color(0.92, 0.9, 0.82, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_buoy"]
+size = Vector3(2, 2, 2)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_buoy"]
+radius = 3.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pickup"]
+albedo_color = Color(0.9, 0.75, 0.1, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_delivery"]
+albedo_color = Color(0.2, 0.75, 0.3, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_homezone"]
+size = Vector3(18, 8, 18)
+
 [node name="Main" type="Node3D" unique_id=503649113]
 script = ExtResource("1_skarq")
 
@@ -266,7 +341,7 @@ shadow_opacity = 0.8
 shadow_blur = 5.0
 
 [node name="Water" type="MeshInstance3D" parent="." unique_id=946478083]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11, 0, -44)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 0, -36)
 sorting_offset = 999.0
 material_override = ExtResource("5_lt75t")
 cast_shadow = 0
@@ -509,16 +584,15 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 
-[node name="FpsOverlay" type="CanvasLayer" parent="."]
-layer = 2
+[node name="FpsOverlay" type="CanvasLayer" parent="." unique_id=1820372639]
 process_mode = 3
+layer = 2
 
-[node name="FpsLabel" type="Label" parent="FpsOverlay"]
+[node name="FpsLabel" type="Label" parent="FpsOverlay" unique_id=978686933]
 offset_left = 4.0
 offset_top = 2.0
 offset_right = 80.0
 offset_bottom = 20.0
-mouse_filter = 2
 script = ExtResource("25_fps")
 
 [node name="RainFollow" type="Node3D" parent="." unique_id=702590762 node_paths=PackedStringArray("target")]
@@ -552,3 +626,175 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -83.77453, 0)
 size = Vector3(200, 111.3139, 200)
 resolution = 0
 update_mode = 1
+
+[node name="Shore" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -130, 1, 10)
+
+[node name="ShoreCollider" type="CollisionShape3D" parent="Shore"]
+shape = SubResource("BoxShape3D_shore")
+
+[node name="ShoreMesh" type="MeshInstance3D" parent="Shore"]
+mesh = SubResource("BoxMesh_shore")
+surface_material_override/0 = SubResource("StandardMaterial3D_shore")
+
+[node name="Shack" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -132, 3, 10)
+
+[node name="BackWallShape" type="CollisionShape3D" parent="Shack"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 1.5, 0)
+shape = SubResource("BoxShape3D_wall_back")
+
+[node name="BackWallMesh" type="MeshInstance3D" parent="Shack"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 1.5, 0)
+mesh = SubResource("BoxMesh_wall_back")
+surface_material_override/0 = SubResource("StandardMaterial3D_shackwall")
+
+[node name="FrontWallLeftShape" type="CollisionShape3D" parent="Shack"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 1.5, -2.25)
+shape = SubResource("BoxShape3D_wall_front")
+
+[node name="FrontWallLeftMesh" type="MeshInstance3D" parent="Shack"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 1.5, -2.25)
+mesh = SubResource("BoxMesh_wall_front")
+surface_material_override/0 = SubResource("StandardMaterial3D_shackwall")
+
+[node name="FrontWallRightShape" type="CollisionShape3D" parent="Shack"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 1.5, 2.25)
+shape = SubResource("BoxShape3D_wall_front")
+
+[node name="FrontWallRightMesh" type="MeshInstance3D" parent="Shack"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 1.5, 2.25)
+mesh = SubResource("BoxMesh_wall_front")
+surface_material_override/0 = SubResource("StandardMaterial3D_shackwall")
+
+[node name="SideWallNorthShape" type="CollisionShape3D" parent="Shack"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -3.5)
+shape = SubResource("BoxShape3D_wall_side")
+
+[node name="SideWallNorthMesh" type="MeshInstance3D" parent="Shack"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -3.5)
+mesh = SubResource("BoxMesh_wall_side")
+surface_material_override/0 = SubResource("StandardMaterial3D_shackwall")
+
+[node name="SideWallSouthShape" type="CollisionShape3D" parent="Shack"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 3.5)
+shape = SubResource("BoxShape3D_wall_side")
+
+[node name="SideWallSouthMesh" type="MeshInstance3D" parent="Shack"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 3.5)
+mesh = SubResource("BoxMesh_wall_side")
+surface_material_override/0 = SubResource("StandardMaterial3D_shackwall")
+
+[node name="RoofShape" type="CollisionShape3D" parent="Shack"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.15, 0)
+shape = SubResource("BoxShape3D_roof")
+
+[node name="RoofMesh" type="MeshInstance3D" parent="Shack"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.15, 0)
+mesh = SubResource("BoxMesh_roof")
+surface_material_override/0 = SubResource("StandardMaterial3D_shackwall")
+
+[node name="Bed" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -134, 3.3, 12)
+collision_layer = 4
+collision_mask = 0
+script = ExtResource("28_bed")
+
+[node name="BedShape" type="CollisionShape3D" parent="Bed"]
+shape = SubResource("BoxShape3D_bed")
+
+[node name="BedMesh" type="MeshInstance3D" parent="Bed"]
+mesh = SubResource("BoxMesh_bed")
+surface_material_override/0 = SubResource("StandardMaterial3D_bed")
+
+[node name="LetterPoint" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -129.4, 3.3, 10)
+collision_layer = 4
+collision_mask = 0
+script = ExtResource("27_letter")
+
+[node name="LetterShape" type="CollisionShape3D" parent="LetterPoint"]
+shape = SubResource("BoxShape3D_letter")
+
+[node name="LetterMesh" type="MeshInstance3D" parent="LetterPoint"]
+mesh = SubResource("BoxMesh_letter")
+surface_material_override/0 = SubResource("StandardMaterial3D_letter")
+
+[node name="PlayerSpawn" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -133, 3.2, 8)
+
+[node name="HomeZone" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -132, 6, 10)
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("30_home")
+
+[node name="HomeZoneShape" type="CollisionShape3D" parent="HomeZone"]
+shape = SubResource("BoxShape3D_homezone")
+
+[node name="PickupPoint" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 150, 0, 60)
+collision_layer = 4
+collision_mask = 0
+script = ExtResource("29_mpoint")
+
+[node name="PickupShape" type="CollisionShape3D" parent="PickupPoint"]
+shape = SubResource("SphereShape3D_buoy")
+
+[node name="PickupMesh" type="MeshInstance3D" parent="PickupPoint"]
+mesh = SubResource("BoxMesh_buoy")
+surface_material_override/0 = SubResource("StandardMaterial3D_pickup")
+
+[node name="PickupLabel" type="Label3D" parent="PickupPoint"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
+billboard = 1
+font_size = 128
+outline_size = 24
+pixel_size = 0.02
+text = "PICKUP"
+
+[node name="DeliveryPoint" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40, 0, -160)
+collision_layer = 4
+collision_mask = 0
+script = ExtResource("29_mpoint")
+kind = 1
+
+[node name="DeliveryShape" type="CollisionShape3D" parent="DeliveryPoint"]
+shape = SubResource("SphereShape3D_buoy")
+
+[node name="DeliveryMesh" type="MeshInstance3D" parent="DeliveryPoint"]
+mesh = SubResource("BoxMesh_buoy")
+surface_material_override/0 = SubResource("StandardMaterial3D_delivery")
+
+[node name="DeliveryLabel" type="Label3D" parent="DeliveryPoint"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
+billboard = 1
+font_size = 128
+outline_size = 24
+pixel_size = 0.02
+text = "DELIVERY"
+
+[node name="NoteView" parent="." instance=ExtResource("31_note")]
+
+[node name="SleepFade" type="CanvasLayer" parent="."]
+layer = 5
+
+[node name="FadeRect" type="ColorRect" parent="SleepFade"]
+modulate = Color(1, 1, 1, 0)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+color = Color(0, 0, 0, 1)
+
+[node name="MissionController" type="Node" parent="." node_paths=PackedStringArray("player", "ferry", "player_spawn", "letter_point", "pickup_point", "delivery_point", "note_view", "sleep_fade")]
+script = ExtResource("26_mission")
+player = NodePath("../Player")
+ferry = NodePath("../Ferry Simplified Experiment")
+player_spawn = NodePath("../PlayerSpawn")
+letter_point = NodePath("../LetterPoint")
+pickup_point = NodePath("../PickupPoint")
+delivery_point = NodePath("../DeliveryPoint")
+note_view = NodePath("../NoteView")
+sleep_fade = NodePath("../SleepFade/FadeRect")
