@@ -37,6 +37,7 @@
 [ext_resource type="Script" uid="uid://d2lwj1bl5x665" path="res://assets/scripts/world/swappable_prop.gd" id="36_swap"]
 [ext_resource type="Script" uid="uid://1yls1dmbq84k" path="res://assets/scripts/world/sanity_director.gd" id="37_sanity"]
 [ext_resource type="Script" uid="uid://c7n8dp7f8tkeu" path="res://assets/scripts/world/wave_blocker.gd" id="38_blocker"]
+[ext_resource type="PackedScene" path="res://assets/models/isle_of_dead.tscn" id="39_isle"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_d13ii"]
 seed = 666
@@ -437,7 +438,7 @@ shadow_blur = 5.0
 sky_mode = 1
 
 [node name="Water" type="MeshInstance3D" parent="." unique_id=946478083]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -165, 0, 79)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -84, 0, 15)
 sorting_offset = 999.0
 material_override = ExtResource("5_lt75t")
 cast_shadow = 0
@@ -624,7 +625,7 @@ far = 10000.0
 script = ExtResource("4_v2yip")
 
 [node name="CoordDevice" type="Label3D" parent="Ferry Simplified Experiment" unique_id=30308857]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 2.3, -1)
+transform = Transform3D(0.2, 6.661338e-16, -3.7252903e-09, -1.831868e-15, 0.2, 1.7763568e-15, 3.7252903e-09, 0, 0.2, 0.035369873, 3.2882752, -0.966218)
 pixel_size = 0.008
 billboard = 1
 modulate = Color(1, 0.75, 0.35, 1)
@@ -1132,3 +1133,6 @@ mode = 1
 [node name="TestWaveHoleShape" type="CollisionShape3D" parent="TestWaveHole" unique_id=1619899738]
 shape = SubResource("CylinderShape3D_testhole")
 debug_color = Color(0.97, 0, 0.4688336, 1)
+
+[node name="IsleOfTheDead" parent="." instance=ExtResource("39_isle")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 260, 0, -260)

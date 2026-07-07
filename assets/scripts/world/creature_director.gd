@@ -2,8 +2,12 @@ extends Node3D
 ## Spawns the giant swimming creatures. Most drift in slow orbits around the
 ## player's area of the sea; when the player dives past hunt_depth, the
 ## nearest few turn hunter and close in. Contact kills (player_died).
-## Placeholder capsule bodies — swap for the user's giant fish models later.
+## Bodies come from creature_scene (creatures/hunter_fish.tscn placeholder) —
+## edit that scene or point creature_scene at another to change their look.
 
+const HUNTER_SCENE := preload("res://assets/models/creatures/hunter_fish.tscn")
+
+@export var creature_scene: PackedScene
 @export var player: Node3D
 @export var water: Node
 @export var creature_count: int = 6
@@ -12,6 +16,9 @@ extends Node3D
 @export var hunt_speed: float = 7.0
 @export var kill_distance: float = 2.2
 @export var orbit_speed: float = 0.06
+## No hunting inside this zone (the Isle of the Dead — the eel rules there).
+@export var hunt_exclusion_center: Vector3 = Vector3(260, 0, -260)
+@export var hunt_exclusion_radius: float = 60.0
 
 const SHORE_X_LIMIT := -85.0 # keep creatures out of the cove's shallows
 
@@ -24,18 +31,9 @@ var _kill_cooldown := 0.0
 func _ready() -> void:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 1337
+	var scene := creature_scene if creature_scene else HUNTER_SCENE
 	for i in creature_count:
-		var creature := Node3D.new()
-		var body := MeshInstance3D.new()
-		var mesh := CapsuleMesh.new()
-		mesh.radius = 1.2
-		mesh.height = 8.0
-		body.mesh = mesh
-		body.rotation_degrees.x = 90.0 # lie the capsule flat: a swimming torpedo, not a pill
-		var mat := StandardMaterial3D.new()
-		mat.albedo_color = Color(0.1, 0.13, 0.14)
-		body.material_override = mat
-		creature.add_child(body)
+		var creature: Node3D = scene.instantiate()
 		add_child(creature)
 		_creatures.append(creature)
 		_orbit_radius.append(rng.randf_range(40.0, 130.0))
@@ -47,7 +45,9 @@ func _physics_process(delta: float) -> void:
 	_kill_cooldown = maxf(_kill_cooldown - delta, 0.0)
 	var surface_y: float = water.get_wave_height(player.global_position)
 	var player_depth: float = surface_y - player.global_position.y
-	var hunting: bool = player_depth > hunt_depth
+	var in_exclusion := Vector2(player.global_position.x - hunt_exclusion_center.x,
+		player.global_position.z - hunt_exclusion_center.z).length() < hunt_exclusion_radius
+	var hunting: bool = player_depth > hunt_depth and not in_exclusion
 
 	var time := Time.get_ticks_msec() / 1000.0
 	for i in _creatures.size():

@@ -16,7 +16,6 @@ const CoordinateSystem := preload("res://assets/scripts/core/coordinate_system.g
 @export var note_view: CanvasLayer
 @export var sleep_fade: ColorRect
 
-const PACKAGE_DEPTH := 6.0 # how far below the surface packages rest
 const LETTER_HOME := Vector3(-129.4, 3.3, 10)
 
 var days: Array[DayConfig] = []
@@ -57,7 +56,7 @@ func _on_day_started(_day: int) -> void:
 	# package rests below the surface marker and carries the delivery ones.
 	letter_point.restage(get_parent(), LETTER_HOME)
 	letter_point.set_label_text("%s\n\nPickup:\n%s" % [cfg.letter_text, CoordinateSystem.format_position(cfg.pickup_position)])
-	package.restage(get_parent(), cfg.pickup_position + Vector3.DOWN * PACKAGE_DEPTH)
+	package.restage(get_parent(), cfg.pickup_position + Vector3.DOWN * cfg.package_depth)
 	package.set_label_text("DELIVER TO:\n%s" % CoordinateSystem.format_position(cfg.delivery_position))
 	pickup_point.global_position = cfg.pickup_position
 	pickup_point.set_active(true)
@@ -117,9 +116,10 @@ func _build_placeholder_days() -> void:
 		Vector3(150, 0, 60),
 		Vector3(220, 0, -120),
 		Vector3(320, 0, 180),
-		Vector3(260, 0, -260),
+		Vector3(260, 0, -260), # day 4: the well at the Isle of the Dead
 		Vector3(180, 0, 20),
 	]
+	var package_depths: Array[float] = [6.0, 6.0, 6.0, 18.0, 6.0] # day 4: bottom of the well shaft
 	var deliveries: Array[Vector3] = [
 		Vector3(40, 0, -160),
 		Vector3(-40, 0, 240),
@@ -150,6 +150,7 @@ func _build_placeholder_days() -> void:
 		cfg.letter_text = texts[i]
 		cfg.pickup_position = pickups[i]
 		cfg.delivery_position = deliveries[i]
+		cfg.package_depth = package_depths[i]
 		cfg.wake_swaps = wake_swaps[i]
 		cfg.return_home_swaps = return_swaps[i]
 		days.append(cfg)
