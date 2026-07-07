@@ -83,18 +83,43 @@ var _img_height: int;
 var _img_width: int;
 var map_scales : PackedVector4Array;
 
+const MAX_WAVE_BLOCKERS := 8
+var _wave_blockers: Array[Node] = []
+var _blocker_a := PackedVector4Array()
+var _blocker_b := PackedVector4Array()
+
 # ------ Public Interface ----- #
-func get_wave_height(global_position: Vector3) -> float:
+## `masked = false` ignores wave blockers (eg. buoyancy keeps rocking the ship
+## even when a calm zone flattens the water visually around it).
+func get_wave_height(global_position: Vector3, masked: bool = true) -> float:
 	var uv: Vector2 = Vector2(global_position.x, global_position.z)
 	var displacement: Vector3 = Vector3.ZERO
-	
+
 	# TODO: Do once for each cascade for best accuracy
 	var i = 0;
 	var scales: Vector4 = map_scales[i]
 	var sample_uv: Vector2 = uv * Vector2(scales.x, scales.y)
 	displacement += _sample_displacement(i, sample_uv) * scales.z
-	
+
+	if masked:
+		return displacement.y * blocker_mask(global_position)
 	return displacement.y
+
+## Combined wave-blocker attenuation at a position (0 = fully calmed, 1 = untouched).
+func blocker_mask(global_position: Vector3) -> float:
+	var mask := 1.0
+	for i in mini(_wave_blockers.size(), MAX_WAVE_BLOCKERS):
+		var blocker = _wave_blockers[i]
+		if is_instance_valid(blocker):
+			mask = minf(mask, blocker.attenuation(global_position))
+	return mask
+
+## True inside a HOLE blocker: there is no water surface here at all.
+func is_water_hole(global_position: Vector3) -> bool:
+	for blocker in _wave_blockers:
+		if is_instance_valid(blocker) and blocker.mode == 1 and blocker.contains(global_position):
+			return true
+	return false
 
 # ------ Private Methods ----- #
 func _init() -> void:
@@ -112,6 +137,7 @@ func _ready() -> void:
 	_displacement_update_rate = (1 / displacement_updates_per_second)
 
 func _process(delta : float) -> void:
+	_update_wave_blockers()
 	# TODO: These should probably be the same update
 	# Update waves once every 1.0/updates_per_second.
 	if updates_per_second == 0 or time >= next_update_time:
@@ -158,6 +184,20 @@ func _setup_wave_generator() -> void:
 	RenderingServer.global_shader_parameter_set(&'num_cascades', parameters.size())
 	RenderingServer.global_shader_parameter_set(&'displacements', displacement_maps)
 	RenderingServer.global_shader_parameter_set(&'normals', normal_maps)
+
+## Uploads all WaveBlocker nodes to the water shader (they can move each frame,
+## eg. a calm zone parented to the ship) and caches them for CPU sampling.
+func _update_wave_blockers() -> void:
+	_wave_blockers = get_tree().get_nodes_in_group(&'wave_blocker')
+	var count := mini(_wave_blockers.size(), MAX_WAVE_BLOCKERS)
+	_blocker_a.resize(MAX_WAVE_BLOCKERS)
+	_blocker_b.resize(MAX_WAVE_BLOCKERS)
+	for i in count:
+		_blocker_a[i] = _wave_blockers[i].pack_a()
+		_blocker_b[i] = _wave_blockers[i].pack_b()
+	WATER_MAT.set_shader_parameter(&'wave_blocker_count', count)
+	WATER_MAT.set_shader_parameter(&'wave_blocker_a', _blocker_a)
+	WATER_MAT.set_shader_parameter(&'wave_blocker_b', _blocker_b)
 
 func _update_scales_uniform() -> void:
 	map_scales.resize(len(parameters))

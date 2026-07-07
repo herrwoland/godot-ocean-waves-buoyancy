@@ -49,7 +49,8 @@ func _ready() -> void:
 func _update_underwater_audio() -> void:
 	if not water:
 		return
-	var underwater: bool = camera.global_position.y < water.get_wave_height(camera.global_position)
+	var underwater: bool = camera.global_position.y < water.get_wave_height(camera.global_position) \
+		and not water.is_water_hole(camera.global_position)
 	if underwater != _ears_underwater:
 		_ears_underwater = underwater
 		AudioServer.set_bus_effect_enabled(0, _lowpass_idx, underwater)
@@ -177,6 +178,8 @@ func _process_pilot(delta: float) -> void:
 func _check_enter_swim() -> void:
 	if not water:
 		return
+	if water.is_water_hole(global_position):
+		return # inside a HOLE wave blocker (eg. a dry shaft) there is no water to swim in
 	var surface_y: float = water.get_wave_height(global_position)
 	if surface_y - global_position.y > swim_enter_depth:
 		state = State.SWIM
