@@ -18,3 +18,6 @@ mono_crash.*.json
 build/
 # Reference copy of the upstream GodotOceanWaves project (donor for water values)
 GodotOceanWaves/
+
+# Windows lock-copies of addon DLLs created while the editor runs
+~*.dll
