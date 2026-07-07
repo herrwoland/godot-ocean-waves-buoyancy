@@ -13,6 +13,7 @@ const CoordinateSystem := preload("res://assets/scripts/core/coordinate_system.g
 @export var pickup_point: Node3D
 @export var delivery_point: Node3D
 @export var package: Node3D
+@export var ending_fish: Node3D
 @export var note_view: CanvasLayer
 @export var sleep_fade: ColorRect
 
@@ -62,6 +63,7 @@ func _on_day_started(_day: int) -> void:
 	pickup_point.set_active(true)
 	delivery_point.global_position = cfg.delivery_position
 	delivery_point.set_active(true)
+	ending_fish.set_active(false)
 
 func _on_package_picked_up() -> void:
 	pickup_point.set_active(false)
@@ -69,7 +71,11 @@ func _on_package_picked_up() -> void:
 func _on_package_delivered() -> void:
 	delivery_point.set_active(false)
 	get_tree().get_first_node_in_group(&'inspection_controller').consume(package)
-	note_view.show_note("It is out of your hands now.\n\nGo home.")
+	if GameState.current_day >= GameState.FINAL_DAY:
+		ending_fish.appear()
+		note_view.show_note("It is done.\n\nSomething is waiting on the shore,\nin front of your house.")
+	else:
+		note_view.show_note("It is out of your hands now.\n\nGo home.")
 
 var _dying := false
 
@@ -88,9 +94,12 @@ func _on_player_died() -> void:
 	tween.tween_property(sleep_fade, "modulate:a", 0.0, 1.0)
 	tween.tween_callback(func() -> void: _dying = false)
 
-## Called by the bed. Fades out, advances the day (final day: placeholder end),
-## saves, then fades back into the next morning.
+## Called by the bed. Fades out, advances the day, saves, then fades back into
+## the next morning. On the final day sleep is refused — the fish is the exit.
 func do_sleep() -> void:
+	if GameState.current_day >= GameState.FINAL_DAY:
+		note_view.show_note("You cannot sleep.\n\nIt is still waiting on the shore.")
+		return
 	var tween := create_tween()
 	tween.tween_property(sleep_fade, "modulate:a", 1.0, 1.2)
 	tween.tween_callback(_advance_after_fade)
@@ -98,10 +107,7 @@ func do_sleep() -> void:
 	tween.tween_property(sleep_fade, "modulate:a", 0.0, 1.2)
 
 func _advance_after_fade() -> void:
-	if GameState.current_day >= GameState.FINAL_DAY:
-		note_view.show_note("The fifth night.\n\nSomething is waiting on the shore.\n\n(End of the skeleton loop — the ending arrives in Milestone 7. Day 5 repeats.)")
-	else:
-		GameState.sleep_advance()
+	GameState.sleep_advance()
 	GameState.start_day()
 
 func _build_placeholder_days() -> void:

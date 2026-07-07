@@ -38,6 +38,9 @@
 [ext_resource type="Script" uid="uid://1yls1dmbq84k" path="res://assets/scripts/world/sanity_director.gd" id="37_sanity"]
 [ext_resource type="Script" uid="uid://c7n8dp7f8tkeu" path="res://assets/scripts/world/wave_blocker.gd" id="38_blocker"]
 [ext_resource type="PackedScene" path="res://assets/models/isle_of_dead.tscn" id="39_isle"]
+[ext_resource type="PackedScene" path="res://assets/models/creatures/ending_fish.tscn" id="40_endfish"]
+[ext_resource type="Script" path="res://assets/scripts/world/deep_passing.gd" id="41_passing"]
+[ext_resource type="Script" path="res://assets/scripts/world/strangeness_sting.gd" id="42_sting"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_d13ii"]
 seed = 666
@@ -960,7 +963,7 @@ anchor_bottom = 1.0
 mouse_filter = 2
 color = Color(0, 0, 0, 1)
 
-[node name="MissionController" type="Node" parent="." unique_id=1801545549 node_paths=PackedStringArray("player", "ferry", "player_spawn", "letter_point", "pickup_point", "delivery_point", "package", "note_view", "sleep_fade")]
+[node name="MissionController" type="Node" parent="." unique_id=1801545549 node_paths=PackedStringArray("player", "ferry", "player_spawn", "letter_point", "pickup_point", "delivery_point", "package", "ending_fish", "note_view", "sleep_fade")]
 script = ExtResource("26_mission")
 player = NodePath("../Player")
 ferry = NodePath("../Ferry Simplified Experiment")
@@ -969,6 +972,7 @@ letter_point = NodePath("../LetterPoint")
 pickup_point = NodePath("../PickupPoint")
 delivery_point = NodePath("../DeliveryPoint")
 package = NodePath("../Package")
+ending_fish = NodePath("../EndingFish")
 note_view = NodePath("../NoteView")
 sleep_fade = NodePath("../SleepFade/FadeRect")
 
@@ -1136,3 +1140,13 @@ debug_color = Color(0.97, 0, 0.4688336, 1)
 
 [node name="IsleOfTheDead" parent="." instance=ExtResource("39_isle")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 260, 0, -260)
+
+[node name="EndingFish" parent="." instance=ExtResource("40_endfish")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -110, 3, 16)
+
+[node name="DeepPassing" type="Node3D" parent="." node_paths=PackedStringArray("player")]
+script = ExtResource("41_passing")
+player = NodePath("../Player")
+
+[node name="StrangenessSting" type="Node" parent="."]
+script = ExtResource("42_sting")

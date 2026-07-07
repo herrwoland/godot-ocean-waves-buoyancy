@@ -21,6 +21,7 @@ config/icon="res://icon.svg"
 ImGuiRoot="*uid://dugmpnsxaagba"
 EventBus="*res://assets/scripts/core/event_bus.gd"
 GameState="*res://assets/scripts/core/game_state.gd"
+CutscenePlayer="*res://assets/scripts/core/cutscene_player.gd"
 BeckettRuntime="*uid://dspgi2nxto4e8"
 
 [beckett]
