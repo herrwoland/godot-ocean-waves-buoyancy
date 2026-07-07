@@ -15,10 +15,10 @@ enum MeshQuality { LOW, HIGH, HIGH8K }
 # ----- Config Variables ----- #
 @export_group('Wave Parameters')
 @export_color_no_alpha var water_color : Color = Color(0.1, 0.15, 0.18) :
-	set(value): water_color = value; RenderingServer.global_shader_parameter_set(&'water_color', water_color.srgb_to_linear())
+	set(value): water_color = value; RenderingServer.global_shader_parameter_set(&'water_color', water_color)
 
 @export_color_no_alpha var foam_color : Color = Color(0.73, 0.67, 0.62) :
-	set(value): foam_color = value; RenderingServer.global_shader_parameter_set(&'foam_color', foam_color.srgb_to_linear())
+	set(value): foam_color = value; RenderingServer.global_shader_parameter_set(&'foam_color', foam_color)
 
 ## The parameters for wave cascades. Each parameter set represents one cascade.
 ## Recreates all compute piplines whenever a cascade is added or removed!
@@ -128,8 +128,8 @@ func _init() -> void:
 func _ready() -> void:
 	map_scales.resize(len(parameters))
 
-	RenderingServer.global_shader_parameter_set(&'water_color', water_color.srgb_to_linear())
-	RenderingServer.global_shader_parameter_set(&'foam_color', foam_color.srgb_to_linear())
+	RenderingServer.global_shader_parameter_set(&'water_color', water_color)
+	RenderingServer.global_shader_parameter_set(&'foam_color', foam_color)
 
 	_img = wave_generator.retrieve_displacement_map(0, _img)
 	_img_height = _img.get_height()
