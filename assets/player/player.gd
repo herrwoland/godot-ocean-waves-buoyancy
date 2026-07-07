@@ -20,6 +20,7 @@ enum State { WALK, SWIM, PILOT }
 @onready var camera: Camera3D = $Head/Camera3D
 @onready var interact_ray: RayCast3D = $Head/Camera3D/InteractRay
 @onready var collider: CollisionShape3D = $Collider
+@onready var carry_controller: Node = $CarryController
 @onready var splash_particles: GPUParticles3D = $SplashParticles
 @onready var surface_ripples: GPUParticles3D = $SurfaceRipples
 
@@ -206,6 +207,9 @@ func _try_interact() -> void:
 		return # piloting is only exited via the jump (space) key
 	if Time.get_ticks_msec() < interact_cooldown_until_msec:
 		return # eg. the press that just closed an inspection
+	if carry_controller.is_carrying():
+		carry_controller.drop() # hands full: interact always means "put it down"
+		return
 	if hovered_interactable and hovered_interactable.has_method(&'interact'):
 		hovered_interactable.interact(self)
 

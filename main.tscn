@@ -39,8 +39,9 @@
 [ext_resource type="Script" uid="uid://c7n8dp7f8tkeu" path="res://assets/scripts/world/wave_blocker.gd" id="38_blocker"]
 [ext_resource type="PackedScene" path="res://assets/models/isle_of_dead.tscn" id="39_isle"]
 [ext_resource type="PackedScene" path="res://assets/models/creatures/ending_fish.tscn" id="40_endfish"]
-[ext_resource type="Script" path="res://assets/scripts/world/deep_passing.gd" id="41_passing"]
-[ext_resource type="Script" path="res://assets/scripts/world/strangeness_sting.gd" id="42_sting"]
+[ext_resource type="Script" uid="uid://dvjr0tnts6ldb" path="res://assets/scripts/world/deep_passing.gd" id="41_passing"]
+[ext_resource type="Script" uid="uid://dui3ctiunqxcn" path="res://assets/scripts/world/strangeness_sting.gd" id="42_sting"]
+[ext_resource type="PackedScene" path="res://assets/models/letter.tscn" id="43_letter"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_d13ii"]
 seed = 666
@@ -328,15 +329,6 @@ size = Vector3(2, 0.6, 1)
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bed"]
 albedo_color = Color(0.5, 0.15, 0.15, 1)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_letter"]
-size = Vector3(0.7, 0.5, 0.8)
-
-[sub_resource type="BoxMesh" id="BoxMesh_letter"]
-size = Vector3(0.35, 0.05, 0.45)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_letter"]
-albedo_color = Color(0.92, 0.9, 0.82, 1)
-
 [sub_resource type="BoxShape3D" id="BoxShape3D_homezone"]
 size = Vector3(18, 8, 18)
 
@@ -441,7 +433,7 @@ shadow_blur = 5.0
 sky_mode = 1
 
 [node name="Water" type="MeshInstance3D" parent="." unique_id=946478083]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -84, 0, 15)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -78, 0, 17)
 sorting_offset = 999.0
 material_override = ExtResource("5_lt75t")
 cast_shadow = 0
@@ -628,9 +620,10 @@ far = 10000.0
 script = ExtResource("4_v2yip")
 
 [node name="CoordDevice" type="Label3D" parent="Ferry Simplified Experiment" unique_id=30308857]
-transform = Transform3D(0.2, 6.661338e-16, -3.7252903e-09, -1.831868e-15, 0.2, 1.7763568e-15, 3.7252903e-09, 0, 0.2, 0.035369873, 3.2882752, -0.966218)
+transform = Transform3D(0.19999994, 1.9984014e-15, -1.1175871e-08, -4.052314e-15, 0.2, 5.3290705e-15, 1.1175871e-08, 0, 0.19999994, -0.5263748, 2.1358566, 0.12020683)
 pixel_size = 0.008
 billboard = 1
+render_priority = 4
 modulate = Color(1, 0.75, 0.35, 1)
 text = "0000.0 N  0000.0 W"
 font_size = 48
@@ -873,27 +866,8 @@ shape = SubResource("BoxShape3D_bed")
 mesh = SubResource("BoxMesh_bed")
 surface_material_override/0 = SubResource("StandardMaterial3D_bed")
 
-[node name="LetterPoint" type="Area3D" parent="." unique_id=603922153]
+[node name="LetterPoint" parent="." unique_id=1405991154 instance=ExtResource("43_letter")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -129.4, 3.3, 10)
-collision_layer = 4
-collision_mask = 0
-script = ExtResource("27_letter")
-item_name = "The Letter"
-mission_role = 1
-
-[node name="ItemLabel" type="Label3D" parent="LetterPoint" unique_id=415389845]
-transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0.03, 0)
-pixel_size = 0.0012
-modulate = Color(0.1, 0.08, 0.06, 1)
-font_size = 24
-outline_size = 0
-
-[node name="LetterShape" type="CollisionShape3D" parent="LetterPoint" unique_id=1060189826]
-shape = SubResource("BoxShape3D_letter")
-
-[node name="LetterMesh" type="MeshInstance3D" parent="LetterPoint" unique_id=783459213]
-mesh = SubResource("BoxMesh_letter")
-surface_material_override/0 = SubResource("StandardMaterial3D_letter")
 
 [node name="PlayerSpawn" type="Marker3D" parent="." unique_id=1902926855]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -133, 3.2, 8)
@@ -1138,15 +1112,15 @@ mode = 1
 shape = SubResource("CylinderShape3D_testhole")
 debug_color = Color(0.97, 0, 0.4688336, 1)
 
-[node name="IsleOfTheDead" parent="." instance=ExtResource("39_isle")]
+[node name="IsleOfTheDead" parent="." unique_id=1706685954 instance=ExtResource("39_isle")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 260, 0, -260)
 
-[node name="EndingFish" parent="." instance=ExtResource("40_endfish")]
+[node name="EndingFish" parent="." unique_id=1659028753 instance=ExtResource("40_endfish")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -110, 3, 16)
 
-[node name="DeepPassing" type="Node3D" parent="." node_paths=PackedStringArray("player")]
+[node name="DeepPassing" type="Node3D" parent="." unique_id=80484297 node_paths=PackedStringArray("player")]
 script = ExtResource("41_passing")
 player = NodePath("../Player")
 
-[node name="StrangenessSting" type="Node" parent="."]
+[node name="StrangenessSting" type="Node" parent="." unique_id=955426932]
 script = ExtResource("42_sting")

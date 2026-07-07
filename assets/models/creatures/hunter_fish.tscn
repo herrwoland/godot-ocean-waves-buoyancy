@@ -1,15 +1,16 @@
-[gd_scene load_steps=3 format=3]
-
-[sub_resource type="StandardMaterial3D" id="Mat_hunter"]
-albedo_color = Color(0.1, 0.13, 0.14, 1)
+[gd_scene format=3 uid="uid://c4j4cc8pl3fqr"]
 
 [sub_resource type="CapsuleMesh" id="Mesh_hunter"]
 radius = 1.2
 height = 8.0
 
-[node name="HunterFish" type="Node3D"]
+[sub_resource type="StandardMaterial3D" id="Mat_hunter"]
+transparency = 1
+albedo_color = Color(0.15953836, 0.09836713, 0.1621823, 0.85490197)
 
-[node name="Mesh" type="MeshInstance3D" parent="."]
+[node name="HunterFish" type="Node3D" unique_id=2037867007]
+
+[node name="Mesh" type="MeshInstance3D" parent="." unique_id=463122503]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0)
 mesh = SubResource("Mesh_hunter")
 surface_material_override/0 = SubResource("Mat_hunter")
