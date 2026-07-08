@@ -22,7 +22,6 @@ func interact(_player: Node) -> void:
 			note_view.show_note("A rusted marker bobs in the swell.\n\nWithout instructions it means nothing.\n(Read the letter first.)")
 	else:
 		if GameState.phase == GameState.Phase.PICKED_UP:
-			GameState.set_phase(GameState.Phase.DELIVERED)
-			EventBus.package_delivered.emit()
-		else:
-			note_view.show_note("There is nothing to leave here yet.")
+			note_view.show_note("This is the place.\n\nBring the package here and set it down.")
+		#else:
+			#note_view.show_note("There is nothing to leave here yet.")

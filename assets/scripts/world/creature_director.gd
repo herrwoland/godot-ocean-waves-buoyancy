@@ -9,7 +9,7 @@ extends Node3D
 @export var creature_count: int = 6
 @export var hunter_count: int = 2
 @export var hunt_depth: float = 3.0 # player depth (m below surface) that triggers hunting
-@export var hunt_speed: float = 7.0
+@export var hunt_speed: float = 4.0 # fallback when the creature scene has no hunt_speed of its own
 @export var kill_distance: float = 2.2
 @export var orbit_speed: float = 0.06
 
@@ -53,9 +53,10 @@ func _physics_process(delta: float) -> void:
 	for i in _creatures.size():
 		var creature := _creatures[i]
 		if hunting and i < hunter_count:
+			var speed: float = creature.hunt_speed if &'hunt_speed' in creature else hunt_speed
 			var to_player := player.global_position - creature.global_position
 			if to_player.length() > 0.5:
-				creature.global_position += to_player.normalized() * hunt_speed * delta
+				creature.global_position += to_player.normalized() * speed * delta
 				if absf(to_player.normalized().dot(Vector3.UP)) < 0.98:
 					creature.look_at(player.global_position, Vector3.UP)
 			if to_player.length() < kill_distance and _kill_cooldown <= 0.0:

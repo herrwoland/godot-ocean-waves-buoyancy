@@ -7,8 +7,9 @@ extends Node
 @export var player: CharacterBody3D
 @export var overlay_rect: ColorRect
 @export var heartbeat_player: AudioStreamPlayer
-@export var max_breath: float = 40.0 # seconds of air
+@export var max_breath: float = 40.0 # seconds of air — tune survival time here
 @export var recover_rate: float = 12.0 # breath regained per second at the surface
+@export var flash_start_intensity: float = 0.4 # spent-breath fraction where the red flash begins
 
 var breath: float
 var _died := false
@@ -30,6 +31,12 @@ func _process(delta: float) -> void:
 
 	var intensity := 1.0 - breath / max_breath
 	overlay_rect.material.set_shader_parameter(&'intensity', intensity)
+
+	# Drowning flash: kicks in past flash_start_intensity, pulsing 1/s and
+	# accelerating to 3/s as the last breath approaches.
+	var flash_t := clampf((intensity - flash_start_intensity) / (1.0 - flash_start_intensity), 0.0, 1.0)
+	overlay_rect.material.set_shader_parameter(&'flash_amount', flash_t)
+	overlay_rect.material.set_shader_parameter(&'flash_rate', lerpf(1.0, 3.0, flash_t))
 
 	# Heartbeat fades in past one third spent breath and quickens toward the end.
 	if intensity > 0.3:

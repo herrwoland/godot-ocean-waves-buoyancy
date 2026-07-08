@@ -21,6 +21,10 @@ config/icon="res://icon.svg"
 ImGuiRoot="*uid://dugmpnsxaagba"
 EventBus="*res://assets/scripts/core/event_bus.gd"
 GameState="*res://assets/scripts/core/game_state.gd"
+<<<<<<< Updated upstream
+=======
+CutscenePlayer="*res://assets/scripts/core/cutscene_player.gd"
+>>>>>>> Stashed changes
 
 [beckett]
 

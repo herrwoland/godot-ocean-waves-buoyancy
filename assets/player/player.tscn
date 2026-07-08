@@ -11,6 +11,15 @@
 radius = 0.4
 height = 1.8
 
+<<<<<<< Updated upstream
+=======
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_oxygen"]
+shader = ExtResource("5_oxyshader")
+shader_parameter/intensity = 0.0
+shader_parameter/flash_rate = 0.0
+shader_parameter/flash_amount = 0.0
+
+>>>>>>> Stashed changes
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_splash"]
 particle_flag_align_y = true
 emission_shape = 1
@@ -65,7 +74,14 @@ debug_shape_custom_color = Color(0.8835159, 0.06592726, 0, 1)
 [node name="InspectSocket" type="Marker3D" parent="Head/Camera3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.55)
 
+<<<<<<< Updated upstream
 [node name="InspectOverlay" type="CanvasLayer" parent="."]
+=======
+[node name="CarrySocket" type="Marker3D" parent="Head/Camera3D" unique_id=429615435]
+transform = Transform3D(1, 0, 0, 0, 0.16443092, -0.9863925, 0, 0.9863925, 0.16443092, 0.13788526, -0.21928704, -0.88802314)
+
+[node name="InspectOverlay" type="CanvasLayer" parent="." unique_id=1850755420]
+>>>>>>> Stashed changes
 visible = false
 
 [node name="Dim" type="ColorRect" parent="InspectOverlay"]

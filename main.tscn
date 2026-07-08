@@ -20,11 +20,12 @@
 [ext_resource type="PackedScene" uid="uid://cf2rcpsk3hrt1" path="res://assets/ui/start_screen.tscn" id="18_start"]
 [ext_resource type="PackedScene" path="res://assets/ui/pause_menu.tscn" id="19_pause"]
 [ext_resource type="Script" uid="uid://b3s502b801kf" path="res://assets/scripts/helm_interactable.gd" id="20_helm"]
-[ext_resource type="PackedScene" path="res://assets/ui/settings_menu.tscn" id="21_settings"]
+[ext_resource type="PackedScene" uid="uid://dt05m04hsc0p0" path="res://assets/ui/settings_menu.tscn" id="21_settings"]
 [ext_resource type="ArrayMesh" uid="uid://ix4vp1y05f1s" path="res://assets/water/clipmap_high.obj" id="22_cliphigh"]
 [ext_resource type="Material" path="res://assets/water/mat_heightfield_proxy.tres" id="23_proxy"]
 [ext_resource type="Shader" uid="uid://bo8roxh5bsnai" path="res://assets/shaders/post/ps1_post.gdshader" id="24_ps1"]
 [ext_resource type="Script" uid="uid://cfdhchsvnkb3e" path="res://assets/ui/fps_meter.gd" id="25_fps"]
+<<<<<<< Updated upstream
 [ext_resource type="Script" path="res://assets/scripts/core/mission_controller.gd" id="26_mission"]
 [ext_resource type="Script" path="res://assets/scripts/interactables/inspectable.gd" id="27_letter"]
 [ext_resource type="Script" path="res://assets/scripts/world/coord_device.gd" id="32_device"]
@@ -35,6 +36,26 @@
 [ext_resource type="Script" path="res://assets/scripts/interactables/mission_point.gd" id="29_mpoint"]
 [ext_resource type="Script" path="res://assets/scripts/interactables/home_zone.gd" id="30_home"]
 [ext_resource type="PackedScene" path="res://assets/ui/note_view.tscn" id="31_note"]
+=======
+[ext_resource type="Script" uid="uid://d23qkx5iyk16y" path="res://assets/scripts/core/mission_controller.gd" id="26_mission"]
+[ext_resource type="Script" uid="uid://dot2o2qjhydl5" path="res://assets/scripts/interactables/bed.gd" id="28_bed"]
+[ext_resource type="Script" uid="uid://b0osiac7p66k8" path="res://assets/scripts/interactables/mission_point.gd" id="29_mpoint"]
+[ext_resource type="Script" uid="uid://4r1rmgfeqjfg" path="res://assets/scripts/interactables/home_zone.gd" id="30_home"]
+[ext_resource type="PackedScene" uid="uid://dyw615s83yi68" path="res://assets/ui/note_view.tscn" id="31_note"]
+[ext_resource type="Script" uid="uid://cuk3h1rdwodek" path="res://assets/scripts/world/coord_device.gd" id="32_device"]
+[ext_resource type="Script" uid="uid://xirrbn1q428o" path="res://assets/scripts/world/lighthouse_light.gd" id="33_lhlight"]
+[ext_resource type="Script" uid="uid://cs2x7rmusrtt6" path="res://assets/scripts/interactables/ship_ladder.gd" id="34_ladder"]
+[ext_resource type="Script" uid="uid://d3o51uaudkc7e" path="res://assets/scripts/world/creature_director.gd" id="35_creatures"]
+[ext_resource type="Script" uid="uid://d2lwj1bl5x665" path="res://assets/scripts/world/swappable_prop.gd" id="36_swap"]
+[ext_resource type="Script" uid="uid://1yls1dmbq84k" path="res://assets/scripts/world/sanity_director.gd" id="37_sanity"]
+[ext_resource type="Script" uid="uid://c7n8dp7f8tkeu" path="res://assets/scripts/world/wave_blocker.gd" id="38_blocker"]
+[ext_resource type="PackedScene" path="res://assets/models/isle_of_dead.tscn" id="39_isle"]
+[ext_resource type="PackedScene" path="res://assets/models/creatures/ending_fish.tscn" id="40_endfish"]
+[ext_resource type="Script" uid="uid://dvjr0tnts6ldb" path="res://assets/scripts/world/deep_passing.gd" id="41_passing"]
+[ext_resource type="Script" uid="uid://dui3ctiunqxcn" path="res://assets/scripts/world/strangeness_sting.gd" id="42_sting"]
+[ext_resource type="PackedScene" path="res://assets/models/letter.tscn" id="43_letter"]
+[ext_resource type="PackedScene" path="res://assets/models/package.tscn" id="44_package"]
+>>>>>>> Stashed changes
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_d13ii"]
 seed = 666
@@ -190,8 +211,8 @@ size = Vector3(10, 3, 5)
 [sub_resource type="BoxMesh" id="BoxMesh_getpj"]
 size = Vector3(42, 8, 8)
 
-[sub_resource type="SphereShape3D" id="SphereShape3D_helm"]
-radius = 1.1981678
+[sub_resource type="BoxShape3D" id="BoxShape3D_0cp0l"]
+size = Vector3(1.1004639, 1.1964111, 1.2420044)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_vivmo"]
 size = Vector3(10, 6, 4)
@@ -328,6 +349,7 @@ albedo_color = Color(0.9, 0.75, 0.1, 1)
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_delivery"]
 albedo_color = Color(0.2, 0.75, 0.3, 1)
 
+<<<<<<< Updated upstream
 [sub_resource type="BoxShape3D" id="BoxShape3D_homezone"]
 size = Vector3(18, 8, 18)
 
@@ -339,6 +361,13 @@ radius = 2.0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_package"]
 albedo_color = Color(0.45, 0.33, 0.2, 1)
+=======
+[sub_resource type="BoxShape3D" id="BoxShape3D_beachstrip"]
+size = Vector3(60, 4, 25)
+
+[sub_resource type="BoxMesh" id="BoxMesh_beachstrip"]
+size = Vector3(60, 4, 25)
+>>>>>>> Stashed changes
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_stone"]
 albedo_color = Color(0.33, 0.34, 0.36, 1)
@@ -410,6 +439,12 @@ albedo_color = Color(0.15, 0.14, 0.13, 1)
 [node name="Main" type="Node3D" unique_id=503649113]
 script = ExtResource("1_skarq")
 
+[node name="Player" parent="." unique_id=939891512 node_paths=PackedStringArray("water") instance=ExtResource("16_player")]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -83.44903, 6.867653, 9.36186)
+water = NodePath("../Water")
+jump_velocity = 7.0
+sink_speed = 3.0
+
 [node name="Environment" type="WorldEnvironment" parent="." unique_id=1400611425]
 environment = SubResource("Environment_icybu")
 
@@ -421,7 +456,11 @@ shadow_opacity = 0.8
 shadow_blur = 5.0
 
 [node name="Water" type="MeshInstance3D" parent="." unique_id=946478083]
+<<<<<<< Updated upstream
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 0, -36)
+=======
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 97, 0, 48)
+>>>>>>> Stashed changes
 sorting_offset = 999.0
 material_override = ExtResource("5_lt75t")
 cast_shadow = 0
@@ -612,7 +651,7 @@ text = "0000.0 N  0000.0 W"
 script = ExtResource("32_device")
 
 [node name="HelmPosition" type="Marker3D" parent="Ferry Simplified Experiment" unique_id=1908486165]
-transform = Transform3D(1, 8.881784e-16, 0, -1.5543122e-15, 1, 3.5527137e-15, 0, 0, 1, -0.013648987, 1, 0.13551521)
+transform = Transform3D(1, 1.7763568e-15, 0, -1.5543122e-15, 1, 7.1054274e-15, 0, 0, 1, 0.0917511, 1, 0.14613247)
 
 [node name="HelmInteractable" type="Area3D" parent="Ferry Simplified Experiment" unique_id=332319211 node_paths=PackedStringArray("ship", "helm_marker", "highlight_mesh")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
@@ -624,9 +663,48 @@ helm_marker = NodePath("../HelmPosition")
 highlight_mesh = NodePath("../Ferry/navigation")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Ferry Simplified Experiment/HelmInteractable" unique_id=430993038]
-transform = Transform3D(1, 1.7763568e-15, 0, -1.5543122e-15, 1, 7.1054274e-15, 0, 0, 1, -0.13716125, 0.25847006, -0.013819218)
-shape = SubResource("SphereShape3D_helm")
+transform = Transform3D(1, 3.1974423e-13, 0, -1.5543122e-15, 1, 9.912071e-13, 0, -2.629008e-13, 1, -0.41127014, 0.35667562, 0.20117092)
+shape = SubResource("BoxShape3D_0cp0l")
 
+<<<<<<< Updated upstream
+=======
+[node name="LadderPort" type="Area3D" parent="Ferry Simplified Experiment" unique_id=1021511780 node_paths=PackedStringArray("deck_point")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, 4.3)
+collision_layer = 4
+collision_mask = 2
+script = ExtResource("34_ladder")
+deck_point = NodePath("../LadderPortDeck")
+
+[node name="LadderPortShape" type="CollisionShape3D" parent="Ferry Simplified Experiment/LadderPort" unique_id=134245761]
+shape = SubResource("SphereShape3D_ladder")
+
+[node name="LadderPortMesh" type="MeshInstance3D" parent="Ferry Simplified Experiment/LadderPort" unique_id=1467980032]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -0.15)
+mesh = SubResource("BoxMesh_ladder")
+surface_material_override/0 = SubResource("StandardMaterial3D_ladder")
+
+[node name="LadderPortDeck" type="Marker3D" parent="Ferry Simplified Experiment" unique_id=502963963]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 2.5)
+
+[node name="LadderStarboard" type="Area3D" parent="Ferry Simplified Experiment" unique_id=1924915943 node_paths=PackedStringArray("deck_point")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, -4.3)
+collision_layer = 4
+collision_mask = 2
+script = ExtResource("34_ladder")
+deck_point = NodePath("../LadderStarboardDeck")
+
+[node name="LadderStarboardShape" type="CollisionShape3D" parent="Ferry Simplified Experiment/LadderStarboard" unique_id=1970130805]
+shape = SubResource("SphereShape3D_ladder")
+
+[node name="LadderStarboardMesh" type="MeshInstance3D" parent="Ferry Simplified Experiment/LadderStarboard" unique_id=1470695078]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0.15)
+mesh = SubResource("BoxMesh_ladder")
+surface_material_override/0 = SubResource("StandardMaterial3D_ladder")
+
+[node name="LadderStarboardDeck" type="Marker3D" parent="Ferry Simplified Experiment" unique_id=47181405]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, -2.5)
+
+>>>>>>> Stashed changes
 [node name="Box Octet Experiment" type="RigidBody3D" parent="." unique_id=1036328041 node_paths=PackedStringArray("buoyant_cells", "mesh")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.27228, 0, 21.2058)
 visible = false
@@ -648,12 +726,6 @@ water = NodePath("../../Water")
 parent = NodePath("..")
 cell_density_kg_per_m3 = 300.0
 calc_f_gravity = true
-
-[node name="Player" parent="." unique_id=939891512 node_paths=PackedStringArray("water") instance=ExtResource("16_player")]
-transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -83.44903, 6.867653, 9.36186)
-water = NodePath("../Water")
-jump_velocity = 7.0
-sink_speed = 3.0
 
 [node name="Island" parent="." unique_id=1072612934 instance=ExtResource("17_island")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 120, 0, 120)
@@ -848,6 +920,11 @@ surface_material_override/0 = SubResource("StandardMaterial3D_pickup")
 [node name="PickupLabel" type="Label3D" parent="PickupPoint"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
 billboard = 1
+<<<<<<< Updated upstream
+=======
+render_priority = 2
+text = "MARKER"
+>>>>>>> Stashed changes
 font_size = 128
 outline_size = 24
 pixel_size = 0.02
@@ -900,6 +977,7 @@ package = NodePath("../Package")
 note_view = NodePath("../NoteView")
 sleep_fade = NodePath("../SleepFade/FadeRect")
 
+<<<<<<< Updated upstream
 [node name="Package" type="Area3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 150, -6, 60)
 collision_layer = 4
@@ -922,6 +1000,11 @@ shape = SubResource("SphereShape3D_package")
 [node name="PackageMesh" type="MeshInstance3D" parent="Package"]
 mesh = SubResource("BoxMesh_package")
 surface_material_override/0 = SubResource("StandardMaterial3D_package")
+=======
+[node name="Package" parent="." unique_id=2112508821 node_paths=PackedStringArray("water") instance=ExtResource("44_package")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 150, -6, 60)
+water = NodePath("../Water")
+>>>>>>> Stashed changes
 
 [node name="StonyBeach" type="StaticBody3D" parent="."]
 

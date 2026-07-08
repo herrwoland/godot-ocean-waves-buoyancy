@@ -1,0 +1,38 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://assets/scripts/interactables/carryable.gd" id="1_carry"]
+
+[sub_resource type="StandardMaterial3D" id="Mat_package"]
+albedo_color = Color(0.45, 0.33, 0.2, 1)
+
+[sub_resource type="BoxMesh" id="Mesh_package"]
+size = Vector3(0.8, 0.6, 0.8)
+
+[sub_resource type="BoxShape3D" id="Shape_package"]
+size = Vector3(0.8, 0.6, 0.8)
+
+[node name="Package" type="RigidBody3D"]
+collision_layer = 5
+collision_mask = 1
+mass = 1.0
+freeze_mode = 1
+script = ExtResource("1_carry")
+item_name = "The Package"
+mission_role = 2
+auto_pickup_on_touch = true
+pickup_touch_radius = 1.8
+neutral_buoyancy = true
+
+[node name="Shape" type="CollisionShape3D" parent="."]
+shape = SubResource("Shape_package")
+
+[node name="Mesh" type="MeshInstance3D" parent="."]
+mesh = SubResource("Mesh_package")
+surface_material_override/0 = SubResource("Mat_package")
+
+[node name="ItemLabel" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0.31, 0)
+pixel_size = 0.0015
+modulate = Color(0.95, 0.9, 0.8, 1)
+font_size = 28
+outline_size = 0

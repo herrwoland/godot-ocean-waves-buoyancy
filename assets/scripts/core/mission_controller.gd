@@ -18,6 +18,7 @@ const CoordinateSystem := preload("res://assets/scripts/core/coordinate_system.g
 
 const PACKAGE_DEPTH := 6.0 # how far below the surface packages rest
 const LETTER_HOME := Vector3(-129.4, 3.3, 10)
+const DELIVERY_RADIUS := 4.0 # how close the package must get to complete the hand-off
 
 var days: Array[DayConfig] = []
 var _ferry_start: Transform3D
@@ -47,7 +48,7 @@ func _on_day_started(_day: int) -> void:
 	ferry.angular_velocity = Vector3.ZERO
 
 	# Nothing is carried on a new morning.
-	get_tree().get_first_node_in_group(&'inspection_controller').reset_day()
+	get_tree().get_first_node_in_group(&'carry_controller').reset_day()
 
 	# Stage the mission props. The letter carries the pickup coordinates; the
 	# package rests below the surface marker and carries the delivery ones.
@@ -63,10 +64,31 @@ func _on_day_started(_day: int) -> void:
 func _on_package_picked_up() -> void:
 	pickup_point.set_active(false)
 
+## The package is delivered simply by bringing it to the delivery point. It is
+## left there physically (never destroyed), so the world stays consistent.
+func _physics_process(_delta: float) -> void:
+	if GameState.phase != GameState.Phase.PICKED_UP:
+		return
+	if package.global_position.distance_to(delivery_point.global_position) < DELIVERY_RADIUS:
+		GameState.set_phase(GameState.Phase.DELIVERED)
+		EventBus.package_delivered.emit()
+
 func _on_package_delivered() -> void:
 	delivery_point.set_active(false)
+<<<<<<< Updated upstream
 	get_tree().get_first_node_in_group(&'inspection_controller').consume(package)
 	note_view.show_note("It is out of your hands now.\n\nGo home.")
+=======
+	# Drop the crate at the hand-off point and leave it resting there.
+	var carry: Node = get_tree().get_first_node_in_group(&'carry_controller')
+	if carry.carried == package:
+		carry.drop()
+	if GameState.current_day >= GameState.FINAL_DAY:
+		ending_fish.appear()
+		note_view.show_note("It is done.\n\nSomething is waiting on the shore,\nin front of your house.")
+	else:
+		note_view.show_note("It is out of your hands now.\n\nGo home.")
+>>>>>>> Stashed changes
 
 var _dying := false
 
