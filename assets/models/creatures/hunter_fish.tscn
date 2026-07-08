@@ -1,5 +1,7 @@
 [gd_scene format=3 uid="uid://c4j4cc8pl3fqr"]
 
+[ext_resource type="Script" path="res://assets/scripts/world/hunter_fish.gd" id="1_hunter"]
+
 [sub_resource type="CapsuleMesh" id="Mesh_hunter"]
 radius = 1.2
 height = 8.0
@@ -9,6 +11,7 @@ transparency = 1
 albedo_color = Color(0.15953836, 0.09836713, 0.1621823, 0.85490197)
 
 [node name="HunterFish" type="Node3D" unique_id=2037867007]
+script = ExtResource("1_hunter")
 
 [node name="Mesh" type="MeshInstance3D" parent="." unique_id=463122503]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0)

@@ -15,6 +15,7 @@ enum State { WALK, SWIM, PILOT }
 @export var swim_enter_depth: float = 0.6 # how deep water must be over the feet before we start swimming
 @export var swim_exit_depth: float = 0.45 # while grounded, water shallower than this switches back to walking (wading)
 @export var sink_speed: float = 1.0 # constant downward speed while swimming unless swim_up is held
+@export var climb_speed: float = 3.0 # speed of hauling up a ship ladder while holding jump/space
 
 @onready var head: Node3D = $Head
 @onready var camera: Camera3D = $Head/Camera3D
@@ -30,6 +31,7 @@ var helm_marker: Node3D = null
 var hovered_interactable: Object = null
 var inspecting: bool = false # set by InspectionController; freezes movement and look
 var interact_cooldown_until_msec: int = 0
+var _climb_target = null # Vector3 deck position, set each frame by a ShipLadder while space is held
 
 const GRAVITY: float = 9.8
 
@@ -90,6 +92,10 @@ func _physics_process(delta: float) -> void:
 		move_and_slide()
 		return
 	_process_turn_keys(delta)
+	if _climb_target != null and state != State.PILOT:
+		_process_climb(delta)
+		_climb_target = null # the ladder re-requests every frame space is held
+		return
 	if state != State.PILOT:
 		_update_interact_hover()
 	match state:
@@ -106,6 +112,25 @@ func _process_turn_keys(delta: float) -> void:
 	var turn := Input.get_action_strength(&'turn_left') - Input.get_action_strength(&'turn_right')
 	if turn != 0.0:
 		head.rotation.y += turn * turn_speed * delta
+
+## Called each frame by a ShipLadder while the player is on it and holding jump.
+func request_climb(deck_position: Vector3) -> void:
+	_climb_target = deck_position
+
+## Haul up the ladder: rise until level with the deck point, then step inward
+## onto it. Carrying is preserved, so the package can be brought aboard.
+func _process_climb(_delta: float) -> void:
+	var target: Vector3 = _climb_target
+	if global_position.y < target.y - 0.3:
+		velocity = Vector3(0, climb_speed, 0) # still below the rail: climb straight up
+	else:
+		var inward := (target - global_position)
+		inward.y = 0.0
+		velocity = inward.normalized() * climb_speed # over the rail: step onto the deck
+	move_and_slide()
+	if global_position.distance_to(target) < 0.6:
+		global_position = target
+		state = State.WALK
 
 func _process_walk(delta: float) -> void:
 	if not is_on_floor():

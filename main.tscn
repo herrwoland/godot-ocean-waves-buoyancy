@@ -42,6 +42,7 @@
 [ext_resource type="Script" uid="uid://dvjr0tnts6ldb" path="res://assets/scripts/world/deep_passing.gd" id="41_passing"]
 [ext_resource type="Script" uid="uid://dui3ctiunqxcn" path="res://assets/scripts/world/strangeness_sting.gd" id="42_sting"]
 [ext_resource type="PackedScene" path="res://assets/models/letter.tscn" id="43_letter"]
+[ext_resource type="PackedScene" path="res://assets/models/package.tscn" id="44_package"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_d13ii"]
 seed = 666
@@ -648,7 +649,7 @@ shape = SubResource("SphereShape3D_helm")
 [node name="LadderPort" type="Area3D" parent="Ferry Simplified Experiment" unique_id=1021511780 node_paths=PackedStringArray("deck_point")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, 4.3)
 collision_layer = 4
-collision_mask = 0
+collision_mask = 2
 script = ExtResource("34_ladder")
 deck_point = NodePath("../LadderPortDeck")
 
@@ -666,7 +667,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 2.5)
 [node name="LadderStarboard" type="Area3D" parent="Ferry Simplified Experiment" unique_id=1924915943 node_paths=PackedStringArray("deck_point")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, -4.3)
 collision_layer = 4
-collision_mask = 0
+collision_mask = 2
 script = ExtResource("34_ladder")
 deck_point = NodePath("../LadderStarboardDeck")
 
@@ -950,27 +951,9 @@ ending_fish = NodePath("../EndingFish")
 note_view = NodePath("../NoteView")
 sleep_fade = NodePath("../SleepFade/FadeRect")
 
-[node name="Package" type="Area3D" parent="." unique_id=1857504503]
+[node name="Package" parent="." unique_id=1857504503 node_paths=PackedStringArray("water") instance=ExtResource("44_package")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 150, -6, 60)
-collision_layer = 4
-collision_mask = 0
-script = ExtResource("27_letter")
-item_name = "The Package"
-mission_role = 2
-
-[node name="ItemLabel" type="Label3D" parent="Package" unique_id=1831620708]
-transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0.32, 0)
-pixel_size = 0.0015
-modulate = Color(0.95, 0.9, 0.8, 1)
-font_size = 28
-outline_size = 0
-
-[node name="PackageShape" type="CollisionShape3D" parent="Package" unique_id=324551273]
-shape = SubResource("SphereShape3D_package")
-
-[node name="PackageMesh" type="MeshInstance3D" parent="Package" unique_id=1250818713]
-mesh = SubResource("BoxMesh_package")
-surface_material_override/0 = SubResource("StandardMaterial3D_package")
+water = NodePath("../Water")
 
 [node name="StonyBeach" type="StaticBody3D" parent="." unique_id=709145469]
 
