@@ -25,7 +25,6 @@
 [ext_resource type="Shader" uid="uid://bo8roxh5bsnai" path="res://assets/shaders/post/ps1_post.gdshader" id="24_ps1"]
 [ext_resource type="Script" uid="uid://cfdhchsvnkb3e" path="res://assets/ui/fps_meter.gd" id="25_fps"]
 [ext_resource type="Script" uid="uid://d23qkx5iyk16y" path="res://assets/scripts/core/mission_controller.gd" id="26_mission"]
-[ext_resource type="Script" uid="uid://cy70wsqbnufnf" path="res://assets/scripts/interactables/inspectable.gd" id="27_letter"]
 [ext_resource type="Script" uid="uid://dot2o2qjhydl5" path="res://assets/scripts/interactables/bed.gd" id="28_bed"]
 [ext_resource type="Script" uid="uid://b0osiac7p66k8" path="res://assets/scripts/interactables/mission_point.gd" id="29_mpoint"]
 [ext_resource type="Script" uid="uid://4r1rmgfeqjfg" path="res://assets/scripts/interactables/home_zone.gd" id="30_home"]
@@ -345,15 +344,6 @@ albedo_color = Color(0.9, 0.75, 0.1, 1)
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_delivery"]
 albedo_color = Color(0.2, 0.75, 0.3, 1)
 
-[sub_resource type="SphereShape3D" id="SphereShape3D_package"]
-radius = 2.0
-
-[sub_resource type="BoxMesh" id="BoxMesh_package"]
-size = Vector3(0.8, 0.6, 0.8)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_package"]
-albedo_color = Color(0.45, 0.33, 0.2, 1)
-
 [sub_resource type="BoxShape3D" id="BoxShape3D_beachstrip"]
 size = Vector3(60, 4, 25)
 
@@ -434,7 +424,7 @@ shadow_blur = 5.0
 sky_mode = 1
 
 [node name="Water" type="MeshInstance3D" parent="." unique_id=946478083]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -78, 0, 17)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 97, 0, 48)
 sorting_offset = 999.0
 material_override = ExtResource("5_lt75t")
 cast_shadow = 0
