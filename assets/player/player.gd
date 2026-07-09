@@ -30,6 +30,7 @@ var piloted_ship: Node = null
 var helm_marker: Node3D = null
 var hovered_interactable: Object = null
 var inspecting: bool = false # set by InspectionController; freezes movement and look
+var captured: bool = false # in a hunter's jaws; the CreatureDirector drives our position
 var interact_cooldown_until_msec: int = 0
 var _climb_target = null # Vector3 deck position, set each frame by a ShipLadder while space is held
 
@@ -82,11 +83,21 @@ func _unhandled_input(event: InputEvent) -> void:
 		head.rotation.y -= event.relative.x * mouse_sensitivity
 		camera.rotation.x -= event.relative.y * mouse_sensitivity
 		camera.rotation.x = clampf(camera.rotation.x, -PI / 2.0, PI / 2.0)
-	elif event.is_action_pressed(&'interact'):
+	elif event.is_action_pressed(&'interact') and not captured:
 		_try_interact()
+
+## While captured the body is dragged by the creature: controls and collisions
+## are off, but the head is free to look around on the way down.
+func set_captured(caught: bool) -> void:
+	captured = caught
+	collider.disabled = caught
+	velocity = Vector3.ZERO
+	surface_ripples.emitting = false
 
 func _physics_process(delta: float) -> void:
 	_update_underwater_audio()
+	if captured:
+		return # the creature moves us; nothing to simulate
 	if inspecting:
 		velocity = Vector3.ZERO
 		move_and_slide()

@@ -1,19 +1,18 @@
 [gd_scene format=3 uid="uid://c4j4cc8pl3fqr"]
 
-[ext_resource type="Script" path="res://assets/scripts/world/hunter_fish.gd" id="1_hunter"]
-
-[sub_resource type="CapsuleMesh" id="Mesh_hunter"]
-radius = 1.2
-height = 8.0
-
-[sub_resource type="StandardMaterial3D" id="Mat_hunter"]
-transparency = 1
-albedo_color = Color(0.15953836, 0.09836713, 0.1621823, 0.85490197)
+[ext_resource type="Script" uid="uid://d3mcmqhx6fjll" path="res://assets/scripts/world/hunter_fish.gd" id="1_hunter"]
+[ext_resource type="PackedScene" uid="uid://cb1ws7c3cvath" path="res://assets/models/fish/fish01/fish_01.glb" id="2_kb4ww"]
 
 [node name="HunterFish" type="Node3D" unique_id=2037867007]
 script = ExtResource("1_hunter")
 
 [node name="Mesh" type="MeshInstance3D" parent="." unique_id=463122503]
-transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0)
-mesh = SubResource("Mesh_hunter")
-surface_material_override/0 = SubResource("Mat_hunter")
+transform = Transform3D(-1, 8.742278e-08, 3.821371e-15, 0, -4.371139e-08, 1, 8.742278e-08, 1, 4.371139e-08, 0, 0, 0)
+
+[node name="fish_01" parent="Mesh" unique_id=360106443 instance=ExtResource("2_kb4ww")]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
+
+[node name="jaw" parent="Mesh/fish_01" index="1" unique_id=1293513757]
+transform = Transform3D(9.226266, 0, 0, 0, 9.200019, 1.1933295, 0, -0.93859714, 11.696884, 0.011582494, -9.22423, 34.43833)
+
+[editable path="Mesh/fish_01"]

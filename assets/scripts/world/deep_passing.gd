@@ -7,9 +7,9 @@ const HUNTER_SCENE := preload("res://assets/models/creatures/hunter_fish.tscn")
 
 @export var player: Node3D
 @export var trigger_x: float = 60.0 # how far out at sea before it can happen
-@export var scale_factor: float = 6.0
-@export var pass_depth: float = -9.0
-@export var pass_duration: float = 12.0
+@export var scale_factor: float = 1.0 # the model is already ~160 m long
+@export var pass_depth: float = -28.0 # body top stays ~10 m under; silhouette only
+@export var pass_duration: float = 18.0
 
 var _armed := false
 var _spent := false
@@ -43,8 +43,10 @@ func _run_passing() -> void:
 
 	# Cross beneath the ship, port to starboard, unhurried.
 	var ship_pos: Vector3 = player.global_position
-	var start := ship_pos + Vector3(0, pass_depth, -70)
-	var end := ship_pos + Vector3(25, pass_depth - 4.0, 80)
+	# The body is ~160 m long: start and end far enough out that it fully
+	# enters and fully leaves the view instead of hanging mid-frame.
+	var start := ship_pos + Vector3(0, pass_depth, -220)
+	var end := ship_pos + Vector3(25, pass_depth - 4.0, 220)
 	shape.global_position = start
 	shape.look_at(end, Vector3.UP)
 

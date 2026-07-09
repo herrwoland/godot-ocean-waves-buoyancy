@@ -1,0 +1,9 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://dojap3n02bcrs"]
+
+[resource]
+disable_ambient_light = true
+disable_fog = true
+albedo_color = Color(1, 0.9666667, 0, 1)
+emission_enabled = true
+emission = Color(1, 0.9666667, 0, 1)
+emission_energy_multiplier = 12.0
