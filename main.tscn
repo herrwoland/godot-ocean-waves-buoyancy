@@ -4,7 +4,6 @@
 [ext_resource type="Shader" uid="uid://frqgg80eqd3c" path="res://assets/shaders/compute/sky.gdshader" id="2_getpj"]
 [ext_resource type="Script" uid="uid://dddasf5sla0ws" path="res://assets/water/wave_cascade_parameters.gd" id="2_pw5n6"]
 [ext_resource type="ArrayMesh" uid="uid://qexqjidelskc" path="res://assets/water/clipmap_high_8k.obj" id="4_0n3wm"]
-[ext_resource type="Script" uid="uid://4j6vkvpadkr7" path="res://assets/player/camera.gd" id="4_v2yip"]
 [ext_resource type="ArrayMesh" uid="uid://mkodygt504hm" path="res://assets/water/clipmap_low.obj" id="4_vivmo"]
 [ext_resource type="Material" uid="uid://byumtcccq4ew3" path="res://assets/water/mat_water.tres" id="5_lt75t"]
 [ext_resource type="AudioStream" uid="uid://cvvn0vke5comw" path="res://assets/ocean_loop.wav" id="6_jpklm"]
@@ -16,13 +15,11 @@
 [ext_resource type="Texture2D" uid="uid://b6322bl0qxuss" path="res://assets/textures/Ground057_1K-PNG_Color.png" id="11_0n3wm"]
 [ext_resource type="Script" uid="uid://dsn01qhv7ioi3" path="res://assets/scripts/buoyant_cell.gd" id="14_vivmo"]
 [ext_resource type="Script" uid="uid://kwfe6bfkiqn2" path="res://assets/scripts/mass_calculation.gd" id="14_yaehf"]
-[ext_resource type="PackedScene" uid="uid://bs7x4dgp16lr5" path="res://assets/models/boat/boat_0.1.glb" id="15_d2t1y"]
 [ext_resource type="Script" uid="uid://cp8ogsskg7a4c" path="res://assets/scripts/rain_follow.gd" id="15_rainf"]
 [ext_resource type="PackedScene" uid="uid://c3q8m6t1p7f2a" path="res://assets/player/player.tscn" id="16_player"]
 [ext_resource type="PackedScene" uid="uid://c7pflpm1pnx7k" path="res://assets/models/island.tscn" id="17_island"]
 [ext_resource type="PackedScene" uid="uid://cf2rcpsk3hrt1" path="res://assets/ui/start_screen.tscn" id="18_start"]
 [ext_resource type="PackedScene" path="res://assets/ui/pause_menu.tscn" id="19_pause"]
-[ext_resource type="Script" uid="uid://b3s502b801kf" path="res://assets/scripts/helm_interactable.gd" id="20_helm"]
 [ext_resource type="PackedScene" path="res://assets/ui/settings_menu.tscn" id="21_settings"]
 [ext_resource type="Shader" uid="uid://bo8roxh5bsnai" path="res://assets/shaders/post/ps1_post.gdshader" id="24_ps1"]
 [ext_resource type="Script" uid="uid://cfdhchsvnkb3e" path="res://assets/ui/fps_meter.gd" id="25_fps"]
@@ -31,9 +28,7 @@
 [ext_resource type="Script" uid="uid://b0osiac7p66k8" path="res://assets/scripts/interactables/mission_point.gd" id="29_mpoint"]
 [ext_resource type="Script" uid="uid://4r1rmgfeqjfg" path="res://assets/scripts/interactables/home_zone.gd" id="30_home"]
 [ext_resource type="PackedScene" uid="uid://dyw615s83yi68" path="res://assets/ui/note_view.tscn" id="31_note"]
-[ext_resource type="Script" uid="uid://cuk3h1rdwodek" path="res://assets/scripts/world/coord_device.gd" id="32_device"]
 [ext_resource type="Script" uid="uid://xirrbn1q428o" path="res://assets/scripts/world/lighthouse_light.gd" id="33_lhlight"]
-[ext_resource type="Script" uid="uid://cs2x7rmusrtt6" path="res://assets/scripts/interactables/ship_ladder.gd" id="34_ladder"]
 [ext_resource type="Script" uid="uid://d3o51uaudkc7e" path="res://assets/scripts/world/creature_director.gd" id="35_creatures"]
 [ext_resource type="Script" uid="uid://d2lwj1bl5x665" path="res://assets/scripts/world/swappable_prop.gd" id="36_swap"]
 [ext_resource type="Script" uid="uid://1yls1dmbq84k" path="res://assets/scripts/world/sanity_director.gd" id="37_sanity"]
@@ -49,6 +44,7 @@
 [ext_resource type="PackedScene" path="res://assets/models/letter.tscn" id="43_letter"]
 [ext_resource type="PackedScene" uid="uid://dtaokrqog4ywo" path="res://assets/models/lighthouse/Light_House_0.1.glb" id="44_gngh3"]
 [ext_resource type="PackedScene" path="res://assets/models/package.tscn" id="44_package"]
+[ext_resource type="PackedScene" uid="uid://c1a5366rpgr2k" path="res://assets/models/ship/ferry.tscn" id="45_ferry"]
 [ext_resource type="PackedScene" uid="uid://c4j4cc8pl3fqr" path="res://assets/models/creatures/hunter_fish.tscn" id="50_hrvbo"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_d13ii"]
@@ -163,79 +159,14 @@ albedo_texture = ExtResource("11_0n3wm")
 texture_filter = 0
 
 [sub_resource type="FogMaterial" id="FogMaterial_hrvbo"]
-albedo = Color(0.5298756, 0.76490706, 0.99334747, 1)
+density = 0.01
+albedo = Color(0.37830523, 0.56667346, 0.57315886, 1)
 
 [sub_resource type="FogMaterial" id="FogMaterial_riff4"]
 density = 8.0
 albedo = Color(0.218936, 0.365236, 0.525464, 1)
 height_falloff = 0.176
 edge_fade = 1.75
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_82xsv"]
-size = Vector3(44, 8, 8.67642)
-
-[sub_resource type="BoxMesh" id="BoxMesh_hull"]
-size = Vector3(42, 6, 8)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hull"]
-albedo_color = Color(0.184, 0.204, 0.235, 1)
-
-[sub_resource type="BoxMesh" id="BoxMesh_deck"]
-size = Vector3(42, 0.4, 8)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_deck"]
-albedo_color = Color(0.55, 0.51, 0.45, 1)
-
-[sub_resource type="BoxMesh" id="BoxMesh_cabin"]
-size = Vector3(9, 4, 6)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cabin"]
-albedo_color = Color(0.9, 0.9, 0.88, 1)
-
-[sub_resource type="BoxMesh" id="BoxMesh_ryguw"]
-size = Vector3(1, 2, 1)
-
-[sub_resource type="CylinderMesh" id="CylinderMesh_funnel"]
-top_radius = 0.9
-bottom_radius = 1.1
-height = 3.5
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_funnel"]
-albedo_color = Color(0.65, 0.1, 0.1, 1)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_funnelpale"]
-albedo_color = Color(0.72, 0.68, 0.6, 1)
-
-[sub_resource type="BoxMesh" id="BoxMesh_2cqfq"]
-size = Vector3(12, 4, 3.5)
-
-[sub_resource type="BoxMesh" id="BoxMesh_vivmo"]
-resource_local_to_scene = true
-size = Vector3(12, 4, 3.5)
-
-[sub_resource type="BoxMesh" id="BoxMesh_yaehf"]
-size = Vector3(16, 4, 4)
-
-[sub_resource type="BoxMesh" id="BoxMesh_074og"]
-size = Vector3(16, 4, 4)
-
-[sub_resource type="BoxMesh" id="BoxMesh_cegan"]
-size = Vector3(10, 3, 5)
-
-[sub_resource type="BoxMesh" id="BoxMesh_getpj"]
-size = Vector3(42, 8, 8)
-
-[sub_resource type="SphereShape3D" id="SphereShape3D_helm"]
-radius = 1.1981678
-
-[sub_resource type="SphereShape3D" id="SphereShape3D_ladder"]
-radius = 3.902697
-
-[sub_resource type="BoxMesh" id="BoxMesh_ladder"]
-size = Vector3(0.5, 4.5, 0.2)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ladder"]
-albedo_color = Color(0.15, 0.14, 0.13, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_vivmo"]
 size = Vector3(10, 6, 4)
@@ -446,7 +377,7 @@ shadow_blur = 5.0
 sky_mode = 1
 
 [node name="Water" type="MeshInstance3D" parent="." unique_id=946478083]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 0, 433)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 424, 0, 193)
 sorting_offset = 999.0
 material_override = ExtResource("5_lt75t")
 cast_shadow = 0
@@ -494,217 +425,9 @@ stream = ExtResource("8_6r5si")
 volume_db = -30.0
 autoplay = true
 
-[node name="boat" parent="." unique_id=331109473 instance=ExtResource("15_d2t1y")]
-transform = Transform3D(-0.100239955, -4.6972186e-08, 0.994964, 7.310412e-08, 1, -2.8738297e-08, -0.994964, 2.2498574e-07, -0.100239955, -86.09228, 0.32008362, 25.12406)
-
-[node name="Ferry Simplified Experiment" type="RigidBody3D" parent="." unique_id=108108734 node_paths=PackedStringArray("buoyant_cells", "mesh", "engine_cells")]
+[node name="Boat" parent="." unique_id=108108734 node_paths=PackedStringArray("water") instance=ExtResource("45_ferry")]
 transform = Transform3D(-0.994964, -1.30385e-08, -0.10024, 7.31041e-08, 1, -2.87383e-08, 0.10024, 1.19209e-07, -0.994964, -79.8999, 5, 9.36186)
-mass = 1043780.0
-gravity_scale = 0.0
-center_of_mass_mode = 1
-inertia = Vector3(94394000, 12910900, 587128)
-script = ExtResource("14_yaehf")
-buoyant_cells = [NodePath("AS Cell"), NodePath("FS Cell"), NodePath("MS Cell"), NodePath("MP Cell"), NodePath("FP Cell"), NodePath("AP Cell"), NodePath("Aft Ballast"), NodePath("Fore Ballast")]
-mesh = NodePath("HullDragVolume")
-engine_cells = [NodePath("Aft Ballast")]
-
-[node name="Collider" type="CollisionShape3D" parent="Ferry Simplified Experiment" unique_id=832355915]
-transform = Transform3D(0.999998, 0, 2.57045e-07, 0, 0.999998, 0, -2.04891e-07, 0, 0.999998, -0.972511, -3.7498, 3.8147e-06)
-shape = SubResource("BoxShape3D_82xsv")
-debug_color = Color(0.761639, 0.449833, 0.105389, 1)
-
-[node name="Ferry" type="Node3D" parent="Ferry Simplified Experiment" unique_id=963667564]
-
-[node name="Hull" type="MeshInstance3D" parent="Ferry Simplified Experiment/Ferry" unique_id=1992515565]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.5, 0)
-mesh = SubResource("BoxMesh_hull")
-surface_material_override/0 = SubResource("StandardMaterial3D_hull")
-
-[node name="Deck" type="MeshInstance3D" parent="Ferry Simplified Experiment/Ferry" unique_id=339556898]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.2, 0)
-mesh = SubResource("BoxMesh_deck")
-surface_material_override/0 = SubResource("StandardMaterial3D_deck")
-
-[node name="Cabin" type="MeshInstance3D" parent="Ferry Simplified Experiment/Ferry" unique_id=913755626]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 2, 0)
-mesh = SubResource("BoxMesh_cabin")
-surface_material_override/0 = SubResource("StandardMaterial3D_cabin")
-
-[node name="navigation" type="MeshInstance3D" parent="Ferry Simplified Experiment/Ferry" unique_id=587197864]
-transform = Transform3D(1, 4.440892e-15, 0, -1.5543122e-15, 1, 1.7763568e-14, 0, 0, 1, -0.4371643, 0.94984293, 0.18908024)
-mesh = SubResource("BoxMesh_ryguw")
-surface_material_override/0 = SubResource("StandardMaterial3D_cabin")
-
-[node name="FunnelProp" type="Node3D" parent="Ferry Simplified Experiment/Ferry" unique_id=1032253108]
-script = ExtResource("36_swap")
-prop_id = &"ship_funnel"
-
-[node name="Variant0" type="Node3D" parent="Ferry Simplified Experiment/Ferry/FunnelProp" unique_id=1358460273]
-
-[node name="Funnel" type="MeshInstance3D" parent="Ferry Simplified Experiment/Ferry/FunnelProp/Variant0" unique_id=697841285]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 5.75, 0)
-mesh = SubResource("CylinderMesh_funnel")
-surface_material_override/0 = SubResource("StandardMaterial3D_funnel")
-
-[node name="Variant1" type="Node3D" parent="Ferry Simplified Experiment/Ferry/FunnelProp" unique_id=16185371]
-visible = false
-
-[node name="FunnelCrooked" type="MeshInstance3D" parent="Ferry Simplified Experiment/Ferry/FunnelProp/Variant1" unique_id=1165936899]
-transform = Transform3D(0.9397, -0.4788, 0, 0.342, 1.3156, 0, 0, 0, 1, 10, 6.3, 0)
-mesh = SubResource("CylinderMesh_funnel")
-surface_material_override/0 = SubResource("StandardMaterial3D_funnelpale")
-
-[node name="FS Cell" type="MeshInstance3D" parent="Ferry Simplified Experiment" unique_id=829526709 node_paths=PackedStringArray("water", "parent")]
-transform = Transform3D(1, 6.217249e-15, 0, -1.5543122e-15, 1, 2.4868996e-14, 0, 0, 1, -16, -2.4097002, -3.0000114)
-visible = false
-mesh = SubResource("BoxMesh_2cqfq")
-script = ExtResource("14_vivmo")
-water = NodePath("../../Water")
-parent = NodePath("..")
-cell_density_kg_per_m3 = 100.0
-calc_f_gravity = true
-
-[node name="FP Cell" type="MeshInstance3D" parent="Ferry Simplified Experiment" unique_id=780278309 node_paths=PackedStringArray("water", "parent")]
-transform = Transform3D(1, 6.217249e-15, 0, -1.5543122e-15, 1, 2.4868996e-14, 0, 0, 1, -16, -2.4097, 2.9999895)
-visible = false
-mesh = SubResource("BoxMesh_vivmo")
-script = ExtResource("14_vivmo")
-water = NodePath("../../Water")
-parent = NodePath("..")
-cell_density_kg_per_m3 = 100.0
-calc_f_gravity = true
-
-[node name="MS Cell" type="MeshInstance3D" parent="Ferry Simplified Experiment" unique_id=386773209 node_paths=PackedStringArray("water", "parent")]
-transform = Transform3D(1, 6.217249e-15, 0, -1.5543122e-15, 1, 2.4868996e-14, 0, 0, 1, 0, -2.4097002, -3.000011)
-visible = false
-mesh = SubResource("BoxMesh_yaehf")
-script = ExtResource("14_vivmo")
-water = NodePath("../../Water")
-parent = NodePath("..")
-cell_density_kg_per_m3 = 100.0
-calc_f_gravity = true
-
-[node name="MP Cell" type="MeshInstance3D" parent="Ferry Simplified Experiment" unique_id=1592496493 node_paths=PackedStringArray("water", "parent")]
-transform = Transform3D(1, 6.217249e-15, 0, -1.5543122e-15, 1, 2.4868996e-14, 0, 0, 1, 0, -2.4097, 2.9999886)
-visible = false
-mesh = SubResource("BoxMesh_074og")
-script = ExtResource("14_vivmo")
-water = NodePath("../../Water")
-parent = NodePath("..")
-cell_density_kg_per_m3 = 100.0
-calc_f_gravity = true
-
-[node name="AS Cell" type="MeshInstance3D" parent="Ferry Simplified Experiment" unique_id=1900591819 node_paths=PackedStringArray("water", "parent")]
-transform = Transform3D(1, 6.217249e-15, 0, -1.5543122e-15, 1, 2.4868996e-14, 0, 0, 1, 13.999992, -0.063064575, -2.0000105)
-visible = false
-mesh = SubResource("BoxMesh_vivmo")
-script = ExtResource("14_vivmo")
-water = NodePath("../../Water")
-parent = NodePath("..")
-cell_density_kg_per_m3 = 100.0
-calc_f_gravity = true
-
-[node name="AP Cell" type="MeshInstance3D" parent="Ferry Simplified Experiment" unique_id=1292476593 node_paths=PackedStringArray("water", "parent")]
-transform = Transform3D(1, 6.217249e-15, 0, -1.5543122e-15, 1, 2.4868996e-14, 0, 0, 1, 14, -0.063064575, 1.9999895)
-visible = false
-mesh = SubResource("BoxMesh_2cqfq")
-script = ExtResource("14_vivmo")
-water = NodePath("../../Water")
-parent = NodePath("..")
-cell_density_kg_per_m3 = 100.0
-calc_f_gravity = true
-
-[node name="Aft Ballast" type="MeshInstance3D" parent="Ferry Simplified Experiment" unique_id=1541178696 node_paths=PackedStringArray("water", "parent")]
-transform = Transform3D(1, 8.881784e-16, 0, -1.5543122e-15, 1, 3.5527137e-15, 0, 0, 1, 14.580002, -3.2331445, -9.536743e-07)
-visible = false
-mesh = SubResource("BoxMesh_cegan")
-script = ExtResource("14_vivmo")
-water = NodePath("../../Water")
-parent = NodePath("..")
-cell_density_kg_per_m3 = 1300.0
-calc_f_gravity = true
-
-[node name="Fore Ballast" type="MeshInstance3D" parent="Ferry Simplified Experiment" unique_id=861071924 node_paths=PackedStringArray("water", "parent")]
-transform = Transform3D(1, 8.881784e-16, 0, -1.5543122e-15, 1, 3.5527137e-15, 0, 0, 1, -16.580002, -3.2331448, -1.4305115e-06)
-visible = false
-mesh = SubResource("BoxMesh_cegan")
-script = ExtResource("14_vivmo")
-water = NodePath("../../Water")
-parent = NodePath("..")
-cell_density_kg_per_m3 = 1100.0
-calc_f_gravity = true
-
-[node name="HullDragVolume" type="MeshInstance3D" parent="Ferry Simplified Experiment" unique_id=1009418983]
-transform = Transform3D(1, 8.88178e-16, 0, -1.55431e-15, 1, 3.55271e-15, 0, 0, 1, 0, -3.04366, -9.53674e-07)
-visible = false
-mesh = SubResource("BoxMesh_getpj")
-
-[node name="Camera" type="Camera3D" parent="Ferry Simplified Experiment" unique_id=649881379]
-transform = Transform3D(-0.0471064, 0, 0.998889, 0, 1, 0, -0.998889, 0, -0.0471064, -15, 1, 0)
-far = 10000.0
-script = ExtResource("4_v2yip")
-
-[node name="CoordDevice" type="Label3D" parent="Ferry Simplified Experiment" unique_id=30308857]
-transform = Transform3D(0.19999994, 1.9984014e-15, -1.1175871e-08, -4.052314e-15, 0.2, 5.3290705e-15, 1.1175871e-08, 0, 0.19999994, -0.5263748, 2.1358566, 0.12020683)
-pixel_size = 0.008
-billboard = 1
-render_priority = 4
-modulate = Color(1, 0.75, 0.35, 1)
-text = "0000.0 N  0000.0 W"
-font_size = 48
-script = ExtResource("32_device")
-
-[node name="HelmPosition" type="Marker3D" parent="Ferry Simplified Experiment" unique_id=1908486165]
-transform = Transform3D(1, 8.881784e-16, 0, -1.5543122e-15, 1, 3.5527137e-15, 0, 0, 1, -0.013648987, 1, 0.13551521)
-
-[node name="HelmInteractable" type="Area3D" parent="Ferry Simplified Experiment" unique_id=332319211 node_paths=PackedStringArray("ship", "helm_marker", "highlight_mesh")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-collision_layer = 4
-collision_mask = 0
-script = ExtResource("20_helm")
-ship = NodePath("..")
-helm_marker = NodePath("../HelmPosition")
-highlight_mesh = NodePath("../Ferry/navigation")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Ferry Simplified Experiment/HelmInteractable" unique_id=430993038]
-transform = Transform3D(1, 1.7763568e-15, 0, -1.5543122e-15, 1, 7.1054274e-15, 0, 0, 1, -0.13716125, 0.25847006, -0.013819218)
-shape = SubResource("SphereShape3D_helm")
-
-[node name="LadderPort" type="Area3D" parent="Ferry Simplified Experiment" unique_id=1021511780 node_paths=PackedStringArray("deck_point")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, 4.3)
-collision_layer = 4
-collision_mask = 2
-script = ExtResource("34_ladder")
-deck_point = NodePath("../LadderPortDeck")
-
-[node name="LadderPortShape" type="CollisionShape3D" parent="Ferry Simplified Experiment/LadderPort" unique_id=134245761]
-shape = SubResource("SphereShape3D_ladder")
-
-[node name="LadderPortMesh" type="MeshInstance3D" parent="Ferry Simplified Experiment/LadderPort" unique_id=1467980032]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -0.15)
-mesh = SubResource("BoxMesh_ladder")
-surface_material_override/0 = SubResource("StandardMaterial3D_ladder")
-
-[node name="LadderPortDeck" type="Marker3D" parent="Ferry Simplified Experiment" unique_id=502963963]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 2.5)
-
-[node name="LadderStarboard" type="Area3D" parent="Ferry Simplified Experiment" unique_id=1924915943 node_paths=PackedStringArray("deck_point")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, -4.3)
-collision_layer = 4
-collision_mask = 2
-script = ExtResource("34_ladder")
-deck_point = NodePath("../LadderStarboardDeck")
-
-[node name="LadderStarboardShape" type="CollisionShape3D" parent="Ferry Simplified Experiment/LadderStarboard" unique_id=1970130805]
-shape = SubResource("SphereShape3D_ladder")
-
-[node name="LadderStarboardMesh" type="MeshInstance3D" parent="Ferry Simplified Experiment/LadderStarboard" unique_id=1470695078]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0.15)
-mesh = SubResource("BoxMesh_ladder")
-surface_material_override/0 = SubResource("StandardMaterial3D_ladder")
-
-[node name="LadderStarboardDeck" type="Marker3D" parent="Ferry Simplified Experiment" unique_id=47181405]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, -2.5)
+water = NodePath("../Water")
 
 [node name="Box Octet Experiment" type="RigidBody3D" parent="." unique_id=1036328041 node_paths=PackedStringArray("buoyant_cells", "mesh")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.27228, 0, 21.2058)
@@ -965,7 +688,7 @@ color = Color(0, 0, 0, 1)
 [node name="MissionController" type="Node" parent="." unique_id=1801545549 node_paths=PackedStringArray("player", "ferry", "player_spawn", "letter_point", "pickup_point", "delivery_point", "package", "ending_fish", "note_view", "sleep_fade")]
 script = ExtResource("26_mission")
 player = NodePath("../Player")
-ferry = NodePath("../Ferry Simplified Experiment")
+ferry = NodePath("../Boat")
 player_spawn = NodePath("../PlayerSpawn")
 letter_point = NodePath("../LetterPoint")
 pickup_point = NodePath("../PickupPoint")
@@ -1016,6 +739,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1140.4963, -80.80127)
 script = ExtResource("33_lhlight")
 rotation_speed = 0.1
 
+[node name="lighthouse_light" parent="StonyBeach/Light_House_0_1/Light_House_light_0_1" index="0" unique_id=1241512710]
+transform = Transform3D(0, -1, 0, 1, 0, 0, 0, 0, 1, 1008.3541, 41.83252, -1.9713745)
+material_override = ExtResource("42_0cbny")
+
 [node name="SpotLight3D" type="OmniLight3D" parent="StonyBeach/Light_House_0_1/Light_House_light_0_1" unique_id=1390703331]
 transform = Transform3D(-3.1325623e-08, 0, -2.1022267, 0, 2.1022267, 0, 2.1022267, 0, -3.1325623e-08, 4.036743, 36.188232, 1.8378296)
 visible = false
@@ -1028,10 +755,6 @@ omni_attenuation = 0.012
 transform = Transform3D(3.912, 0, 0, 0, 3.912, 0, 0, 0, 3.912, 0, 44.14673, 0)
 mesh = ExtResource("40_f6a44")
 surface_material_override/0 = ExtResource("41_0cbny")
-
-[node name="lighthouse_light" parent="StonyBeach/Light_House_0_1/Light_House_light_0_1" index="2" unique_id=1241512710]
-transform = Transform3D(0, -1, 0, 1, 0, 0, 0, 0, 1, 1008.3541, 41.83252, -1.9713745)
-material_override = ExtResource("42_0cbny")
 
 [node name="RockWalls" type="StaticBody3D" parent="." unique_id=1076589946]
 

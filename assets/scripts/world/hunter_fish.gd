@@ -18,6 +18,7 @@ enum State { LURK, SNEAK, ATTACK, CARRY }
 @export var carry_speed := 8.0 # m/s dragging the catch down
 @export var sneak_turn_speed := 25.0 # deg/s — a body this size does not whip around
 @export var attack_turn_speed := 55.0 # deg/s while homing on the lunge
+@export var snatch_pull_time := 0.5 # seconds from the grab until the player sits in the mouth
 
 @export_group("Stalking")
 @export var stalk_behind_distance := 50.0 # first hold point this far behind the player
@@ -28,15 +29,17 @@ enum State { LURK, SNEAK, ATTACK, CARRY }
 
 @export_group("Attack")
 @export var seen_distance := 60.0 # farther than this the murk hides it: no trigger
-@export var kill_distance := 12.0 # mouth this close to the player = bite
+@export var kill_distance := 12.0 # fallback bite range, used only if no mouth_area is set
 @export var jaw_open_angle := 95.0 # degrees the jaw swings to when open (rest pose = closed)
 @export var jaw_open_time := 0.35 # seconds for the jaw to swing open on the lunge
+@export var jaw_open_distance := 22.0 # the jaw only gapes this close to the prey — the snatch itself
 @export var attack_give_up_time := 8.0 # a missed lunge lasts this long before re-stalking
 @export var carry_time := 10.0 # seconds the catch is dragged down before the day resets
 
 @export_group("Body")
 @export var jaw: Node3D # opens for the attack; found in the model if left unset
 @export var mouth: Node3D # marker at the mouth; kills and carrying anchor here
+@export var mouth_area: Area3D # the actual mouth volume; overlap with the player = caught
 
 var state := State.LURK
 var player: Node3D = null
@@ -47,8 +50,11 @@ var _head_minus_z := true # which way the model's snout points along local Z
 var _stalk_distance := 0.0
 var _behind_dir := Vector3.FORWARD # last known horizontal "behind the player's view"
 var _attack_left := 0.0
+var _jaw_opened := false # gape already triggered during this attack
 var _carry_left := 0.0
+var _pull_left := 0.0 # remaining seconds of the reel-in at carry start
 var _died_emitted := false
+var _player_in_mouth := false # kept current by the mouth_area overlap signals
 
 func _ready() -> void:
 	if jaw == null:
@@ -61,6 +67,27 @@ func _ready() -> void:
 			if mouth:
 				break
 	_head_minus_z = to_local(mouth_position()).z <= 0.0
+	if mouth_area == null:
+		mouth_area = get_node_or_null(^'Area3D')
+	if mouth_area:
+		mouth_area.set_collision_mask_value(2, true) # the player body lives on layer 2
+		mouth_area.body_entered.connect(_on_mouth_body_entered)
+		mouth_area.body_exited.connect(_on_mouth_body_exited)
+
+func _on_mouth_body_entered(body: Node3D) -> void:
+	if body.is_in_group(&'player'):
+		_player_in_mouth = true
+
+func _on_mouth_body_exited(body: Node3D) -> void:
+	if body.is_in_group(&'player'):
+		_player_in_mouth = false
+
+## True while the player is physically inside the mouth volume. Falls back to
+## a distance check for instances without a mouth_area.
+func _player_caught() -> bool:
+	if mouth_area:
+		return _player_in_mouth
+	return _mouth_to_player() < kill_distance
 
 ## ---- API for the CreatureDirector ------------------------------------------
 
@@ -131,20 +158,23 @@ func _process_sneak(delta: float) -> void:
 		_steer_toward(player.global_position - global_position, sneak_turn_speed, delta)
 		_stalk_distance = maxf(_stalk_distance - creep_rate * delta, min_stalk_distance)
 
-	if _is_seen() or _mouth_to_player() < kill_distance:
+	if _is_seen() or _player_caught():
 		_begin_attack() # spotted — or the prey backed straight into the teeth
 
 func _begin_attack() -> void:
 	state = State.ATTACK
 	_attack_left = attack_give_up_time
-	set_jaw_open(true)
+	_jaw_opened = false # the gape waits for the last jaw_open_distance meters
 
 func _process_attack(delta: float) -> void:
 	_steer_toward(player.global_position - mouth_position(), attack_turn_speed, delta)
 	global_position += _heading() * attack_speed * delta
+	if not _jaw_opened and _mouth_to_player() < jaw_open_distance:
+		_jaw_opened = true
+		set_jaw_open(true) # the last-moment gape right before the snatch
 	# The bite only lands once the jaw has visibly swung open — a point-blank
 	# trigger must still show the mouth opening before the grab.
-	if _mouth_to_player() < kill_distance and _jaw_open_fraction() > 0.7:
+	if _player_caught() and _jaw_open_fraction() > 0.7:
 		_begin_carry()
 		return
 	_attack_left -= delta
@@ -159,6 +189,7 @@ func _process_attack(delta: float) -> void:
 func _begin_carry() -> void:
 	state = State.CARRY
 	_carry_left = carry_time
+	_pull_left = snatch_pull_time
 	_died_emitted = false
 	set_jaw_open(false)
 	if player.has_method(&'set_captured'):
@@ -173,7 +204,14 @@ func _process_carry(delta: float) -> void:
 	var dive := (horiz * 0.5 + Vector3.DOWN).normalized()
 	_steer_toward(dive, attack_turn_speed, delta)
 	global_position += _heading() * carry_speed * delta
-	player.global_position = mouth_position()
+	# Reel the catch into the (moving) mouth over exactly snatch_pull_time
+	# seconds, then keep it glued there for the rest of the dive.
+	if _pull_left > delta:
+		player.global_position = player.global_position.lerp(
+			mouth_position(), clampf(delta / _pull_left, 0.0, 1.0))
+		_pull_left -= delta
+	else:
+		player.global_position = mouth_position()
 
 	_carry_left -= delta
 	if _carry_left <= 0.0 and not _died_emitted:

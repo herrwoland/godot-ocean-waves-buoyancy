@@ -21,6 +21,10 @@ config/icon="res://icon.svg"
 EventBus="*res://assets/scripts/core/event_bus.gd"
 GameState="*res://assets/scripts/core/game_state.gd"
 CutscenePlayer="*res://assets/scripts/core/cutscene_player.gd"
+MCPScreenshot="*res://addons/godot_mcp/mcp_screenshot_service.gd"
+MCPInputService="*res://addons/godot_mcp/mcp_input_service.gd"
+MCPGameInspector="*res://addons/godot_mcp/mcp_game_inspector_service.gd"
+ImGuiRoot="*uid://dugmpnsxaagba"
 
 [beckett]
 
