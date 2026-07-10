@@ -3,16 +3,40 @@
 [ext_resource type="Script" uid="uid://d3mcmqhx6fjll" path="res://assets/scripts/world/hunter_fish.gd" id="1_hunter"]
 [ext_resource type="PackedScene" uid="uid://cb1ws7c3cvath" path="res://assets/models/fish/fish01/fish_01.glb" id="2_kb4ww"]
 
-[node name="HunterFish" type="Node3D" unique_id=2037867007]
+[sub_resource type="BoxMesh" id="BoxMesh_kb4ww"]
+size = Vector3(20, 150, 20)
+
+[node name="HunterFish" type="Node3D" unique_id=2037867007 node_paths=PackedStringArray("jaw", "mouth")]
 script = ExtResource("1_hunter")
+jaw = NodePath("fish_01/jaw")
+mouth = NodePath("Marker3D_mouth")
 
 [node name="Mesh" type="MeshInstance3D" parent="." unique_id=463122503]
-transform = Transform3D(-1, 8.742278e-08, 3.821371e-15, 0, -4.371139e-08, 1, 8.742278e-08, 1, 4.371139e-08, 0, 0, 0)
+transform = Transform3D(-1, 8.742278e-08, 3.821371e-15, 0, -4.371139e-08, 1, 8.742278e-08, 1, 4.371139e-08, 0, 0, 34.61685)
+visible = false
+mesh = SubResource("BoxMesh_kb4ww")
 
-[node name="fish_01" parent="Mesh" unique_id=360106443 instance=ExtResource("2_kb4ww")]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
+[node name="fish_01" parent="." unique_id=360106443 instance=ExtResource("2_kb4ww")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, 0)
 
-[node name="jaw" parent="Mesh/fish_01" index="1" unique_id=1293513757]
+[node name="jaw" parent="fish_01" index="1" unique_id=1293513757]
 transform = Transform3D(9.226266, 0, 0, 0, 9.200019, 1.1933295, 0, -0.93859714, 11.696884, 0.011582494, -9.22423, 34.43833)
 
-[editable path="Mesh/fish_01"]
+[node name="Marker3D_mouth" type="Marker3D" parent="." unique_id=567968181]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -45.783745)
+
+[node name="eye_light_1" type="OmniLight3D" parent="." unique_id=1632242098]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.6501737, 6.4794283, -41.018085)
+light_color = Color(0.594, 0.81839997, 0.9, 1)
+light_energy = 13.181
+omni_range = 12.54
+omni_attenuation = 0.355
+
+[node name="eye_light_2" type="OmniLight3D" parent="." unique_id=1389660678]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.4724455, 6.4794283, -41.018085)
+light_color = Color(0.594, 0.81839997, 0.9, 1)
+light_energy = 13.181
+omni_range = 12.54
+omni_attenuation = 0.355
+
+[editable path="fish_01"]
