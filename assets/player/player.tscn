@@ -138,6 +138,7 @@ player = NodePath("..")
 overlay_rect = NodePath("../OxygenOverlay/OxygenRect")
 heartbeat_player = NodePath("../HeartbeatPlayer")
 max_breath = 20.0
+flash_start_intensity = 0.1
 
 [node name="SplashParticles" type="GPUParticles3D" parent="." unique_id=345984492]
 top_level = true

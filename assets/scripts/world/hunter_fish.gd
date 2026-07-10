@@ -29,6 +29,7 @@ enum State { LURK, SNEAK, ATTACK, CARRY }
 @export_group("Attack")
 @export var seen_distance := 60.0 # farther than this the murk hides it: no trigger
 @export var kill_distance := 12.0 # mouth this close to the player = bite
+@export var jaw_open_angle := 95.0 # degrees the jaw swings to when open (rest pose = closed)
 @export var jaw_open_time := 0.35 # seconds for the jaw to swing open on the lunge
 @export var attack_give_up_time := 8.0 # a missed lunge lasts this long before re-stalking
 @export var carry_time := 10.0 # seconds the catch is dragged down before the day resets
@@ -181,22 +182,24 @@ func _process_carry(delta: float) -> void:
 
 ## ---- helpers -----------------------------------------------------------------
 
-## The jaw swings open (x rotation 0) for the attack and clamps back to its
-## rest pose on the bite or when the prey escapes.
+## The jaw swings open to jaw_open_angle for the attack and clamps back to
+## its rest pose on the bite or when the prey escapes.
 func set_jaw_open(open: bool) -> void:
 	if jaw == null:
 		return
 	if _jaw_tween:
 		_jaw_tween.kill()
 	_jaw_tween = create_tween()
-	_jaw_tween.tween_property(jaw, "rotation:x", 0.0 if open else _jaw_closed_x, jaw_open_time if open else 0.25) \
+	_jaw_tween.tween_property(jaw, "rotation:x",
+		deg_to_rad(jaw_open_angle) if open else _jaw_closed_x, jaw_open_time if open else 0.25) \
 		.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 
-## 0 = clenched at the rest pose, 1 = fully open (x rotation 0).
+## 0 = clenched at the rest pose, 1 = fully open at jaw_open_angle.
 func _jaw_open_fraction() -> float:
-	if jaw == null or absf(_jaw_closed_x) < 0.001:
+	var open_x := deg_to_rad(jaw_open_angle)
+	if jaw == null or absf(open_x - _jaw_closed_x) < 0.001:
 		return 1.0
-	return clampf(1.0 - jaw.rotation.x / _jaw_closed_x, 0.0, 1.0)
+	return clampf((jaw.rotation.x - _jaw_closed_x) / (open_x - _jaw_closed_x), 0.0, 1.0)
 
 ## World position of the mouth — kills and carrying anchor here, because the
 ## body's origin sits a long way behind the snout on this model.

@@ -20,7 +20,7 @@ mesh = SubResource("BoxMesh_kb4ww")
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, 0)
 
 [node name="jaw" parent="fish_01" index="1" unique_id=1293513757]
-transform = Transform3D(9.226266, 0, 0, 0, 9.200019, 1.1933295, 0, -0.93859714, 11.696884, 0.011582494, -9.22423, 34.43833)
+transform = Transform3D(9.226266, 0, 0, 0, -0.820108, -11.711274, 0, 9.211337, -1.0426836, 0.011582494, -9.22423, 34.43833)
 
 [node name="Marker3D_mouth" type="Marker3D" parent="." unique_id=567968181]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -45.783745)
