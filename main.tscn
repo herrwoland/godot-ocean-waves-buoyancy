@@ -44,10 +44,12 @@
 [ext_resource type="SphereMesh" uid="uid://cjn1mj3khhi1r" path="res://assets/models/lighthouse/lamp_bulb_mesh.tres" id="40_f6a44"]
 [ext_resource type="Material" uid="uid://dojap3n02bcrs" path="res://assets/models/lighthouse/lamp_bulb_material.tres" id="41_0cbny"]
 [ext_resource type="Script" uid="uid://dvjr0tnts6ldb" path="res://assets/scripts/world/deep_passing.gd" id="41_passing"]
+[ext_resource type="Material" uid="uid://dp7vdcaaujty3" path="res://assets/materials/light_house_light.tres" id="42_0cbny"]
 [ext_resource type="Script" uid="uid://dui3ctiunqxcn" path="res://assets/scripts/world/strangeness_sting.gd" id="42_sting"]
 [ext_resource type="PackedScene" path="res://assets/models/letter.tscn" id="43_letter"]
 [ext_resource type="PackedScene" uid="uid://dtaokrqog4ywo" path="res://assets/models/lighthouse/Light_House_0.1.glb" id="44_gngh3"]
 [ext_resource type="PackedScene" path="res://assets/models/package.tscn" id="44_package"]
+[ext_resource type="PackedScene" uid="uid://c4j4cc8pl3fqr" path="res://assets/models/creatures/hunter_fish.tscn" id="50_hrvbo"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_d13ii"]
 seed = 666
@@ -89,10 +91,9 @@ sky = SubResource("Sky_vroi3")
 tonemap_mode = 3
 glow_enabled = true
 glow_normalized = true
-glow_intensity = 0.9
+glow_intensity = 0.16
 glow_strength = 1.1
 glow_bloom = 0.15
-fog_enabled = true
 fog_light_color = Color(0.107337, 0.114064, 0.276683, 1)
 fog_light_energy = 0.0
 fog_sky_affect = 0.0
@@ -160,6 +161,9 @@ size = Vector2(4000, 4000)
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qnost"]
 albedo_texture = ExtResource("11_0n3wm")
 texture_filter = 0
+
+[sub_resource type="FogMaterial" id="FogMaterial_hrvbo"]
+albedo = Color(0.5298756, 0.76490706, 0.99334747, 1)
 
 [sub_resource type="FogMaterial" id="FogMaterial_riff4"]
 density = 8.0
@@ -377,22 +381,6 @@ size = Vector3(25, 4, 110)
 [sub_resource type="BoxMesh" id="BoxMesh_beachwest"]
 size = Vector3(25, 4, 110)
 
-[sub_resource type="Gradient" id="Gradient_qnost"]
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_wnkbs"]
-gradient = SubResource("Gradient_qnost")
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wnkbs"]
-transparency = 1
-blend_mode = 1
-disable_fog = true
-albedo_color = Color(1, 1, 1, 0.07450981)
-albedo_texture = SubResource("GradientTexture1D_wnkbs")
-emission_enabled = true
-emission = Color(1, 1, 0, 1)
-anisotropy = 1.0
-backlight = Color(1, 1, 1, 1)
-
 [sub_resource type="BoxShape3D" id="BoxShape3D_wall_west"]
 size = Vector3(12, 28, 120)
 
@@ -458,7 +446,7 @@ shadow_blur = 5.0
 sky_mode = 1
 
 [node name="Water" type="MeshInstance3D" parent="." unique_id=946478083]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -570, 0, -68)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 0, 433)
 sorting_offset = 999.0
 material_override = ExtResource("5_lt75t")
 cast_shadow = 0
@@ -483,9 +471,14 @@ mesh = ExtResource("4_vivmo")
 surface_material_override/0 = SubResource("StandardMaterial3D_2cqfq")
 
 [node name="ocean_floor" type="MeshInstance3D" parent="Water" unique_id=267143067]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -100, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -200, 0)
 mesh = SubResource("PlaneMesh_gngh3")
 surface_material_override/0 = SubResource("StandardMaterial3D_qnost")
+
+[node name="FogVolume" type="FogVolume" parent="Water" unique_id=1408579021]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -100, 0)
+size = Vector3(2000, 200, 2000)
+material = SubResource("FogMaterial_hrvbo")
 
 [node name="FogVolume" type="FogVolume" parent="." unique_id=2070058143]
 shape = 4
@@ -1018,17 +1011,14 @@ surface_material_override/0 = SubResource("StandardMaterial3D_stone")
 [node name="Light_House_0_1" parent="StonyBeach" unique_id=1901700970 instance=ExtResource("44_gngh3")]
 transform = Transform3D(0.47568607, 0, 0, 0, 0.47568607, 0, 0, 0, 0.47568607, -559.3297, 341.87628, -331.99475)
 
-[node name="Light_House_light_0_1" parent="StonyBeach/Light_House_0_1" unique_id=1750768411 instance=ExtResource("38_qnost")]
+[node name="Light_House_light_0_1" parent="StonyBeach/Light_House_0_1" unique_id=838122245 instance=ExtResource("38_qnost")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1140.4963, -80.80127)
 script = ExtResource("33_lhlight")
 rotation_speed = 0.1
 
-[node name="lighthouse_light" parent="StonyBeach/Light_House_0_1/Light_House_light_0_1" index="0" unique_id=26404087]
-transform = Transform3D(-4.3711374e-08, -1, 0, 1, -4.3711374e-08, 0, 0, 0, 1, 1008.3541, 43.918945, 6.465271)
-material_override = SubResource("StandardMaterial3D_wnkbs")
-
 [node name="SpotLight3D" type="OmniLight3D" parent="StonyBeach/Light_House_0_1/Light_House_light_0_1" unique_id=1390703331]
 transform = Transform3D(-3.1325623e-08, 0, -2.1022267, 0, 2.1022267, 0, 2.1022267, 0, -3.1325623e-08, 4.036743, 36.188232, 1.8378296)
+visible = false
 light_color = Color(1, 0.9666667, 0, 1)
 light_energy = 16.0
 omni_range = 63.54777
@@ -1038,6 +1028,10 @@ omni_attenuation = 0.012
 transform = Transform3D(3.912, 0, 0, 0, 3.912, 0, 0, 0, 3.912, 0, 44.14673, 0)
 mesh = ExtResource("40_f6a44")
 surface_material_override/0 = ExtResource("41_0cbny")
+
+[node name="lighthouse_light" parent="StonyBeach/Light_House_0_1/Light_House_light_0_1" index="2" unique_id=1241512710]
+transform = Transform3D(0, -1, 0, 1, 0, 0, 0, 0, 1, 1008.3541, 41.83252, -1.9713745)
+material_override = ExtResource("42_0cbny")
 
 [node name="RockWalls" type="StaticBody3D" parent="." unique_id=1076589946]
 
@@ -1164,6 +1158,9 @@ player = NodePath("../Player")
 
 [node name="StrangenessSting" type="Node" parent="." unique_id=955426932]
 script = ExtResource("42_sting")
+
+[node name="HunterFish" parent="." unique_id=2037867007 instance=ExtResource("50_hrvbo")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 320.1753, -81.338844, 221.668)
 
 [editable path="StonyBeach/Light_House_0_1"]
 [editable path="StonyBeach/Light_House_0_1/Light_House_light_0_1"]
