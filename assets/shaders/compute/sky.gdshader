@@ -32,6 +32,12 @@ uniform float lightning_strength : hint_range(0.0, 1.0) = 0.35; // 0 disables di
 uniform float exposure : hint_range(0.0, 4.0) = 1.0;
 group_uniforms;
 
+group_uniforms Sunset;
+uniform vec3 sunset_color : source_color = vec3(0.9, 0.45, 0.2);
+uniform float sunset_strength : hint_range(0.0, 2.0) = 1.0; // 0 disables the sunset band
+uniform float sunset_spread : hint_range(1.0, 8.0) = 2.5; // higher = band hugs the sun azimuth tighter
+group_uniforms;
+
 float fbm(vec2 uv) {
 	float value = 0.0;
 	float amplitude = 0.55;
@@ -47,9 +53,22 @@ void sky() {
 	vec3 dir = EYEDIR;
 	float horizon_fade = pow(1.0 - abs(dir.y), 6.0);
 
+	// Setting-sun band: warm light bleeding along the horizon around the sun's
+	// azimuth, only when the sun actually sits low in the sky.
+	float sunset = 0.0;
+	vec2 dir_xz = vec2(dir.x, dir.z);
+	vec2 sun_xz = vec2(LIGHT0_DIRECTION.x, LIGHT0_DIRECTION.z);
+	if (sunset_strength > 0.0 && length(dir_xz) > 1e-4 && length(sun_xz) > 1e-4) {
+		float azimuth = max(dot(normalize(dir_xz), normalize(sun_xz)), 0.0);
+		float sun_low = smoothstep(0.45, 0.02, max(LIGHT0_DIRECTION.y, 0.0));
+		sunset = sunset_strength * sun_low * horizon_fade * pow(azimuth, sunset_spread);
+	}
+
 	// --- below the horizon: dark sea haze (the water mesh covers most of it) ---
 	if (dir.y <= 0.0) {
-		COLOR = mix(ground_color, horizon_color, horizon_fade) * exposure;
+		vec3 sea_col = mix(ground_color, horizon_color, horizon_fade);
+		sea_col = mix(sea_col, sunset_color, clamp(sunset, 0.0, 1.0) * 0.55);
+		COLOR = sea_col * exposure;
 	} else {
 	// Project the view ray onto a virtual cloud plane. The +0.12 bias fakes
 	// planetary curvature, compressing the clouds toward the horizon.
@@ -75,6 +94,9 @@ void sky() {
 	float sun_amount = pow(max(dot(dir, LIGHT0_DIRECTION), 0.0), 24.0);
 	cloud_col += LIGHT0_COLOR * sun_amount * sun_glow * (1.0 - thickness);
 
+	// Low sun catches the thin edges and undersides of the deck near the horizon.
+	cloud_col += sunset_color * sunset * (1.0 - thickness) * 0.6;
+
 	// Distant lightning: brief random flashes from a random horizon direction,
 	// reflected most by the thickest cloud undersides.
 	if (lightning_strength > 0.0) {
@@ -91,6 +113,9 @@ void sky() {
 	vec3 sky_col = mix(zenith_color, horizon_color, horizon_fade);
 	vec3 col = mix(sky_col, cloud_col, cover);
 	col = mix(col, horizon_color, horizon_fade * 0.85);
+
+	// The sunset band burns through the haze itself.
+	col = mix(col, sunset_color, clamp(sunset, 0.0, 1.0) * 0.7);
 
 	COLOR = col * exposure;
 	}

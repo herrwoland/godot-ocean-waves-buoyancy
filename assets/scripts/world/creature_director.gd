@@ -1,17 +1,27 @@
 extends Node3D
-## Spawns the giant swimming creatures. Most drift in slow orbits around the
-## player's area of the sea; when the player dives past hunt_depth, the
-## nearest few turn hunter and close in. Contact kills (player_died).
-## Placeholder capsule bodies — swap for the user's giant fish models later.
+## Spawns the giant deep-water creatures and decides who hunts. Idle bodies
+## drift in huge, well-separated orbits far below the player's patch of sea —
+## the bodies are ~150 m long, so the spacing is measured in hundreds of
+## meters. When the player dives past hunt_depth, the nearest lurker is told
+## to hunt; the stalking, the lunge and the carry all live in hunter_fish.gd,
+## tuned by exports on that scene.
 
+const HUNTER_SCENE := preload("res://assets/models/creatures/hunter_fish.tscn")
+
+@export var creature_scene: PackedScene
 @export var player: Node3D
 @export var water: Node
-@export var creature_count: int = 6
-@export var hunter_count: int = 2
-@export var hunt_depth: float = 3.0 # player depth (m below surface) that triggers hunting
-@export var hunt_speed: float = 4.0 # fallback when the creature scene has no hunt_speed of its own
-@export var kill_distance: float = 2.2
-@export var orbit_speed: float = 0.06
+@export var creature_count := 6
+@export var stalker_count := 1 # hunters at once — one lone stalker reads scarier
+@export var hunt_depth := 3.0 # player depth (m below surface) that triggers hunting
+@export var escape_depth := 0.8 # shallower than this (or out of the water) calls it off
+## Idle orbit shape. Radii spread wide so the bodies never crowd each other.
+@export var orbit_radius_range := Vector2(180.0, 420.0)
+@export var orbit_depth_range := Vector2(-140.0, -80.0)
+@export var orbit_speed := 0.06
+## No hunting inside this zone (the Isle of the Dead — the eel rules there).
+@export var hunt_exclusion_center := Vector3(260, 0, -260)
+@export var hunt_exclusion_radius := 60.0
 
 const SHORE_X_LIMIT := -85.0 # keep creatures out of the cove's shallows
 
@@ -19,59 +29,87 @@ var _creatures: Array[Node3D] = []
 var _orbit_radius: Array[float] = []
 var _orbit_depth: Array[float] = []
 var _orbit_phase: Array[float] = []
-var _kill_cooldown := 0.0
+var _grace := 0.0 # no hunting for a few seconds after a morning restage
 
 func _ready() -> void:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 1337
+	var scene := creature_scene if creature_scene else HUNTER_SCENE
+	var time := Time.get_ticks_msec() / 1000.0
 	for i in creature_count:
-		var creature := Node3D.new()
-		var body := MeshInstance3D.new()
-		var mesh := CapsuleMesh.new()
-		mesh.radius = 1.2
-		mesh.height = 8.0
-		body.mesh = mesh
-		body.rotation_degrees.x = 90.0 # lie the capsule flat: a swimming torpedo, not a pill
-		var mat := StandardMaterial3D.new()
-		mat.albedo_color = Color(0.1, 0.13, 0.14)
-		body.material_override = mat
-		creature.add_child(body)
+		var creature: Node3D = scene.instantiate()
 		add_child(creature)
 		_creatures.append(creature)
-		_orbit_radius.append(rng.randf_range(40.0, 130.0))
-		_orbit_depth.append(rng.randf_range(-22.0, -7.0))
-		_orbit_phase.append(rng.randf_range(0.0, TAU))
-	EventBus.day_started.connect(func(_d: int) -> void: _kill_cooldown = 3.0)
+		_orbit_radius.append(rng.randf_range(orbit_radius_range.x, orbit_radius_range.y))
+		_orbit_depth.append(rng.randf_range(orbit_depth_range.x, orbit_depth_range.y))
+		# Evenly spaced around the circle (plus jitter) so they never clump.
+		_orbit_phase.append(TAU * float(i) / float(creature_count) + rng.randf_range(-0.3, 0.3))
+		creature.global_position = _orbit_target(i, time) # start in place, not at origin
+	EventBus.day_started.connect(_on_day_started)
+
+func _on_day_started(_day: int) -> void:
+	_grace = 3.0
+	for creature in _creatures:
+		if creature.has_method(&'abort_hunt'):
+			creature.abort_hunt()
+	if player.has_method(&'set_captured'):
+		player.set_captured(false)
 
 func _physics_process(delta: float) -> void:
-	_kill_cooldown = maxf(_kill_cooldown - delta, 0.0)
+	_grace = maxf(_grace - delta, 0.0)
 	var surface_y: float = water.get_wave_height(player.global_position)
 	var player_depth: float = surface_y - player.global_position.y
-	var hunting: bool = player_depth > hunt_depth
+	var in_exclusion := Vector2(player.global_position.x - hunt_exclusion_center.x,
+		player.global_position.z - hunt_exclusion_center.z).length() < hunt_exclusion_radius
+	var swimming: bool = (&'state' in player and player.state == 1) # Player State.SWIM
+	var huntable: bool = swimming and player_depth > hunt_depth \
+		and not in_exclusion and _grace <= 0.0
+	var escaped: bool = not swimming or player_depth < escape_depth or in_exclusion
+
+	if huntable:
+		_assign_stalkers()
 
 	var time := Time.get_ticks_msec() / 1000.0
 	for i in _creatures.size():
 		var creature := _creatures[i]
-		if hunting and i < hunter_count:
-			var speed: float = creature.hunt_speed if &'hunt_speed' in creature else hunt_speed
-			var to_player := player.global_position - creature.global_position
-			if to_player.length() > 0.5:
-				creature.global_position += to_player.normalized() * speed * delta
-				if absf(to_player.normalized().dot(Vector3.UP)) < 0.98:
-					creature.look_at(player.global_position, Vector3.UP)
-			if to_player.length() < kill_distance and _kill_cooldown <= 0.0:
-				_kill_cooldown = 5.0
-				EventBus.player_died.emit()
-		else:
-			# Slow orbit around the player's patch of sea, always below the waves.
-			var angle := time * orbit_speed + _orbit_phase[i]
-			var target := Vector3(
-				player.global_position.x + cos(angle) * _orbit_radius[i],
-				_orbit_depth[i],
-				player.global_position.z + sin(angle) * _orbit_radius[i]
-			)
-			target.x = maxf(target.x, SHORE_X_LIMIT)
-			var step := target - creature.global_position
-			creature.global_position += step * minf(delta * 0.8, 1.0)
-			if step.length() > 0.1:
-				creature.look_at(creature.global_position + step, Vector3.UP)
+		if creature.is_busy():
+			if escaped and not creature.is_carrying():
+				creature.end_hunt()
+			continue
+		# Slow orbit around the player's patch of sea, far below the waves.
+		var target := _orbit_target(i, time)
+		var step := target - creature.global_position
+		creature.global_position += step * minf(delta * 0.8, 1.0)
+		if step.length() > 0.1:
+			creature.face_along(step, delta)
+
+func _orbit_target(i: int, time: float) -> Vector3:
+	var angle := time * orbit_speed + _orbit_phase[i]
+	var target := Vector3(
+		player.global_position.x + cos(angle) * _orbit_radius[i],
+		_orbit_depth[i],
+		player.global_position.z + sin(angle) * _orbit_radius[i]
+	)
+	target.x = maxf(target.x, SHORE_X_LIMIT)
+	return target
+
+## Wake the nearest idle lurkers until stalker_count of them are on the hunt.
+func _assign_stalkers() -> void:
+	var busy := 0
+	for creature in _creatures:
+		if creature.is_busy():
+			busy += 1
+	while busy < stalker_count:
+		var nearest: Node3D = null
+		var nearest_d := INF
+		for creature in _creatures:
+			if creature.is_busy():
+				continue
+			var d := creature.global_position.distance_to(player.global_position)
+			if d < nearest_d:
+				nearest_d = d
+				nearest = creature
+		if nearest == null:
+			return
+		nearest.begin_hunt(player)
+		busy += 1

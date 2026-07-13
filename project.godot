@@ -18,13 +18,13 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-ImGuiRoot="*uid://dugmpnsxaagba"
 EventBus="*res://assets/scripts/core/event_bus.gd"
 GameState="*res://assets/scripts/core/game_state.gd"
-<<<<<<< Updated upstream
-=======
 CutscenePlayer="*res://assets/scripts/core/cutscene_player.gd"
->>>>>>> Stashed changes
+MCPScreenshot="*res://addons/godot_mcp/mcp_screenshot_service.gd"
+MCPInputService="*res://addons/godot_mcp/mcp_input_service.gd"
+MCPGameInspector="*res://addons/godot_mcp/mcp_game_inspector_service.gd"
+ImGuiRoot="*uid://dugmpnsxaagba"
 
 [beckett]
 
@@ -60,7 +60,7 @@ movie_writer/mjpeg_quality=1.0
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/imgui-godot/plugin.cfg")
+enabled=PackedStringArray("res://addons/godot_mcp/plugin.cfg", "res://addons/imgui-godot/plugin.cfg")
 
 [gui]
 
@@ -75,7 +75,7 @@ toggle_imgui={
 }
 toggle_fullscreen={
 "deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":true,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":70,"key_label":0,"unicode":102,"location":0,"echo":false,"script":null)
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":4194342,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
 ]
 }
 move_forward={
@@ -136,7 +136,7 @@ turn_right={
 }
 sprint={
 "deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":16777237,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":4194325,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
 ]
 }
 
@@ -154,7 +154,6 @@ sprint={
 
 lights_and_shadows/directional_shadow/size=1024
 lights_and_shadows/directional_shadow/soft_shadow_filter_quality=1
-anti_aliasing/quality/msaa_3d=0
 
 [shader_globals]
 
@@ -168,11 +167,11 @@ normals={
 }
 water_color={
 "type": "color",
-"value": Color(0.0100228, 0.0196066, 0.0272118, 1)
+"value": Color(0.1, 0.15, 0.18, 1)
 }
 foam_color={
 "type": "color",
-"value": Color(0, 0, 0, 1)
+"value": Color(0.73, 0.67, 0.62, 1)
 }
 num_cascades={
 "type": "uint",

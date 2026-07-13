@@ -1,0 +1,13 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://dp7vdcaaujty3"]
+
+[ext_resource type="Texture2D" uid="uid://boo0c1b3cu578" path="res://assets/models/lighthouse/Light_House_light_0_light_beam.png" id="1_qi8io"]
+
+[resource]
+transparency = 1
+disable_ambient_light = true
+disable_fog = true
+albedo_color = Color(1, 1, 1, 0.011764706)
+albedo_texture = ExtResource("1_qi8io")
+emission_enabled = true
+emission_energy_multiplier = 16.0
+emission_texture = ExtResource("1_qi8io")

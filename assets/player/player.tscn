@@ -3,23 +3,21 @@
 [ext_resource type="Script" uid="uid://tusxajaaj8mt" path="res://assets/player/player.gd" id="1_player"]
 [ext_resource type="Script" uid="uid://daqw81ug7ha8c" path="res://assets/player/crosshair.gd" id="2_crosshair"]
 [ext_resource type="Texture2D" uid="uid://dtm5tyuh2slqt" path="res://assets/water/sea_spray.png" id="2_v2miy"]
-[ext_resource type="Script" path="res://assets/player/inspection_controller.gd" id="3_inspect"]
-[ext_resource type="Script" path="res://assets/player/oxygen_controller.gd" id="4_oxygen"]
-[ext_resource type="Shader" path="res://assets/shaders/post/oxygen_overlay.gdshader" id="5_oxyshader"]
+[ext_resource type="Script" uid="uid://lnixgqedq5ji" path="res://assets/player/inspection_controller.gd" id="3_inspect"]
+[ext_resource type="Script" uid="uid://c4nwfe56kuued" path="res://assets/player/oxygen_controller.gd" id="4_oxygen"]
+[ext_resource type="Shader" uid="uid://b2rcikvib8wn8" path="res://assets/shaders/post/oxygen_overlay.gdshader" id="5_oxyshader"]
+[ext_resource type="Script" uid="uid://dbs8itod2p6jf" path="res://assets/player/carry_controller.gd" id="6_carry"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_player"]
 radius = 0.4
 height = 1.8
 
-<<<<<<< Updated upstream
-=======
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_oxygen"]
 shader = ExtResource("5_oxyshader")
 shader_parameter/intensity = 0.0
 shader_parameter/flash_rate = 0.0
 shader_parameter/flash_amount = 0.0
 
->>>>>>> Stashed changes
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_splash"]
 particle_flag_align_y = true
 emission_shape = 1
@@ -45,12 +43,9 @@ particles_anim_loop = false
 [sub_resource type="QuadMesh" id="QuadMesh_d5dr7"]
 material = SubResource("StandardMaterial3D_ouxva")
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_oxygen"]
-shader = ExtResource("5_oxyshader")
-shader_parameter/intensity = 0.0
-
 [node name="Player" type="CharacterBody3D" unique_id=555801128 groups=["player"]]
 collision_layer = 2
+collision_mask = 3
 script = ExtResource("1_player")
 
 [node name="Collider" type="CollisionShape3D" parent="." unique_id=401350848]
@@ -61,37 +56,31 @@ shape = SubResource("CapsuleShape3D_player")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
 
 [node name="Camera3D" type="Camera3D" parent="Head" unique_id=856815090]
-cull_mask = 1047551
 current = true
 
 [node name="InteractRay" type="RayCast3D" parent="Head/Camera3D" unique_id=190894075]
-target_position = Vector3(0, 0, -1)
+target_position = Vector3(0, 0, -2)
 collision_mask = 4
 collide_with_areas = true
-collide_with_bodies = false
 debug_shape_custom_color = Color(0.8835159, 0.06592726, 0, 1)
 
-[node name="InspectSocket" type="Marker3D" parent="Head/Camera3D"]
+[node name="InspectSocket" type="Marker3D" parent="Head/Camera3D" unique_id=812967859]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.55)
 
-<<<<<<< Updated upstream
-[node name="InspectOverlay" type="CanvasLayer" parent="."]
-=======
 [node name="CarrySocket" type="Marker3D" parent="Head/Camera3D" unique_id=429615435]
-transform = Transform3D(1, 0, 0, 0, 0.16443092, -0.9863925, 0, 0.9863925, 0.16443092, 0.13788526, -0.21928704, -0.88802314)
+transform = Transform3D(1, 0, 0, 0, 0.16443092, -0.9863925, 0, 0.9863925, 0.16443092, 0.13788526, -0.12041986, -0.620222)
 
 [node name="InspectOverlay" type="CanvasLayer" parent="." unique_id=1850755420]
->>>>>>> Stashed changes
 visible = false
 
-[node name="Dim" type="ColorRect" parent="InspectOverlay"]
+[node name="Dim" type="ColorRect" parent="InspectOverlay" unique_id=1770988465]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 color = Color(0, 0, 0, 0.55)
 
-[node name="ItemName" type="Label" parent="InspectOverlay"]
+[node name="ItemName" type="Label" parent="InspectOverlay" unique_id=2094335206]
 anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0
@@ -103,7 +92,7 @@ offset_right = 150.0
 offset_bottom = -38.0
 horizontal_alignment = 1
 
-[node name="InspectHint" type="Label" parent="InspectOverlay"]
+[node name="InspectHint" type="Label" parent="InspectOverlay" unique_id=1187296536]
 modulate = Color(1, 1, 1, 0.45)
 anchors_preset = 7
 anchor_left = 0.5
@@ -115,10 +104,10 @@ offset_top = -32.0
 offset_right = 200.0
 offset_bottom = -14.0
 theme_type_variation = &"HeaderLabel"
-horizontal_alignment = 1
 text = "drag — turn    scroll — closer    E — put away"
+horizontal_alignment = 1
 
-[node name="InspectionController" type="Node" parent="." node_paths=PackedStringArray("player", "camera", "socket", "overlay", "item_label")]
+[node name="InspectionController" type="Node" parent="." unique_id=899785788 node_paths=PackedStringArray("player", "camera", "socket", "overlay", "item_label")]
 script = ExtResource("3_inspect")
 player = NodePath("..")
 camera = NodePath("../Head/Camera3D")
@@ -126,24 +115,31 @@ socket = NodePath("../Head/Camera3D/InspectSocket")
 overlay = NodePath("../InspectOverlay")
 item_label = NodePath("../InspectOverlay/ItemName")
 
-[node name="OxygenOverlay" type="CanvasLayer" parent="."]
+[node name="CarryController" type="Node" parent="." unique_id=259456634 node_paths=PackedStringArray("player", "socket")]
+script = ExtResource("6_carry")
+player = NodePath("..")
+socket = NodePath("../Head/Camera3D/CarrySocket")
+
+[node name="OxygenOverlay" type="CanvasLayer" parent="." unique_id=2132335407]
 layer = -2
 
-[node name="OxygenRect" type="ColorRect" parent="OxygenOverlay"]
+[node name="OxygenRect" type="ColorRect" parent="OxygenOverlay" unique_id=2050689223]
 material = SubResource("ShaderMaterial_oxygen")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 
-[node name="HeartbeatPlayer" type="AudioStreamPlayer" parent="."]
+[node name="HeartbeatPlayer" type="AudioStreamPlayer" parent="." unique_id=1949790051]
 volume_db = -40.0
 
-[node name="OxygenController" type="Node" parent="." node_paths=PackedStringArray("player", "overlay_rect", "heartbeat_player")]
+[node name="OxygenController" type="Node" parent="." unique_id=1983899619 node_paths=PackedStringArray("player", "overlay_rect", "heartbeat_player")]
 script = ExtResource("4_oxygen")
 player = NodePath("..")
 overlay_rect = NodePath("../OxygenOverlay/OxygenRect")
 heartbeat_player = NodePath("../HeartbeatPlayer")
+max_breath = 20.0
+flash_start_intensity = 0.1
 
 [node name="SplashParticles" type="GPUParticles3D" parent="." unique_id=345984492]
 top_level = true
@@ -175,3 +171,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("2_crosshair")
+
+[node name="SplashPlayer" type="AudioStreamPlayer" parent="." unique_id=347770916]
+
+[node name="GaspPlayer" type="AudioStreamPlayer" parent="." unique_id=1124802907]

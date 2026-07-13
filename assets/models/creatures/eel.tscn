@@ -1,0 +1,24 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://assets/scripts/world/eel.gd" id="1_eel"]
+
+[sub_resource type="StandardMaterial3D" id="Mat_eel"]
+albedo_color = Color(0.16, 0.2, 0.14, 1)
+
+[sub_resource type="CapsuleMesh" id="Mesh_eel"]
+radius = 0.5
+height = 5.5
+
+[node name="Eel" type="Node3D"]
+script = ExtResource("1_eel")
+
+[node name="Body" type="Node3D" parent="."]
+
+[node name="Mesh" type="MeshInstance3D" parent="Body"]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0)
+mesh = SubResource("Mesh_eel")
+surface_material_override/0 = SubResource("Mat_eel")
+
+[node name="EelLoop" type="AudioStreamPlayer3D" parent="."]
+autoplay = true
+max_distance = 60.0

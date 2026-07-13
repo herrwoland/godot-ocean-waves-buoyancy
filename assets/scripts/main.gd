@@ -40,7 +40,7 @@ func _ready() -> void:
 	pause_menu.get_node('VBoxContainer/SettingsButton').pressed.connect(_on_settings_pressed.bind(pause_menu))
 	pause_menu.get_node('VBoxContainer/QuitButton').pressed.connect(get_tree().quit)
 	settings_menu.closed.connect(_on_settings_closed)
-	settings_menu.setup($Water, $Player, $"Ferry Simplified Experiment", $RetroPost)
+	settings_menu.setup($Water, $Player, $Boat, $RetroPost)
 
 func _on_settings_pressed(from_menu: CanvasLayer) -> void:
 	_settings_return_menu = from_menu

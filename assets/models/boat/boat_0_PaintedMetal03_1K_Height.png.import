@@ -1,0 +1,44 @@
+[remap]
+
+importer="texture"
+type="CompressedTexture2D"
+uid="uid://cdbxvd4pvdo4p"
+path.s3tc="res://.godot/imported/boat_0_PaintedMetal03_1K_Height.png-43759546e7d5fe62c14632580ed35737.s3tc.ctex"
+metadata={
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
+}
+generator_parameters={
+"md5": "9384ede81a516b4ef57969ce4e4ec402"
+}
+
+[deps]
+
+source_file="res://assets/models/boat/boat_0_PaintedMetal03_1K_Height.png"
+dest_files=["res://.godot/imported/boat_0_PaintedMetal03_1K_Height.png-43759546e7d5fe62c14632580ed35737.s3tc.ctex"]
+
+[params]
+
+compress/mode=2
+compress/high_quality=false
+compress/lossy_quality=0.7
+compress/uastc_level=0
+compress/rdo_quality_loss=0.0
+compress/hdr_compression=1
+compress/normal_map=0
+compress/channel_pack=0
+mipmaps/generate=true
+mipmaps/limit=-1
+roughness/mode=0
+roughness/src_normal=""
+process/channel_remap/red=0
+process/channel_remap/green=1
+process/channel_remap/blue=2
+process/channel_remap/alpha=3
+process/fix_alpha_border=true
+process/premult_alpha=false
+process/normal_map_invert_y=false
+process/hdr_as_srgb=false
+process/hdr_clamp_exposure=false
+process/size_limit=0
+detect_3d/compress_to=0

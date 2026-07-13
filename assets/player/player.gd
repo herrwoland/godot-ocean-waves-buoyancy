@@ -21,14 +21,18 @@ enum State { WALK, SWIM, PILOT }
 @onready var camera: Camera3D = $Head/Camera3D
 @onready var interact_ray: RayCast3D = $Head/Camera3D/InteractRay
 @onready var collider: CollisionShape3D = $Collider
+@onready var carry_controller: Node = $CarryController
 @onready var splash_particles: GPUParticles3D = $SplashParticles
 @onready var surface_ripples: GPUParticles3D = $SurfaceRipples
+@onready var splash_player: AudioStreamPlayer = get_node_or_null(^'SplashPlayer')
+@onready var gasp_player: AudioStreamPlayer = get_node_or_null(^'GaspPlayer')
 
 var state: State = State.WALK
 var piloted_ship: Node = null
 var helm_marker: Node3D = null
 var hovered_interactable: Object = null
 var inspecting: bool = false # set by InspectionController; freezes movement and look
+var captured: bool = false # in a hunter's jaws; the CreatureDirector drives our position
 var interact_cooldown_until_msec: int = 0
 var _climb_target = null # Vector3 deck position, set each frame by a ShipLadder while space is held
 
@@ -38,6 +42,9 @@ const GRAVITY: float = 9.8
 
 var _lowpass_idx: int = -1
 var _ears_underwater: bool = false
+var _submerged_at_msec: int = 0 # when the ears last went under, for the surfacing gasp
+
+const GASP_AFTER_SECONDS := 4.0 # dives shorter than this surface without a gasp
 
 func _ready() -> void:
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
@@ -51,10 +58,16 @@ func _ready() -> void:
 func _update_underwater_audio() -> void:
 	if not water:
 		return
-	var underwater: bool = camera.global_position.y < water.get_wave_height(camera.global_position)
+	var underwater: bool = camera.global_position.y < water.get_wave_height(camera.global_position) \
+		and not water.is_water_hole(camera.global_position)
 	if underwater != _ears_underwater:
 		_ears_underwater = underwater
 		AudioServer.set_bus_effect_enabled(0, _lowpass_idx, underwater)
+		if underwater:
+			_submerged_at_msec = Time.get_ticks_msec()
+		elif Time.get_ticks_msec() - _submerged_at_msec > GASP_AFTER_SECONDS * 1000.0 \
+				and gasp_player and gasp_player.stream and not captured:
+			gasp_player.play() # breaking the surface after a long dive
 
 func _update_interact_hover() -> void:
 	var target: Object = null
@@ -80,11 +93,21 @@ func _unhandled_input(event: InputEvent) -> void:
 		head.rotation.y -= event.relative.x * mouse_sensitivity
 		camera.rotation.x -= event.relative.y * mouse_sensitivity
 		camera.rotation.x = clampf(camera.rotation.x, -PI / 2.0, PI / 2.0)
-	elif event.is_action_pressed(&'interact'):
+	elif event.is_action_pressed(&'interact') and not captured:
 		_try_interact()
+
+## While captured the body is dragged by the creature: controls and collisions
+## are off, but the head is free to look around on the way down.
+func set_captured(caught: bool) -> void:
+	captured = caught
+	collider.disabled = caught
+	velocity = Vector3.ZERO
+	surface_ripples.emitting = false
 
 func _physics_process(delta: float) -> void:
 	_update_underwater_audio()
+	if captured:
+		return # the creature moves us; nothing to simulate
 	if inspecting:
 		velocity = Vector3.ZERO
 		move_and_slide()
@@ -202,6 +225,8 @@ func _process_pilot(delta: float) -> void:
 func _check_enter_swim() -> void:
 	if not water:
 		return
+	if water.is_water_hole(global_position):
+		return # inside a HOLE wave blocker (eg. a dry shaft) there is no water to swim in
 	var surface_y: float = water.get_wave_height(global_position)
 	if surface_y - global_position.y > swim_enter_depth:
 		state = State.SWIM
@@ -222,12 +247,17 @@ func _check_exit_swim() -> void:
 func _play_splash(surface_y: float) -> void:
 	splash_particles.global_position = Vector3(global_position.x, surface_y, global_position.z)
 	splash_particles.restart()
+	if splash_player and splash_player.stream:
+		splash_player.play()
 
 func _try_interact() -> void:
 	if state == State.PILOT:
 		return # piloting is only exited via the jump (space) key
 	if Time.get_ticks_msec() < interact_cooldown_until_msec:
 		return # eg. the press that just closed an inspection
+	if carry_controller.is_carrying():
+		carry_controller.drop() # hands full: interact always means "put it down"
+		return
 	if hovered_interactable and hovered_interactable.has_method(&'interact'):
 		hovered_interactable.interact(self)
 

@@ -9,7 +9,8 @@ extends Node
 @export var heartbeat_player: AudioStreamPlayer
 @export var max_breath: float = 40.0 # seconds of air — tune survival time here
 @export var recover_rate: float = 12.0 # breath regained per second at the surface
-@export var flash_start_intensity: float = 0.4 # spent-breath fraction where the red flash begins
+@export var effect_start_fraction: float = 0.2 # breath fraction left when the screen effect starts
+@export var flash_start_intensity: float = 0.4 # fraction of the effect ramp where the red flash begins
 
 var breath: float
 var _died := false
@@ -29,21 +30,26 @@ func _process(delta: float) -> void:
 	else:
 		breath = minf(breath + recover_rate * delta, max_breath)
 
-	var intensity := 1.0 - breath / max_breath
-	overlay_rect.material.set_shader_parameter(&'intensity', intensity)
+	# The screen stays clean until only effect_start_fraction of breath is
+	# left, then the full visual ramp plays out over what remains.
+	var breath_fraction := breath / max_breath
+	var effect := clampf((effect_start_fraction - breath_fraction) / effect_start_fraction, 0.0, 1.0)
+	overlay_rect.material.set_shader_parameter(&'intensity', effect)
 
-	# Drowning flash: kicks in past flash_start_intensity, pulsing 1/s and
+	# Drowning flash: kicks in partway up the effect ramp, pulsing 1/s and
 	# accelerating to 3/s as the last breath approaches.
-	var flash_t := clampf((intensity - flash_start_intensity) / (1.0 - flash_start_intensity), 0.0, 1.0)
+	var flash_t := clampf((effect - flash_start_intensity) / (1.0 - flash_start_intensity), 0.0, 1.0)
 	overlay_rect.material.set_shader_parameter(&'flash_amount', flash_t)
 	overlay_rect.material.set_shader_parameter(&'flash_rate', lerpf(1.0, 3.0, flash_t))
 
-	# Heartbeat fades in past one third spent breath and quickens toward the end.
-	if intensity > 0.3:
+	# Heartbeat fades in past one third spent breath and quickens toward the
+	# end — the sound deliberately forewarns long before the screen reacts.
+	var spent := 1.0 - breath_fraction
+	if spent > 0.3:
 		if not heartbeat_player.playing:
 			heartbeat_player.play()
-		heartbeat_player.volume_db = lerpf(-40.0, -4.0, (intensity - 0.3) / 0.7)
-		heartbeat_player.pitch_scale = lerpf(0.85, 1.7, intensity)
+		heartbeat_player.volume_db = lerpf(-40.0, -4.0, (spent - 0.3) / 0.7)
+		heartbeat_player.pitch_scale = lerpf(0.85, 1.7, spent)
 	elif heartbeat_player.playing:
 		heartbeat_player.stop()
 

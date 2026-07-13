@@ -50,7 +50,7 @@ func _physics_process(_delta: float) -> void:
 			return
 	if neutral_buoyancy and not _floating and water:
 		# The moment it reaches (or starts below) the surface, hold it there.
-		if global_position.y <= water.get_wave_height(global_position, false):
+		if global_position.y <= water.get_wave_height(global_position):
 			_floating = true
 			freeze = true
 			linear_velocity = Vector3.ZERO

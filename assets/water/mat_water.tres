@@ -16,6 +16,12 @@ global uniform vec4 foam_color : source_color;
 uniform bool backface_culling = true; // Toggle in the material inspector: discards back faces when on.
 uniform vec3 depth_color_consumption = vec3(7.5, 22.0, 38.0);
 
+group_uniforms wave_blockers;
+uniform int wave_blocker_count = 0;
+uniform vec4 wave_blocker_a[8]; // (pos.x, pos.z, cos yaw, sin yaw)
+uniform vec4 wave_blocker_b[8]; // (half x / radius, half z, fade width, flags: +1 box, +2 hole)
+group_uniforms;
+
 
 uniform float roughness : hint_range(0.0, 1.0) = 0.4;
 uniform float normal_strength : hint_range(0.0, 1.0) = 1.0; // Global normal strength
@@ -34,9 +40,42 @@ global uniform sampler2DArray normals : hint_normal; // Each layer represents on
 varying float wave_height;
 varying float foam_factor;
 varying float fresnel;
+varying float blocker_mask;
+varying float blocker_hole;
+
+// Wave-blocker attenuation at a rest position (pre-displacement). Returns
+// (mask, hole): mask 0 inside a blocker rising to 1 across its fade width;
+// hole 1 inside a HOLE blocker (surface discarded there).
+// Must mirror distance_xz() in wave_blocker.gd exactly.
+vec2 wave_blocker_eval(vec2 p) {
+	float mask = 1.0;
+	float hole = 0.0;
+	for (int i = 0; i < wave_blocker_count; i++) {
+		vec4 a = wave_blocker_a[i];
+		vec4 b = wave_blocker_b[i];
+		vec2 rel = p - a.xy;
+		int flags = int(b.w + 0.5);
+		float d;
+		if ((flags & 1) == 1) { // box footprint, rotated by yaw
+			vec2 lp = vec2(a.z*rel.x + a.w*rel.y, -a.w*rel.x + a.z*rel.y);
+			vec2 q = abs(lp) - b.xy;
+			d = length(max(q, vec2(0.0))) + min(max(q.x, q.y), 0.0);
+		} else { // circle footprint
+			d = length(rel) - b.x;
+		}
+		mask = min(mask, smoothstep(0.0, max(b.z, 0.001), d));
+		if (flags >= 2 && d <= 0.0) {
+			hole = 1.0;
+		}
+	}
+	return vec2(mask, hole);
+}
 
 void vertex() {
 	UV = VERTEX.xz;
+	vec2 blocker = wave_blocker_eval(VERTEX.xz);
+	blocker_mask = blocker.x;
+	blocker_hole = blocker.y;
 	// is optimized: first check if the distance is greater than 150 meters.
 	// if so, then don't calculate the displacement.
 	float distance_cam = length(VERTEX.xz - CAMERA_POSITION_WORLD.xz);
@@ -50,8 +89,8 @@ void vertex() {
 			vec4 scales = map_scales[i];
 			displacement += texture(displacements, vec3(UV*scales.xy, float(i))).xyz * scales.z;
 		}
-		VERTEX += displacement * distance_factor;
-		wave_height = displacement.y;
+		VERTEX += displacement * distance_factor * blocker_mask;
+		wave_height = displacement.y * blocker_mask;
 	}
 	else
 	{
@@ -94,6 +133,9 @@ void fragment() {
 	if (backface_culling && !FRONT_FACING) {
 		discard;
 	}
+	if (blocker_hole > 0.5) {
+		discard; // inside a HOLE wave blocker there is no water surface at all
+	}
 	float map_size = float(textureSize(normals, 0).x);
 	float dist = length(VERTEX.xz);
 	// Read foam and normal information from normal maps.
@@ -108,6 +150,7 @@ void fragment() {
 		gradient += mix(texture_bicubic(normals, coords), texture(normals, coords), min(1.0, ppm*0.1)).xyw * vec3(scales.ww, 1.0);
 		foam_alpha += texture(foam_noise_tex, UV * scales.xy * 1.0).r;
 	}
+	gradient *= blocker_mask; // calm zones lose their wave normals and foam too
 	foam_factor = smoothstep(0.0, 1.0, gradient.z*0.75) * exp(-dist*0.0075);
 
 	// ===================== shine through ===================================#
@@ -184,10 +227,13 @@ void light() {
 "
 
 [resource]
-render_priority = 1
+render_priority = 0
 shader = SubResource("Shader_l4ax1")
 shader_parameter/backface_culling = false
 shader_parameter/depth_color_consumption = Vector3(7.5, 22, 38)
 shader_parameter/roughness = 0.65
 shader_parameter/normal_strength = 1.0
+shader_parameter/wave_blocker_count = 0
+shader_parameter/wave_blocker_a = PackedVector4Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/wave_blocker_b = PackedVector4Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 shader_parameter/map_scales = PackedVector4Array(0.011363637, 0.011363637, 1, 1, 0.01754386, 0.01754386, 0.75, 1, 0.0625, 0.0625, 0, 0.25)

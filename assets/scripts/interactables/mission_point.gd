@@ -23,5 +23,5 @@ func interact(_player: Node) -> void:
 	else:
 		if GameState.phase == GameState.Phase.PICKED_UP:
 			note_view.show_note("This is the place.\n\nBring the package here and set it down.")
-		#else:
-			#note_view.show_note("There is nothing to leave here yet.")
+		else:
+			note_view.show_note("There is nothing to leave here yet.")

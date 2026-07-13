@@ -13,10 +13,10 @@ const CoordinateSystem := preload("res://assets/scripts/core/coordinate_system.g
 @export var pickup_point: Node3D
 @export var delivery_point: Node3D
 @export var package: Node3D
+@export var ending_fish: Node3D
 @export var note_view: CanvasLayer
 @export var sleep_fade: ColorRect
 
-const PACKAGE_DEPTH := 6.0 # how far below the surface packages rest
 const LETTER_HOME := Vector3(-129.4, 3.3, 10)
 const DELIVERY_RADIUS := 4.0 # how close the package must get to complete the hand-off
 
@@ -36,6 +36,10 @@ func _ready() -> void:
 func _config() -> DayConfig:
 	return days[clampi(GameState.current_day, 1, days.size()) - 1]
 
+## Public accessor for other systems (eg. the SanityDirector).
+func current_config() -> DayConfig:
+	return _config()
+
 func _on_day_started(_day: int) -> void:
 	var cfg := _config()
 
@@ -54,12 +58,13 @@ func _on_day_started(_day: int) -> void:
 	# package rests below the surface marker and carries the delivery ones.
 	letter_point.restage(get_parent(), LETTER_HOME)
 	letter_point.set_label_text("%s\n\nPickup:\n%s" % [cfg.letter_text, CoordinateSystem.format_position(cfg.pickup_position)])
-	package.restage(get_parent(), cfg.pickup_position + Vector3.DOWN * PACKAGE_DEPTH)
+	package.restage(get_parent(), cfg.pickup_position + Vector3.DOWN * cfg.package_depth)
 	package.set_label_text("DELIVER TO:\n%s" % CoordinateSystem.format_position(cfg.delivery_position))
 	pickup_point.global_position = cfg.pickup_position
 	pickup_point.set_active(true)
 	delivery_point.global_position = cfg.delivery_position
 	delivery_point.set_active(true)
+	ending_fish.set_active(false)
 
 func _on_package_picked_up() -> void:
 	pickup_point.set_active(false)
@@ -75,10 +80,6 @@ func _physics_process(_delta: float) -> void:
 
 func _on_package_delivered() -> void:
 	delivery_point.set_active(false)
-<<<<<<< Updated upstream
-	get_tree().get_first_node_in_group(&'inspection_controller').consume(package)
-	note_view.show_note("It is out of your hands now.\n\nGo home.")
-=======
 	# Drop the crate at the hand-off point and leave it resting there.
 	var carry: Node = get_tree().get_first_node_in_group(&'carry_controller')
 	if carry.carried == package:
@@ -88,7 +89,6 @@ func _on_package_delivered() -> void:
 		note_view.show_note("It is done.\n\nSomething is waiting on the shore,\nin front of your house.")
 	else:
 		note_view.show_note("It is out of your hands now.\n\nGo home.")
->>>>>>> Stashed changes
 
 var _dying := false
 
@@ -107,9 +107,12 @@ func _on_player_died() -> void:
 	tween.tween_property(sleep_fade, "modulate:a", 0.0, 1.0)
 	tween.tween_callback(func() -> void: _dying = false)
 
-## Called by the bed. Fades out, advances the day (final day: placeholder end),
-## saves, then fades back into the next morning.
+## Called by the bed. Fades out, advances the day, saves, then fades back into
+## the next morning. On the final day sleep is refused — the fish is the exit.
 func do_sleep() -> void:
+	if GameState.current_day >= GameState.FINAL_DAY:
+		note_view.show_note("You cannot sleep.\n\nIt is still waiting on the shore.")
+		return
 	var tween := create_tween()
 	tween.tween_property(sleep_fade, "modulate:a", 1.0, 1.2)
 	tween.tween_callback(_advance_after_fade)
@@ -117,10 +120,7 @@ func do_sleep() -> void:
 	tween.tween_property(sleep_fade, "modulate:a", 0.0, 1.2)
 
 func _advance_after_fade() -> void:
-	if GameState.current_day >= GameState.FINAL_DAY:
-		note_view.show_note("The fifth night.\n\nSomething is waiting on the shore.\n\n(End of the skeleton loop — the ending arrives in Milestone 7. Day 5 repeats.)")
-	else:
-		GameState.sleep_advance()
+	GameState.sleep_advance()
 	GameState.start_day()
 
 func _build_placeholder_days() -> void:
@@ -135,9 +135,10 @@ func _build_placeholder_days() -> void:
 		Vector3(150, 0, 60),
 		Vector3(220, 0, -120),
 		Vector3(320, 0, 180),
-		Vector3(260, 0, -260),
+		Vector3(260, 0, -260), # day 4: the well at the Isle of the Dead
 		Vector3(180, 0, 20),
 	]
+	var package_depths: Array[float] = [6.0, 6.0, 6.0, 18.0, 6.0] # day 4: bottom of the well shaft
 	var deliveries: Array[Vector3] = [
 		Vector3(40, 0, -160),
 		Vector3(-40, 0, 240),
@@ -145,10 +146,30 @@ func _build_placeholder_days() -> void:
 		Vector3(60, 0, 320),
 		Vector3(-112, 1, 12), # day 5: home
 	]
+	# Full strangeness state per morning (prop_id -> variant tier), plus swaps
+	# that fire when the player returns home. Placeholder content — the real
+	# transformations arrive with the user's models.
+	var wake_swaps: Array[Dictionary] = [
+		{&'ship_funnel': 0, &'shack_roof': 0},
+		{&'ship_funnel': 1, &'shack_roof': 0},
+		{&'ship_funnel': 1, &'shack_roof': 0},
+		{&'ship_funnel': 1, &'shack_roof': 1},
+		{&'ship_funnel': 1, &'shack_roof': 1},
+	]
+	var return_swaps: Array[Dictionary] = [
+		{},
+		{},
+		{&'shack_roof': 1}, # day 3: the roof is wrong when you come back
+		{},
+		{},
+	]
 	for i in 5:
 		var cfg := DayConfig.new()
 		cfg.day = i + 1
 		cfg.letter_text = texts[i]
 		cfg.pickup_position = pickups[i]
 		cfg.delivery_position = deliveries[i]
+		cfg.package_depth = package_depths[i]
+		cfg.wake_swaps = wake_swaps[i]
+		cfg.return_home_swaps = return_swaps[i]
 		days.append(cfg)
