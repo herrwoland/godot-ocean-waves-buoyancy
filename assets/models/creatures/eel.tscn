@@ -18,3 +18,7 @@ script = ExtResource("1_eel")
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0)
 mesh = SubResource("Mesh_eel")
 surface_material_override/0 = SubResource("Mat_eel")
+
+[node name="EelLoop" type="AudioStreamPlayer3D" parent="."]
+autoplay = true
+max_distance = 60.0

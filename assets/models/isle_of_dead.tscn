@@ -1,302 +1,302 @@
-[gd_scene load_steps=15 format=3]
+[gd_scene format=3 uid="uid://bgivk2sfjjyt6"]
 
-[ext_resource type="Script" path="res://assets/scripts/world/wave_blocker.gd" id="1_blocker"]
+[ext_resource type="Script" uid="uid://c7n8dp7f8tkeu" path="res://assets/scripts/world/wave_blocker.gd" id="1_blocker"]
 [ext_resource type="PackedScene" path="res://assets/models/creatures/eel.tscn" id="2_eel"]
-
-[sub_resource type="StandardMaterial3D" id="Mat_stone_white"]
-albedo_color = Color(0.72, 0.7, 0.66, 1)
-
-[sub_resource type="StandardMaterial3D" id="Mat_stone_dark"]
-albedo_color = Color(0.35, 0.35, 0.34, 1)
-
-[sub_resource type="StandardMaterial3D" id="Mat_cypress"]
-albedo_color = Color(0.07, 0.1, 0.07, 1)
-
-[sub_resource type="BoxMesh" id="Mesh_rim"]
-size = Vector3(4.4, 0.5, 2.6)
 
 [sub_resource type="BoxShape3D" id="Shape_rim"]
 size = Vector3(4.4, 0.5, 2.6)
 
-[sub_resource type="BoxMesh" id="Mesh_shaft"]
-size = Vector3(3.6, 24, 0.6)
+[sub_resource type="BoxMesh" id="Mesh_rim"]
+size = Vector3(4.4, 0.5, 2.6)
+
+[sub_resource type="StandardMaterial3D" id="Mat_stone_dark"]
+albedo_color = Color(0.35, 0.35, 0.34, 1)
 
 [sub_resource type="BoxShape3D" id="Shape_shaft"]
 size = Vector3(3.6, 24, 0.6)
 
-[sub_resource type="BoxMesh" id="Mesh_wall"]
-size = Vector3(9.5, 13, 2)
+[sub_resource type="BoxMesh" id="Mesh_shaft"]
+size = Vector3(3.6, 24, 0.6)
 
 [sub_resource type="BoxShape3D" id="Shape_wall"]
 size = Vector3(9.5, 13, 2)
+
+[sub_resource type="BoxMesh" id="Mesh_wall"]
+size = Vector3(9.5, 13, 2)
+
+[sub_resource type="StandardMaterial3D" id="Mat_stone_white"]
+albedo_color = Color(0.72, 0.7, 0.66, 1)
+
+[sub_resource type="CylinderShape3D" id="Shape_cypress"]
+height = 15.0
+radius = 1.1
 
 [sub_resource type="CylinderMesh" id="Mesh_cypress"]
 top_radius = 0.66
 bottom_radius = 1.1
 height = 15.0
 
-[sub_resource type="CylinderShape3D" id="Shape_cypress"]
-height = 15.0
-radius = 1.1
+[sub_resource type="StandardMaterial3D" id="Mat_cypress"]
+albedo_color = Color(0.07, 0.1, 0.07, 1)
 
 [sub_resource type="CylinderShape3D" id="Shape_wellcalm"]
 height = 4.0
 radius = 3.9
 
-[node name="IsleOfTheDead" type="Node3D"]
+[node name="IsleOfTheDead" type="Node3D" unique_id=2041943403]
 
-[node name="WellRim" type="StaticBody3D" parent="."]
+[node name="WellRim" type="StaticBody3D" parent="." unique_id=1464477205]
 
-[node name="Rim0Shape" type="CollisionShape3D" parent="WellRim"]
+[node name="Rim0Shape" type="CollisionShape3D" parent="WellRim" unique_id=843738320]
 transform = Transform3D(6.1232e-17, 0, -1, 0, 1, 0, 1, 0, 6.1232e-17, 5.4, 1.25, 0)
 shape = SubResource("Shape_rim")
 
-[node name="Rim0Mesh" type="MeshInstance3D" parent="WellRim"]
+[node name="Rim0Mesh" type="MeshInstance3D" parent="WellRim" unique_id=928481105]
 transform = Transform3D(6.1232e-17, 0, -1, 0, 1, 0, 1, 0, 6.1232e-17, 5.4, 1.25, 0)
 mesh = SubResource("Mesh_rim")
 surface_material_override/0 = SubResource("Mat_stone_dark")
 
-[node name="Rim1Shape" type="CollisionShape3D" parent="WellRim"]
+[node name="Rim1Shape" type="CollisionShape3D" parent="WellRim" unique_id=737998866]
 transform = Transform3D(-0.70711, 0, -0.70711, 0, 1, 0, 0.70711, 0, -0.70711, 3.8184, 1.25, 3.8184)
 shape = SubResource("Shape_rim")
 
-[node name="Rim1Mesh" type="MeshInstance3D" parent="WellRim"]
+[node name="Rim1Mesh" type="MeshInstance3D" parent="WellRim" unique_id=1249690759]
 transform = Transform3D(-0.70711, 0, -0.70711, 0, 1, 0, 0.70711, 0, -0.70711, 3.8184, 1.25, 3.8184)
 mesh = SubResource("Mesh_rim")
 surface_material_override/0 = SubResource("Mat_stone_dark")
 
-[node name="Rim2Shape" type="CollisionShape3D" parent="WellRim"]
+[node name="Rim2Shape" type="CollisionShape3D" parent="WellRim" unique_id=1613872258]
 transform = Transform3D(-1, 0, -1.2246e-16, 0, 1, 0, 1.2246e-16, 0, -1, 3.3065e-16, 1.25, 5.4)
 shape = SubResource("Shape_rim")
 
-[node name="Rim2Mesh" type="MeshInstance3D" parent="WellRim"]
+[node name="Rim2Mesh" type="MeshInstance3D" parent="WellRim" unique_id=2123423198]
 transform = Transform3D(-1, 0, -1.2246e-16, 0, 1, 0, 1.2246e-16, 0, -1, 3.3065e-16, 1.25, 5.4)
 mesh = SubResource("Mesh_rim")
 surface_material_override/0 = SubResource("Mat_stone_dark")
 
-[node name="Rim3Shape" type="CollisionShape3D" parent="WellRim"]
+[node name="Rim3Shape" type="CollisionShape3D" parent="WellRim" unique_id=1458229834]
 transform = Transform3D(-0.70711, 0, 0.70711, 0, 1, 0, -0.70711, 0, -0.70711, -3.8184, 1.25, 3.8184)
 shape = SubResource("Shape_rim")
 
-[node name="Rim3Mesh" type="MeshInstance3D" parent="WellRim"]
+[node name="Rim3Mesh" type="MeshInstance3D" parent="WellRim" unique_id=2001247954]
 transform = Transform3D(-0.70711, 0, 0.70711, 0, 1, 0, -0.70711, 0, -0.70711, -3.8184, 1.25, 3.8184)
 mesh = SubResource("Mesh_rim")
 surface_material_override/0 = SubResource("Mat_stone_dark")
 
-[node name="Rim4Shape" type="CollisionShape3D" parent="WellRim"]
+[node name="Rim4Shape" type="CollisionShape3D" parent="WellRim" unique_id=52782171]
 transform = Transform3D(-1.837e-16, 0, 1, 0, 1, 0, -1, 0, -1.837e-16, -5.4, 1.25, 6.6131e-16)
 shape = SubResource("Shape_rim")
 
-[node name="Rim4Mesh" type="MeshInstance3D" parent="WellRim"]
+[node name="Rim4Mesh" type="MeshInstance3D" parent="WellRim" unique_id=2091121880]
 transform = Transform3D(-1.837e-16, 0, 1, 0, 1, 0, -1, 0, -1.837e-16, -5.4, 1.25, 6.6131e-16)
 mesh = SubResource("Mesh_rim")
 surface_material_override/0 = SubResource("Mat_stone_dark")
 
-[node name="Rim5Shape" type="CollisionShape3D" parent="WellRim"]
+[node name="Rim5Shape" type="CollisionShape3D" parent="WellRim" unique_id=972171641]
 transform = Transform3D(0.70711, 0, 0.70711, 0, 1, 0, -0.70711, 0, 0.70711, -3.8184, 1.25, -3.8184)
 shape = SubResource("Shape_rim")
 
-[node name="Rim5Mesh" type="MeshInstance3D" parent="WellRim"]
+[node name="Rim5Mesh" type="MeshInstance3D" parent="WellRim" unique_id=1749849146]
 transform = Transform3D(0.70711, 0, 0.70711, 0, 1, 0, -0.70711, 0, 0.70711, -3.8184, 1.25, -3.8184)
 mesh = SubResource("Mesh_rim")
 surface_material_override/0 = SubResource("Mat_stone_dark")
 
-[node name="Rim6Shape" type="CollisionShape3D" parent="WellRim"]
+[node name="Rim6Shape" type="CollisionShape3D" parent="WellRim" unique_id=1770639805]
 transform = Transform3D(1, 0, 2.4493e-16, 0, 1, 0, -2.4493e-16, 0, 1, -9.9196e-16, 1.25, -5.4)
 shape = SubResource("Shape_rim")
 
-[node name="Rim6Mesh" type="MeshInstance3D" parent="WellRim"]
+[node name="Rim6Mesh" type="MeshInstance3D" parent="WellRim" unique_id=1653773203]
 transform = Transform3D(1, 0, 2.4493e-16, 0, 1, 0, -2.4493e-16, 0, 1, -9.9196e-16, 1.25, -5.4)
 mesh = SubResource("Mesh_rim")
 surface_material_override/0 = SubResource("Mat_stone_dark")
 
-[node name="Rim7Shape" type="CollisionShape3D" parent="WellRim"]
+[node name="Rim7Shape" type="CollisionShape3D" parent="WellRim" unique_id=438074639]
 transform = Transform3D(0.70711, 0, -0.70711, 0, 1, 0, 0.70711, 0, 0.70711, 3.8184, 1.25, -3.8184)
 shape = SubResource("Shape_rim")
 
-[node name="Rim7Mesh" type="MeshInstance3D" parent="WellRim"]
+[node name="Rim7Mesh" type="MeshInstance3D" parent="WellRim" unique_id=256709878]
 transform = Transform3D(0.70711, 0, -0.70711, 0, 1, 0, 0.70711, 0, 0.70711, 3.8184, 1.25, -3.8184)
 mesh = SubResource("Mesh_rim")
 surface_material_override/0 = SubResource("Mat_stone_dark")
 
-[node name="WellShaft" type="StaticBody3D" parent="."]
+[node name="WellShaft" type="StaticBody3D" parent="." unique_id=391419229]
 
-[node name="Shaft0Shape" type="CollisionShape3D" parent="WellShaft"]
+[node name="Shaft0Shape" type="CollisionShape3D" parent="WellShaft" unique_id=797579041]
 transform = Transform3D(6.1232e-17, 0, -1, 0, 1, 0, 1, 0, 6.1232e-17, 3.9, -10.5, 0)
 shape = SubResource("Shape_shaft")
 
-[node name="Shaft0Mesh" type="MeshInstance3D" parent="WellShaft"]
+[node name="Shaft0Mesh" type="MeshInstance3D" parent="WellShaft" unique_id=344558784]
 transform = Transform3D(6.1232e-17, 0, -1, 0, 1, 0, 1, 0, 6.1232e-17, 3.9, -10.5, 0)
 mesh = SubResource("Mesh_shaft")
 surface_material_override/0 = SubResource("Mat_stone_dark")
 
-[node name="Shaft1Shape" type="CollisionShape3D" parent="WellShaft"]
+[node name="Shaft1Shape" type="CollisionShape3D" parent="WellShaft" unique_id=563470769]
 transform = Transform3D(-0.70711, 0, -0.70711, 0, 1, 0, 0.70711, 0, -0.70711, 2.7577, -10.5, 2.7577)
 shape = SubResource("Shape_shaft")
 
-[node name="Shaft1Mesh" type="MeshInstance3D" parent="WellShaft"]
+[node name="Shaft1Mesh" type="MeshInstance3D" parent="WellShaft" unique_id=1965306524]
 transform = Transform3D(-0.70711, 0, -0.70711, 0, 1, 0, 0.70711, 0, -0.70711, 2.7577, -10.5, 2.7577)
 mesh = SubResource("Mesh_shaft")
 surface_material_override/0 = SubResource("Mat_stone_dark")
 
-[node name="Shaft2Shape" type="CollisionShape3D" parent="WellShaft"]
+[node name="Shaft2Shape" type="CollisionShape3D" parent="WellShaft" unique_id=846743154]
 transform = Transform3D(-1, 0, -1.2246e-16, 0, 1, 0, 1.2246e-16, 0, -1, 2.3881e-16, -10.5, 3.9)
 shape = SubResource("Shape_shaft")
 
-[node name="Shaft2Mesh" type="MeshInstance3D" parent="WellShaft"]
+[node name="Shaft2Mesh" type="MeshInstance3D" parent="WellShaft" unique_id=258405925]
 transform = Transform3D(-1, 0, -1.2246e-16, 0, 1, 0, 1.2246e-16, 0, -1, 2.3881e-16, -10.5, 3.9)
 mesh = SubResource("Mesh_shaft")
 surface_material_override/0 = SubResource("Mat_stone_dark")
 
-[node name="Shaft3Shape" type="CollisionShape3D" parent="WellShaft"]
+[node name="Shaft3Shape" type="CollisionShape3D" parent="WellShaft" unique_id=1970235841]
 transform = Transform3D(-0.70711, 0, 0.70711, 0, 1, 0, -0.70711, 0, -0.70711, -2.7577, -10.5, 2.7577)
 shape = SubResource("Shape_shaft")
 
-[node name="Shaft3Mesh" type="MeshInstance3D" parent="WellShaft"]
+[node name="Shaft3Mesh" type="MeshInstance3D" parent="WellShaft" unique_id=1561121600]
 transform = Transform3D(-0.70711, 0, 0.70711, 0, 1, 0, -0.70711, 0, -0.70711, -2.7577, -10.5, 2.7577)
 mesh = SubResource("Mesh_shaft")
 surface_material_override/0 = SubResource("Mat_stone_dark")
 
-[node name="Shaft4Shape" type="CollisionShape3D" parent="WellShaft"]
+[node name="Shaft4Shape" type="CollisionShape3D" parent="WellShaft" unique_id=1909155925]
 transform = Transform3D(-1.837e-16, 0, 1, 0, 1, 0, -1, 0, -1.837e-16, -3.9, -10.5, 4.7761e-16)
 shape = SubResource("Shape_shaft")
 
-[node name="Shaft4Mesh" type="MeshInstance3D" parent="WellShaft"]
+[node name="Shaft4Mesh" type="MeshInstance3D" parent="WellShaft" unique_id=2084003385]
 transform = Transform3D(-1.837e-16, 0, 1, 0, 1, 0, -1, 0, -1.837e-16, -3.9, -10.5, 4.7761e-16)
 mesh = SubResource("Mesh_shaft")
 surface_material_override/0 = SubResource("Mat_stone_dark")
 
-[node name="Shaft5Shape" type="CollisionShape3D" parent="WellShaft"]
+[node name="Shaft5Shape" type="CollisionShape3D" parent="WellShaft" unique_id=150824130]
 transform = Transform3D(0.70711, 0, 0.70711, 0, 1, 0, -0.70711, 0, 0.70711, -2.7577, -10.5, -2.7577)
 shape = SubResource("Shape_shaft")
 
-[node name="Shaft5Mesh" type="MeshInstance3D" parent="WellShaft"]
+[node name="Shaft5Mesh" type="MeshInstance3D" parent="WellShaft" unique_id=589369923]
 transform = Transform3D(0.70711, 0, 0.70711, 0, 1, 0, -0.70711, 0, 0.70711, -2.7577, -10.5, -2.7577)
 mesh = SubResource("Mesh_shaft")
 surface_material_override/0 = SubResource("Mat_stone_dark")
 
-[node name="Shaft6Shape" type="CollisionShape3D" parent="WellShaft"]
+[node name="Shaft6Shape" type="CollisionShape3D" parent="WellShaft" unique_id=1086015038]
 transform = Transform3D(1, 0, 2.4493e-16, 0, 1, 0, -2.4493e-16, 0, 1, -7.1642e-16, -10.5, -3.9)
 shape = SubResource("Shape_shaft")
 
-[node name="Shaft6Mesh" type="MeshInstance3D" parent="WellShaft"]
+[node name="Shaft6Mesh" type="MeshInstance3D" parent="WellShaft" unique_id=1766766136]
 transform = Transform3D(1, 0, 2.4493e-16, 0, 1, 0, -2.4493e-16, 0, 1, -7.1642e-16, -10.5, -3.9)
 mesh = SubResource("Mesh_shaft")
 surface_material_override/0 = SubResource("Mat_stone_dark")
 
-[node name="Shaft7Shape" type="CollisionShape3D" parent="WellShaft"]
+[node name="Shaft7Shape" type="CollisionShape3D" parent="WellShaft" unique_id=959095933]
 transform = Transform3D(0.70711, 0, -0.70711, 0, 1, 0, 0.70711, 0, 0.70711, 2.7577, -10.5, -2.7577)
 shape = SubResource("Shape_shaft")
 
-[node name="Shaft7Mesh" type="MeshInstance3D" parent="WellShaft"]
+[node name="Shaft7Mesh" type="MeshInstance3D" parent="WellShaft" unique_id=685648871]
 transform = Transform3D(0.70711, 0, -0.70711, 0, 1, 0, 0.70711, 0, 0.70711, 2.7577, -10.5, -2.7577)
 mesh = SubResource("Mesh_shaft")
 surface_material_override/0 = SubResource("Mat_stone_dark")
 
-[node name="OuterWalls" type="StaticBody3D" parent="."]
+[node name="OuterWalls" type="StaticBody3D" parent="." unique_id=1088288924]
 
-[node name="Wall0Shape" type="CollisionShape3D" parent="OuterWalls"]
+[node name="Wall0Shape" type="CollisionShape3D" parent="OuterWalls" unique_id=1462453124]
 transform = Transform3D(6.1232e-17, 0, -1, 0, 1, 0, 1, 0, 6.1232e-17, 13, 5, 0)
 shape = SubResource("Shape_wall")
 
-[node name="Wall0Mesh" type="MeshInstance3D" parent="OuterWalls"]
+[node name="Wall0Mesh" type="MeshInstance3D" parent="OuterWalls" unique_id=633802632]
 transform = Transform3D(6.1232e-17, 0, -1, 0, 1, 0, 1, 0, 6.1232e-17, 13, 5, 0)
 mesh = SubResource("Mesh_wall")
 surface_material_override/0 = SubResource("Mat_stone_white")
 
-[node name="Wall1Shape" type="CollisionShape3D" parent="OuterWalls"]
+[node name="Wall1Shape" type="CollisionShape3D" parent="OuterWalls" unique_id=234662792]
 transform = Transform3D(-0.70711, 0, -0.70711, 0, 1, 0, 0.70711, 0, -0.70711, 9.1924, 5, 9.1924)
 shape = SubResource("Shape_wall")
 
-[node name="Wall1Mesh" type="MeshInstance3D" parent="OuterWalls"]
+[node name="Wall1Mesh" type="MeshInstance3D" parent="OuterWalls" unique_id=696810858]
 transform = Transform3D(-0.70711, 0, -0.70711, 0, 1, 0, 0.70711, 0, -0.70711, 9.1924, 5, 9.1924)
 mesh = SubResource("Mesh_wall")
 surface_material_override/0 = SubResource("Mat_stone_white")
 
-[node name="Wall2Shape" type="CollisionShape3D" parent="OuterWalls"]
+[node name="Wall2Shape" type="CollisionShape3D" parent="OuterWalls" unique_id=2141790098]
 transform = Transform3D(-1, 0, -1.2246e-16, 0, 1, 0, 1.2246e-16, 0, -1, 7.9602e-16, 5, 13)
 shape = SubResource("Shape_wall")
 
-[node name="Wall2Mesh" type="MeshInstance3D" parent="OuterWalls"]
+[node name="Wall2Mesh" type="MeshInstance3D" parent="OuterWalls" unique_id=24405270]
 transform = Transform3D(-1, 0, -1.2246e-16, 0, 1, 0, 1.2246e-16, 0, -1, 7.9602e-16, 5, 13)
 mesh = SubResource("Mesh_wall")
 surface_material_override/0 = SubResource("Mat_stone_white")
 
-[node name="Wall3Shape" type="CollisionShape3D" parent="OuterWalls"]
+[node name="Wall3Shape" type="CollisionShape3D" parent="OuterWalls" unique_id=1756786336]
 transform = Transform3D(-0.70711, 0, 0.70711, 0, 1, 0, -0.70711, 0, -0.70711, -9.1924, 5, 9.1924)
 shape = SubResource("Shape_wall")
 
-[node name="Wall3Mesh" type="MeshInstance3D" parent="OuterWalls"]
+[node name="Wall3Mesh" type="MeshInstance3D" parent="OuterWalls" unique_id=1817830216]
 transform = Transform3D(-0.70711, 0, 0.70711, 0, 1, 0, -0.70711, 0, -0.70711, -9.1924, 5, 9.1924)
 mesh = SubResource("Mesh_wall")
 surface_material_override/0 = SubResource("Mat_stone_white")
 
-[node name="Wall4Shape" type="CollisionShape3D" parent="OuterWalls"]
+[node name="Wall4Shape" type="CollisionShape3D" parent="OuterWalls" unique_id=373870273]
 transform = Transform3D(-1.837e-16, 0, 1, 0, 1, 0, -1, 0, -1.837e-16, -13, 5, 1.592e-15)
 shape = SubResource("Shape_wall")
 
-[node name="Wall4Mesh" type="MeshInstance3D" parent="OuterWalls"]
+[node name="Wall4Mesh" type="MeshInstance3D" parent="OuterWalls" unique_id=1161722500]
 transform = Transform3D(-1.837e-16, 0, 1, 0, 1, 0, -1, 0, -1.837e-16, -13, 5, 1.592e-15)
 mesh = SubResource("Mesh_wall")
 surface_material_override/0 = SubResource("Mat_stone_white")
 
-[node name="Wall5Shape" type="CollisionShape3D" parent="OuterWalls"]
+[node name="Wall5Shape" type="CollisionShape3D" parent="OuterWalls" unique_id=81072001]
 transform = Transform3D(0.70711, 0, 0.70711, 0, 1, 0, -0.70711, 0, 0.70711, -9.1924, 5, -9.1924)
 shape = SubResource("Shape_wall")
 
-[node name="Wall5Mesh" type="MeshInstance3D" parent="OuterWalls"]
+[node name="Wall5Mesh" type="MeshInstance3D" parent="OuterWalls" unique_id=760201665]
 transform = Transform3D(0.70711, 0, 0.70711, 0, 1, 0, -0.70711, 0, 0.70711, -9.1924, 5, -9.1924)
 mesh = SubResource("Mesh_wall")
 surface_material_override/0 = SubResource("Mat_stone_white")
 
-[node name="Cypresses" type="StaticBody3D" parent="."]
+[node name="Cypresses" type="StaticBody3D" parent="." unique_id=987355473]
 
-[node name="Cypress0Shape" type="CollisionShape3D" parent="Cypresses"]
-transform = Transform3D(1, 0, -0, 0, 1, 0, 0, 0, 1, 8.7769, 7.5, 3.6355)
+[node name="Cypress0Shape" type="CollisionShape3D" parent="Cypresses" unique_id=1540655970]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.7769, 7.5, 3.6355)
 shape = SubResource("Shape_cypress")
 
-[node name="Cypress0Mesh" type="MeshInstance3D" parent="Cypresses"]
-transform = Transform3D(1, 0, -0, 0, 1, 0, 0, 0, 1, 8.7769, 7.5, 3.6355)
+[node name="Cypress0Mesh" type="MeshInstance3D" parent="Cypresses" unique_id=50037591]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.7769, 7.5, 3.6355)
 mesh = SubResource("Mesh_cypress")
 surface_material_override/0 = SubResource("Mat_cypress")
 
-[node name="Cypress1Shape" type="CollisionShape3D" parent="Cypresses"]
-transform = Transform3D(1, 0, -0, 0, 1, 0, 0, 0, 1, 3.6355, 7.5, 8.7769)
+[node name="Cypress1Shape" type="CollisionShape3D" parent="Cypresses" unique_id=494093025]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.6355, 7.5, 8.7769)
 shape = SubResource("Shape_cypress")
 
-[node name="Cypress1Mesh" type="MeshInstance3D" parent="Cypresses"]
-transform = Transform3D(1, 0, -0, 0, 1, 0, 0, 0, 1, 3.6355, 7.5, 8.7769)
+[node name="Cypress1Mesh" type="MeshInstance3D" parent="Cypresses" unique_id=2098115779]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.6355, 7.5, 8.7769)
 mesh = SubResource("Mesh_cypress")
 surface_material_override/0 = SubResource("Mat_cypress")
 
-[node name="Cypress2Shape" type="CollisionShape3D" parent="Cypresses"]
-transform = Transform3D(1, 0, -0, 0, 1, 0, 0, 0, 1, -3.6355, 7.5, 8.7769)
+[node name="Cypress2Shape" type="CollisionShape3D" parent="Cypresses" unique_id=1407827917]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.6355, 7.5, 8.7769)
 shape = SubResource("Shape_cypress")
 
-[node name="Cypress2Mesh" type="MeshInstance3D" parent="Cypresses"]
-transform = Transform3D(1, 0, -0, 0, 1, 0, 0, 0, 1, -3.6355, 7.5, 8.7769)
+[node name="Cypress2Mesh" type="MeshInstance3D" parent="Cypresses" unique_id=782871181]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.6355, 7.5, 8.7769)
 mesh = SubResource("Mesh_cypress")
 surface_material_override/0 = SubResource("Mat_cypress")
 
-[node name="Cypress3Shape" type="CollisionShape3D" parent="Cypresses"]
-transform = Transform3D(1, 0, -0, 0, 1, 0, 0, 0, 1, -8.7769, 7.5, 3.6355)
+[node name="Cypress3Shape" type="CollisionShape3D" parent="Cypresses" unique_id=1823531702]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.7769, 7.5, 3.6355)
 shape = SubResource("Shape_cypress")
 
-[node name="Cypress3Mesh" type="MeshInstance3D" parent="Cypresses"]
-transform = Transform3D(1, 0, -0, 0, 1, 0, 0, 0, 1, -8.7769, 7.5, 3.6355)
+[node name="Cypress3Mesh" type="MeshInstance3D" parent="Cypresses" unique_id=1583563285]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.7769, 7.5, 3.6355)
 mesh = SubResource("Mesh_cypress")
 surface_material_override/0 = SubResource("Mat_cypress")
 
-[node name="Cypress4Shape" type="CollisionShape3D" parent="Cypresses"]
-transform = Transform3D(1, 0, -0, 0, 1, 0, 0, 0, 1, -8.7769, 7.5, -3.6355)
+[node name="Cypress4Shape" type="CollisionShape3D" parent="Cypresses" unique_id=10497520]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.7769, 7.5, -3.6355)
 shape = SubResource("Shape_cypress")
 
-[node name="Cypress4Mesh" type="MeshInstance3D" parent="Cypresses"]
-transform = Transform3D(1, 0, -0, 0, 1, 0, 0, 0, 1, -8.7769, 7.5, -3.6355)
+[node name="Cypress4Mesh" type="MeshInstance3D" parent="Cypresses" unique_id=387201886]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.7769, 7.5, -3.6355)
 mesh = SubResource("Mesh_cypress")
 surface_material_override/0 = SubResource("Mat_cypress")
 
-[node name="WellCalm" type="Area3D" parent="."]
+[node name="WellCalm" type="Area3D" parent="." unique_id=942250243]
 collision_layer = 0
 collision_mask = 0
 monitoring = false
@@ -304,7 +304,7 @@ monitorable = false
 script = ExtResource("1_blocker")
 fade_width = 3.0
 
-[node name="WellCalmShape" type="CollisionShape3D" parent="WellCalm"]
+[node name="WellCalmShape" type="CollisionShape3D" parent="WellCalm" unique_id=1184795029]
 shape = SubResource("Shape_wellcalm")
 
-[node name="Eel" parent="." instance=ExtResource("2_eel")]
+[node name="Eel" parent="." unique_id=716567081 instance=ExtResource("2_eel")]

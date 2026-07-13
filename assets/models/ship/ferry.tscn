@@ -2,47 +2,25 @@
 
 [ext_resource type="Script" uid="uid://cj1mrslpmgpi6" path="res://assets/models/ship/ferry.gd" id="1_ferry"]
 [ext_resource type="Script" uid="uid://dsn01qhv7ioi3" path="res://assets/scripts/buoyant_cell.gd" id="2_cell"]
+[ext_resource type="Script" uid="uid://c7n8dp7f8tkeu" path="res://assets/scripts/world/wave_blocker.gd" id="3_2ib73"]
 [ext_resource type="Script" uid="uid://4j6vkvpadkr7" path="res://assets/player/camera.gd" id="3_camera"]
 [ext_resource type="Script" uid="uid://cuk3h1rdwodek" path="res://assets/scripts/world/coord_device.gd" id="4_device"]
 [ext_resource type="Script" uid="uid://b3s502b801kf" path="res://assets/scripts/helm_interactable.gd" id="5_helm"]
 [ext_resource type="Script" uid="uid://cs2x7rmusrtt6" path="res://assets/scripts/interactables/ship_ladder.gd" id="6_ladder"]
-[ext_resource type="Script" uid="uid://d2lwj1bl5x665" path="res://assets/scripts/world/swappable_prop.gd" id="7_swap"]
 [ext_resource type="PackedScene" uid="uid://bs7x4dgp16lr5" path="res://assets/models/boat/boat_0.1.glb" id="8_2ib73"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_82xsv"]
-size = Vector3(44, 8, 8.67642)
+size = Vector3(44, 8.062927, 13.075356)
 
-[sub_resource type="BoxMesh" id="BoxMesh_hull"]
-size = Vector3(42, 6, 8)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hull"]
-albedo_color = Color(0.184, 0.204, 0.235, 1)
-
-[sub_resource type="BoxMesh" id="BoxMesh_deck"]
-size = Vector3(42, 0.4, 8)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_deck"]
-albedo_color = Color(0.55, 0.51, 0.45, 1)
-
-[sub_resource type="BoxMesh" id="BoxMesh_cabin"]
-size = Vector3(9, 4, 6)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cabin"]
-albedo_color = Color(0.9, 0.9, 0.88, 1)
-
-[sub_resource type="CylinderMesh" id="CylinderMesh_funnel"]
-top_radius = 0.9
-bottom_radius = 1.1
-height = 3.5
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_funnel"]
-albedo_color = Color(0.65, 0.1, 0.1, 1)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_funnelpale"]
-albedo_color = Color(0.72, 0.68, 0.6, 1)
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_2ib73"]
+radius = 4.768
+height = 28.039642
 
 [sub_resource type="BoxMesh" id="BoxMesh_ryguw"]
 size = Vector3(1, 2, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cabin"]
+albedo_color = Color(0.9, 0.9, 0.88, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_2cqfq"]
 size = Vector3(12, 4, 3.5)
@@ -76,6 +54,7 @@ size = Vector3(0.5, 4.5, 0.2)
 albedo_color = Color(0.15, 0.14, 0.13, 1)
 
 [node name="Ferry" type="RigidBody3D" unique_id=693725928 node_paths=PackedStringArray("buoyant_cells", "mesh", "engine_cells")]
+collision_layer = 4
 mass = 1043780.0
 gravity_scale = 0.0
 center_of_mass_mode = 1
@@ -86,47 +65,62 @@ mesh = NodePath("HullDragVolume")
 engine_cells = [NodePath("Aft Ballast")]
 
 [node name="Collider" type="CollisionShape3D" parent="." unique_id=50161810]
-transform = Transform3D(0.999998, 0, 2.57045e-07, 0, 0.999998, 0, -2.04891e-07, 0, 0.999998, -0.972511, -3.7498, 3.8147e-06)
+transform = Transform3D(0.999998, 0, 2.57045e-07, 0, 0.999998, 0, -2.04891e-07, 0, 0.999998, -0.972511, -0.5460404, 0.106040716)
 shape = SubResource("BoxShape3D_82xsv")
 debug_color = Color(0.761639, 0.449833, 0.105389, 1)
 
-[node name="ShipModel" type="Node3D" parent="." unique_id=912749708]
+[node name="boat" parent="." unique_id=331109473 instance=ExtResource("8_2ib73")]
+transform = Transform3D(-6.556708e-08, 0, -1.5, 0, 1.5, 0, 1.5, 0, -6.556708e-08, 1.508625, -3.5490909, 0)
 
-[node name="Placeholder" type="Node3D" parent="ShipModel" unique_id=318545767]
+[node name="StaticBody3D" parent="boat/body" parent_id_path=PackedInt32Array(331109473, 2136809977) index="0" unique_id=60124819]
+collision_layer = 2
 
-[node name="Hull" type="MeshInstance3D" parent="ShipModel/Placeholder" unique_id=617244941]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.5, 0)
-mesh = SubResource("BoxMesh_hull")
-surface_material_override/0 = SubResource("StandardMaterial3D_hull")
+[node name="StaticBody3D" parent="boat/cabin" parent_id_path=PackedInt32Array(331109473, 242130612) index="0" unique_id=882874939]
+collision_layer = 2
 
-[node name="Deck" type="MeshInstance3D" parent="ShipModel/Placeholder" unique_id=1500653787]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.2, 0)
-mesh = SubResource("BoxMesh_deck")
-surface_material_override/0 = SubResource("StandardMaterial3D_deck")
+[node name="StaticBody3D" parent="boat/exhaust_pipe" parent_id_path=PackedInt32Array(331109473, 480545196) index="0" unique_id=820711434]
+collision_layer = 2
 
-[node name="Cabin" type="MeshInstance3D" parent="ShipModel/Placeholder" unique_id=1124700238]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 2, 0)
-mesh = SubResource("BoxMesh_cabin")
-surface_material_override/0 = SubResource("StandardMaterial3D_cabin")
+[node name="window_inside" parent="boat" index="3" unique_id=720526419]
+metadata/_edit_lock_ = true
 
-[node name="FunnelProp" type="Node3D" parent="ShipModel" unique_id=1665002860]
-script = ExtResource("7_swap")
-prop_id = &"ship_funnel"
+[node name="StaticBody3D" parent="boat/floor_top" parent_id_path=PackedInt32Array(331109473, 156844424) index="0" unique_id=1101496462]
+collision_layer = 2
 
-[node name="Variant0" type="Node3D" parent="ShipModel/FunnelProp" unique_id=1868986340]
+[node name="StaticBody3D" parent="boat/stairs_control/stair" parent_id_path=PackedInt32Array(331109473, 218840542) index="0" unique_id=1297987448]
+collision_layer = 2
 
-[node name="Funnel" type="MeshInstance3D" parent="ShipModel/FunnelProp/Variant0" unique_id=1114649588]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 5.75, 0)
-mesh = SubResource("CylinderMesh_funnel")
-surface_material_override/0 = SubResource("StandardMaterial3D_funnel")
+[node name="StaticBody3D" parent="boat/back_railing" parent_id_path=PackedInt32Array(331109473, 252420435) index="0" unique_id=1708038223]
+collision_layer = 2
 
-[node name="Variant1" type="Node3D" parent="ShipModel/FunnelProp" unique_id=537193091]
+[node name="StaticBody3D" parent="boat/control_steering/control_panel" parent_id_path=PackedInt32Array(331109473, 1276692023) index="0" unique_id=1234939786]
+collision_layer = 2
+
+[node name="StaticBody3D" parent="boat/top_door" parent_id_path=PackedInt32Array(331109473, 1160456845) index="0" unique_id=1128998539]
+collision_layer = 2
+
+[node name="window_outside" parent="boat" index="9" unique_id=2088313751]
+metadata/_edit_lock_ = true
+
+[node name="StaticBody3D" parent="boat/top_door_001" parent_id_path=PackedInt32Array(331109473, 1731473996) index="0" unique_id=1953849692]
+collision_layer = 2
+
+[node name="water_repell" type="Area3D" parent="boat" unique_id=2046199635]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1660378, 0)
 visible = false
+collision_layer = 0
+collision_mask = 0
+monitoring = false
+monitorable = false
+script = ExtResource("3_2ib73")
+mode = 1
 
-[node name="FunnelCrooked" type="MeshInstance3D" parent="ShipModel/FunnelProp/Variant1" unique_id=2116166077]
-transform = Transform3D(0.9397, -0.4788, 0, 0.342, 1.3156, 0, 0, 0, 1, 10, 6.3, 0)
-mesh = SubResource("CylinderMesh_funnel")
-surface_material_override/0 = SubResource("StandardMaterial3D_funnelpale")
+[node name="TestWaveHoleShape" type="CollisionShape3D" parent="boat/water_repell" unique_id=1245307623]
+transform = Transform3D(1, 0, 4.2563406e-20, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0.09279599, -0.17924118, 2.5448785)
+shape = SubResource("CapsuleShape3D_2ib73")
+debug_color = Color(0.97, 0, 0.4688336, 1)
+
+[node name="ShipModel" type="Node3D" parent="." unique_id=912749708]
 
 [node name="WheelModel" type="Node3D" parent="." unique_id=210063994]
 transform = Transform3D(1, 4.440892e-15, 0, -1.5543122e-15, 1, 1.7763568e-14, 0, 0, 1, -0.4371643, 0.94984293, 0.18908024)
@@ -136,7 +130,7 @@ mesh = SubResource("BoxMesh_ryguw")
 surface_material_override/0 = SubResource("StandardMaterial3D_cabin")
 
 [node name="FS Cell" type="MeshInstance3D" parent="." unique_id=544734856 node_paths=PackedStringArray("parent")]
-transform = Transform3D(1, 6.217249e-15, 0, -1.5543122e-15, 1, 2.4868996e-14, 0, 0, 1, -16, -2.4097002, -3.0000114)
+transform = Transform3D(1, 6.217249e-15, 0, -1.5543122e-15, 1, 2.4868996e-14, 0, 0, 1, -16, -0.9220474, -9.56982)
 visible = false
 mesh = SubResource("BoxMesh_2cqfq")
 script = ExtResource("2_cell")
@@ -145,7 +139,7 @@ cell_density_kg_per_m3 = 100.0
 calc_f_gravity = true
 
 [node name="FP Cell" type="MeshInstance3D" parent="." unique_id=109064735 node_paths=PackedStringArray("parent")]
-transform = Transform3D(1, 6.217249e-15, 0, -1.5543122e-15, 1, 2.4868996e-14, 0, 0, 1, -16, -2.4097, 2.9999895)
+transform = Transform3D(1, 6.217249e-15, 0, -1.5543122e-15, 1, 2.4868996e-14, 0, 0, 1, -16, -0.92204714, 9.417013)
 visible = false
 mesh = SubResource("BoxMesh_vivmo")
 script = ExtResource("2_cell")
@@ -154,7 +148,7 @@ cell_density_kg_per_m3 = 100.0
 calc_f_gravity = true
 
 [node name="MS Cell" type="MeshInstance3D" parent="." unique_id=1685032399 node_paths=PackedStringArray("parent")]
-transform = Transform3D(1, 6.217249e-15, 0, -1.5543122e-15, 1, 2.4868996e-14, 0, 0, 1, 0, -2.4097002, -3.000011)
+transform = Transform3D(1, 6.217249e-15, 0, -1.5543122e-15, 1, 2.4868996e-14, 0, 0, 1, 0, -0.9220474, -9.56982)
 visible = false
 mesh = SubResource("BoxMesh_yaehf")
 script = ExtResource("2_cell")
@@ -163,7 +157,7 @@ cell_density_kg_per_m3 = 100.0
 calc_f_gravity = true
 
 [node name="MP Cell" type="MeshInstance3D" parent="." unique_id=1062234690 node_paths=PackedStringArray("parent")]
-transform = Transform3D(1, 6.217249e-15, 0, -1.5543122e-15, 1, 2.4868996e-14, 0, 0, 1, 0, -2.4097, 2.9999886)
+transform = Transform3D(1, 6.217249e-15, 0, -1.5543122e-15, 1, 2.4868996e-14, 0, 0, 1, 0, -0.92204714, 9.417012)
 visible = false
 mesh = SubResource("BoxMesh_074og")
 script = ExtResource("2_cell")
@@ -172,7 +166,7 @@ cell_density_kg_per_m3 = 100.0
 calc_f_gravity = true
 
 [node name="AS Cell" type="MeshInstance3D" parent="." unique_id=298764065 node_paths=PackedStringArray("parent")]
-transform = Transform3D(1, 6.217249e-15, 0, -1.5543122e-15, 1, 2.4868996e-14, 0, 0, 1, 13.999992, -0.063064575, -2.0000105)
+transform = Transform3D(1, 6.217249e-15, 0, -1.5543122e-15, 1, 2.4868996e-14, 0, 0, 1, 15.535955, -0.90881443, -9.119499)
 visible = false
 mesh = SubResource("BoxMesh_vivmo")
 script = ExtResource("2_cell")
@@ -181,7 +175,7 @@ cell_density_kg_per_m3 = 100.0
 calc_f_gravity = true
 
 [node name="AP Cell" type="MeshInstance3D" parent="." unique_id=966111326 node_paths=PackedStringArray("parent")]
-transform = Transform3D(1, 6.217249e-15, 0, -1.5543122e-15, 1, 2.4868996e-14, 0, 0, 1, 14, -0.063064575, 1.9999895)
+transform = Transform3D(1, 6.217249e-15, 0, -1.5543122e-15, 1, 2.4868996e-14, 0, 0, 1, 15.535963, -0.90881443, 9.519293)
 visible = false
 mesh = SubResource("BoxMesh_2cqfq")
 script = ExtResource("2_cell")
@@ -231,7 +225,7 @@ script = ExtResource("4_device")
 transform = Transform3D(1, 8.881784e-16, 0, -1.5543122e-15, 1, 3.5527137e-15, 0, 0, 1, -0.013648987, 1, 0.13551521)
 
 [node name="HelmInteractable" type="Area3D" parent="." unique_id=646670221 node_paths=PackedStringArray("ship", "helm_marker", "highlight_mesh")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.900901, 1, 0.16024303)
 collision_layer = 4
 collision_mask = 0
 script = ExtResource("5_helm")
@@ -244,7 +238,7 @@ transform = Transform3D(1, 1.7763568e-15, 0, -1.5543122e-15, 1, 7.1054274e-15, 0
 shape = SubResource("SphereShape3D_helm")
 
 [node name="LadderPort" type="Area3D" parent="." unique_id=1198969120 node_paths=PackedStringArray("deck_point")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, 4.3)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.900901, -2, 6.4753733)
 collision_layer = 4
 collision_mask = 2
 script = ExtResource("6_ladder")
@@ -256,7 +250,7 @@ shape = SubResource("SphereShape3D_ladder")
 [node name="StairsModel" type="Node3D" parent="LadderPort" unique_id=1310250006]
 
 [node name="Placeholder" type="MeshInstance3D" parent="LadderPort/StairsModel" unique_id=727024763]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -0.15)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7549925, 0.5, -0.1500001)
 mesh = SubResource("BoxMesh_ladder")
 surface_material_override/0 = SubResource("StandardMaterial3D_ladder")
 
@@ -264,7 +258,7 @@ surface_material_override/0 = SubResource("StandardMaterial3D_ladder")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 2.5)
 
 [node name="LadderStarboard" type="Area3D" parent="." unique_id=2085888897 node_paths=PackedStringArray("deck_point")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, -4.3)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.851071, -2, -7.0632763)
 collision_layer = 4
 collision_mask = 2
 script = ExtResource("6_ladder")
@@ -283,5 +277,18 @@ surface_material_override/0 = SubResource("StandardMaterial3D_ladder")
 [node name="LadderStarboardDeck" type="Marker3D" parent="." unique_id=187559225]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, -2.5)
 
-[node name="boat" parent="." unique_id=331109473 instance=ExtResource("8_2ib73")]
-transform = Transform3D(-4.371142e-08, 0, -1.0000007, 0, 1, 0, 1.0000007, 0, -4.371142e-08, 1.508625, -5.081698, 0)
+[node name="EngineLoop" type="AudioStreamPlayer3D" parent="." unique_id=1949703198]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.5, -1, 0)
+max_distance = 80.0
+
+[node name="HullWaterLoop" type="AudioStreamPlayer3D" parent="." unique_id=1764020330]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+autoplay = true
+max_distance = 40.0
+
+[node name="CreakLoop" type="AudioStreamPlayer3D" parent="." unique_id=772925528]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+autoplay = true
+max_distance = 25.0
+
+[editable path="boat"]

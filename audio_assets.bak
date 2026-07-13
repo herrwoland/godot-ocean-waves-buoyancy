@@ -1,0 +1,18 @@
+Status,Sound,Type,Playback,Scene,Node,Positioned At,Direction / Notes,Suggested Length
+NEEDED,Foghorn,3D positional,Loop (blast + long silence in one file),main.tscn,FoghornPlayer,Lighthouse lamp,The sound-landmark of the ocean; audible up to 1.5 km; mournful and slow,20-40 s incl. silence
+NEEDED,Ship engine,3D positional,Loop,ferry.tscn,EngineLoop,Stern of the ferry,Old diesel chug; code drives volume/pitch with throttle so record at steady RPM,4-8 s seamless loop
+NEEDED,Hull water lapping,3D positional,Loop (autoplays),ferry.tscn,HullWaterLoop,Waterline midship,Gentle slaps of water on the hull heard while on deck,6-12 s seamless loop
+NEEDED,Ship creaks,3D positional,Loop (autoplays),ferry.tscn,CreakLoop,Deck,Sparse wood/metal groans; mostly silence between creaks; only audible on board,15-30 s seamless loop
+NEEDED,Hunter presence throb,3D positional,Loop,hunter_fish.tscn,PresenceLoop,Body center,Low sub-bass pulse while it stalks; the player should FEEL it before seeing it,6-12 s seamless loop
+NEEDED,Hunter attack sting,3D positional,One-shot,hunter_fish.tscn,AttackSound,Mouth,Plays the instant the player spots it and the lunge begins; violent water rush / roar,2-4 s
+NEEDED,Hunter bite,3D positional,One-shot,hunter_fish.tscn,BiteSound,Mouth,Jaws slamming shut on the grab; deep and final,1-2 s
+NEEDED,Eel presence,3D positional,Loop (autoplays),eel.tscn,EelLoop,Eel body,Whatever the well-eel sounds like; wet and close,6-12 s seamless loop
+NEEDED,Music / score,Non-positional,Loop (autoplays),main.tscn,MusicPlayer,-,Melancholic drone/score bed for the whole game,1-3 min seamless loop
+NEEDED,Water splash,Non-positional,One-shot,player.tscn,SplashPlayer,-,Player entering the water,1-2 s
+NEEDED,Surfacing gasp,Non-positional,One-shot,player.tscn,GaspPlayer,-,Breaking the surface after a dive longer than 4 s,1-2 s
+NEEDED,Paper rustle,Non-positional,One-shot,note_view.tscn,PaperPlayer,-,Opening/closing letters and notes; plays while game is paused,0.5-1 s
+PROVIDED,Ocean ambience,Non-positional,Loop (autoplays),main.tscn,OceanAudioPlayer,-,Already in: assets/ocean_loop.wav,-
+PROVIDED,Wind ambience,Non-positional,Loop (autoplays),main.tscn,WindAudioPlayer,-,Already in: assets/wind_loop.wav,-
+NEEDED,Heartbeat,Non-positional,Loop,player.tscn,HeartbeatPlayer,-,Currently code-generated synth; replace with a real recording; code drives volume/pitch with remaining breath,1-2 s seamless loop (two thumps)
+NEEDED,Deep passing rumble,Non-positional,One-shot,(code: deep_passing.gd),-,-,Currently code-generated synth; the day-2 something-enormous-below moment; swells in and dies,~6 s
+NEEDED,Strangeness sting,Non-positional,One-shot,(code: strangeness_sting.gd),-,-,Currently code-generated synth; plays when the world quietly changes,2-3 s

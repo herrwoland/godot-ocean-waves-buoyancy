@@ -24,6 +24,8 @@ enum State { WALK, SWIM, PILOT }
 @onready var carry_controller: Node = $CarryController
 @onready var splash_particles: GPUParticles3D = $SplashParticles
 @onready var surface_ripples: GPUParticles3D = $SurfaceRipples
+@onready var splash_player: AudioStreamPlayer = get_node_or_null(^'SplashPlayer')
+@onready var gasp_player: AudioStreamPlayer = get_node_or_null(^'GaspPlayer')
 
 var state: State = State.WALK
 var piloted_ship: Node = null
@@ -40,6 +42,9 @@ const GRAVITY: float = 9.8
 
 var _lowpass_idx: int = -1
 var _ears_underwater: bool = false
+var _submerged_at_msec: int = 0 # when the ears last went under, for the surfacing gasp
+
+const GASP_AFTER_SECONDS := 4.0 # dives shorter than this surface without a gasp
 
 func _ready() -> void:
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
@@ -58,6 +63,11 @@ func _update_underwater_audio() -> void:
 	if underwater != _ears_underwater:
 		_ears_underwater = underwater
 		AudioServer.set_bus_effect_enabled(0, _lowpass_idx, underwater)
+		if underwater:
+			_submerged_at_msec = Time.get_ticks_msec()
+		elif Time.get_ticks_msec() - _submerged_at_msec > GASP_AFTER_SECONDS * 1000.0 \
+				and gasp_player and gasp_player.stream and not captured:
+			gasp_player.play() # breaking the surface after a long dive
 
 func _update_interact_hover() -> void:
 	var target: Object = null
@@ -237,6 +247,8 @@ func _check_exit_swim() -> void:
 func _play_splash(surface_y: float) -> void:
 	splash_particles.global_position = Vector3(global_position.x, surface_y, global_position.z)
 	splash_particles.restart()
+	if splash_player and splash_player.stream:
+		splash_player.play()
 
 func _try_interact() -> void:
 	if state == State.PILOT:

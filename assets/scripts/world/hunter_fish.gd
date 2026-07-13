@@ -41,6 +41,10 @@ enum State { LURK, SNEAK, ATTACK, CARRY }
 @export var mouth: Node3D # marker at the mouth; kills and carrying anchor here
 @export var mouth_area: Area3D # the actual mouth volume; overlap with the player = caught
 
+@onready var _presence_loop: AudioStreamPlayer3D = get_node_or_null(^'PresenceLoop')
+@onready var _attack_sound: AudioStreamPlayer3D = get_node_or_null(^'AttackSound')
+@onready var _bite_sound: AudioStreamPlayer3D = get_node_or_null(^'BiteSound')
+
 var state := State.LURK
 var player: Node3D = null
 
@@ -97,6 +101,7 @@ func begin_hunt(target: Node3D) -> void:
 	player = target
 	_stalk_distance = stalk_behind_distance
 	state = State.SNEAK
+	_play(_presence_loop) # the low throb of something below, for as long as it hunts
 
 ## Prey escaped (surfaced, climbed out, reached safe water). Ignored while
 ## carrying: the drag into the deep always ends in the day reset.
@@ -105,12 +110,16 @@ func end_hunt() -> void:
 		return
 	set_jaw_open(false)
 	state = State.LURK
+	if _presence_loop:
+		_presence_loop.stop()
 
 ## Hard reset for the morning restage: drop everything, close the jaw.
 func abort_hunt() -> void:
 	set_jaw_open(false)
 	state = State.LURK
 	player = null
+	if _presence_loop:
+		_presence_loop.stop()
 
 func is_busy() -> bool:
 	return state != State.LURK
@@ -165,6 +174,7 @@ func _begin_attack() -> void:
 	state = State.ATTACK
 	_attack_left = attack_give_up_time
 	_jaw_opened = false # the gape waits for the last jaw_open_distance meters
+	_play(_attack_sound)
 
 func _process_attack(delta: float) -> void:
 	_steer_toward(player.global_position - mouth_position(), attack_turn_speed, delta)
@@ -192,6 +202,7 @@ func _begin_carry() -> void:
 	_pull_left = snatch_pull_time
 	_died_emitted = false
 	set_jaw_open(false)
+	_play(_bite_sound)
 	if player.has_method(&'set_captured'):
 		player.set_captured(true)
 
@@ -250,6 +261,11 @@ func mouth_position() -> Vector3:
 
 func _mouth_to_player() -> float:
 	return mouth_position().distance_to(player.global_position)
+
+## Play helper that stays silent (and harmless) until a stream is assigned.
+func _play(sound: AudioStreamPlayer3D) -> void:
+	if sound and sound.stream:
+		sound.play()
 
 func _player_camera() -> Camera3D:
 	return player.camera if &'camera' in player else null

@@ -10,7 +10,24 @@ extends "res://assets/scripts/mass_calculation.gd"
 
 @export var water: Node
 
+@onready var _engine_loop: AudioStreamPlayer3D = get_node_or_null(^'EngineLoop')
+
 func _ready() -> void:
 	for cell in buoyant_cells:
 		cell.water = water
 	super._ready()
+
+## The engine only runs while someone is at the helm; throttle drives its
+## volume and pitch so pushing the lever is audible, not just visible.
+func _physics_process(delta: float) -> void:
+	super._physics_process(delta)
+	if _engine_loop == null or _engine_loop.stream == null:
+		return
+	if piloted:
+		if not _engine_loop.playing:
+			_engine_loop.play()
+		var effort := absf(helm_throttle)
+		_engine_loop.volume_db = lerpf(-16.0, -4.0, effort)
+		_engine_loop.pitch_scale = lerpf(0.9, 1.25, effort)
+	elif _engine_loop.playing:
+		_engine_loop.stop()

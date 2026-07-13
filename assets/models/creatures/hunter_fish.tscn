@@ -50,4 +50,15 @@ omni_attenuation = 0.355
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.3514633, -40.930237)
 shape = SubResource("SphereShape3D_kb4ww")
 
+[node name="PresenceLoop" type="AudioStreamPlayer3D" parent="."]
+max_distance = 150.0
+
+[node name="AttackSound" type="AudioStreamPlayer3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.35, -40.93)
+max_distance = 250.0
+
+[node name="BiteSound" type="AudioStreamPlayer3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.35, -40.93)
+max_distance = 250.0
+
 [editable path="fish_01"]
