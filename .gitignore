@@ -25,3 +25,4 @@ GodotOceanWaves/
 # Office temp/lock/backup files (Excel holds these while a workbook is open)
 ~$*
 *.bak
+backups/
