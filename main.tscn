@@ -45,6 +45,7 @@
 [ext_resource type="PackedScene" uid="uid://dtaokrqog4ywo" path="res://assets/models/lighthouse/Light_House_0.1.glb" id="44_gngh3"]
 [ext_resource type="PackedScene" path="res://assets/models/package.tscn" id="44_package"]
 [ext_resource type="PackedScene" uid="uid://c1a5366rpgr2k" path="res://assets/models/ship/ferry.tscn" id="45_ferry"]
+[ext_resource type="Script" uid="uid://ckpss4psgcjt4" path="res://addons/lite_terrain/map.gd" id="47_wnkbs"]
 [ext_resource type="PackedScene" uid="uid://c4j4cc8pl3fqr" path="res://assets/models/creatures/hunter_fish.tscn" id="50_hrvbo"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_d13ii"]
@@ -377,7 +378,8 @@ shadow_blur = 5.0
 sky_mode = 1
 
 [node name="Water" type="MeshInstance3D" parent="." unique_id=946478083]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -79, 0, 85)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 225, 0, 947)
+visible = false
 sorting_offset = 999.0
 material_override = ExtResource("5_lt75t")
 cast_shadow = 0
@@ -525,6 +527,7 @@ update_mode = 1
 
 [node name="Shore" type="StaticBody3D" parent="." unique_id=362217321]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -130, 1, 10)
+visible = false
 
 [node name="ShoreCollider" type="CollisionShape3D" parent="Shore" unique_id=202965370]
 shape = SubResource("BoxShape3D_shore")
@@ -904,6 +907,9 @@ script = ExtResource("42_sting")
 
 [node name="HunterFish" parent="." unique_id=2037867007 instance=ExtResource("50_hrvbo")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 320.1753, -81.338844, 221.668)
+
+[node name="LiteTerrain" type="StaticBody3D" parent="." unique_id=302229497]
+script = ExtResource("47_wnkbs")
 
 [editable path="StonyBeach/Light_House_0_1"]
 [editable path="StonyBeach/Light_House_0_1/Light_House_light_0_1"]
