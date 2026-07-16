@@ -20,7 +20,7 @@
 [ext_resource type="PackedScene" uid="uid://c7pflpm1pnx7k" path="res://assets/models/island.tscn" id="17_island"]
 [ext_resource type="PackedScene" uid="uid://cf2rcpsk3hrt1" path="res://assets/ui/start_screen.tscn" id="18_start"]
 [ext_resource type="PackedScene" path="res://assets/ui/pause_menu.tscn" id="19_pause"]
-[ext_resource type="PackedScene" path="res://assets/ui/settings_menu.tscn" id="21_settings"]
+[ext_resource type="PackedScene" uid="uid://dt05m04hsc0p0" path="res://assets/ui/settings_menu.tscn" id="21_settings"]
 [ext_resource type="Shader" uid="uid://bo8roxh5bsnai" path="res://assets/shaders/post/ps1_post.gdshader" id="24_ps1"]
 [ext_resource type="Script" uid="uid://cfdhchsvnkb3e" path="res://assets/ui/fps_meter.gd" id="25_fps"]
 [ext_resource type="Script" uid="uid://d23qkx5iyk16y" path="res://assets/scripts/core/mission_controller.gd" id="26_mission"]
@@ -34,7 +34,7 @@
 [ext_resource type="Script" uid="uid://1yls1dmbq84k" path="res://assets/scripts/world/sanity_director.gd" id="37_sanity"]
 [ext_resource type="Script" uid="uid://c7n8dp7f8tkeu" path="res://assets/scripts/world/wave_blocker.gd" id="38_blocker"]
 [ext_resource type="PackedScene" uid="uid://bhu1820hsu76y" path="res://assets/models/lighthouse/Light_House_light_0.1.glb" id="38_qnost"]
-[ext_resource type="PackedScene" path="res://assets/models/isle_of_dead.tscn" id="39_isle"]
+[ext_resource type="PackedScene" uid="uid://bgivk2sfjjyt6" path="res://assets/models/isle_of_dead.tscn" id="39_isle"]
 [ext_resource type="PackedScene" path="res://assets/models/creatures/ending_fish.tscn" id="40_endfish"]
 [ext_resource type="SphereMesh" uid="uid://cjn1mj3khhi1r" path="res://assets/models/lighthouse/lamp_bulb_mesh.tres" id="40_f6a44"]
 [ext_resource type="Material" uid="uid://dojap3n02bcrs" path="res://assets/models/lighthouse/lamp_bulb_material.tres" id="41_0cbny"]
@@ -377,7 +377,7 @@ shadow_blur = 5.0
 sky_mode = 1
 
 [node name="Water" type="MeshInstance3D" parent="." unique_id=946478083]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 424, 0, 193)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -79, 0, 85)
 sorting_offset = 999.0
 material_override = ExtResource("5_lt75t")
 cast_shadow = 0
@@ -425,7 +425,7 @@ stream = ExtResource("8_6r5si")
 volume_db = -30.0
 autoplay = true
 
-[node name="MusicPlayer" type="AudioStreamPlayer" parent="."]
+[node name="MusicPlayer" type="AudioStreamPlayer" parent="." unique_id=799557590]
 volume_db = -8.0
 autoplay = true
 
@@ -710,33 +710,39 @@ water = NodePath("../Water")
 
 [node name="NorthStripShape" type="CollisionShape3D" parent="StonyBeach" unique_id=1090455946]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -130, 1, -32.5)
+visible = false
 shape = SubResource("BoxShape3D_beachstrip")
 
 [node name="NorthStripMesh" type="MeshInstance3D" parent="StonyBeach" unique_id=1442753571]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -130, 1, -32.5)
+visible = false
 mesh = SubResource("BoxMesh_beachstrip")
 surface_material_override/0 = SubResource("StandardMaterial3D_stone")
 
 [node name="SouthStripShape" type="CollisionShape3D" parent="StonyBeach" unique_id=2072532068]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -130, 1, 52.5)
+visible = false
 shape = SubResource("BoxShape3D_beachstrip")
 
 [node name="SouthStripMesh" type="MeshInstance3D" parent="StonyBeach" unique_id=938977984]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -130, 1, 52.5)
+visible = false
 mesh = SubResource("BoxMesh_beachstrip")
 surface_material_override/0 = SubResource("StandardMaterial3D_stone")
 
 [node name="WestStripShape" type="CollisionShape3D" parent="StonyBeach" unique_id=988697932]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -172.5, 1, 10)
+visible = false
 shape = SubResource("BoxShape3D_beachwest")
 
 [node name="WestStripMesh" type="MeshInstance3D" parent="StonyBeach" unique_id=1587947061]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -172.5, 1, 10)
+visible = false
 mesh = SubResource("BoxMesh_beachwest")
 surface_material_override/0 = SubResource("StandardMaterial3D_stone")
 
 [node name="Light_House_0_1" parent="StonyBeach" unique_id=1901700970 instance=ExtResource("44_gngh3")]
-transform = Transform3D(0.47568607, 0, 0, 0, 0.47568607, 0, 0, 0, 0.47568607, -559.3297, 341.87628, -331.99475)
+transform = Transform3D(0.47568607, 0, 0, 0, 0.47568607, 0, 0, 0, 0.47568607, -559.3297, 357.23022, -331.99475)
 
 [node name="Light_House_light_0_1" parent="StonyBeach/Light_House_0_1" unique_id=838122245 instance=ExtResource("38_qnost")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1140.4963, -80.80127)
@@ -760,11 +766,12 @@ transform = Transform3D(3.912, 0, 0, 0, 3.912, 0, 0, 0, 3.912, 0, 44.14673, 0)
 mesh = ExtResource("40_f6a44")
 surface_material_override/0 = ExtResource("41_0cbny")
 
-[node name="FoghornPlayer" type="AudioStreamPlayer3D" parent="StonyBeach/Light_House_0_1/Light_House_light_0_1"]
+[node name="FoghornPlayer" type="AudioStreamPlayer3D" parent="StonyBeach/Light_House_0_1/Light_House_light_0_1" unique_id=1141766422]
 autoplay = true
 max_distance = 1500.0
 
 [node name="RockWalls" type="StaticBody3D" parent="." unique_id=1076589946]
+visible = false
 
 [node name="WestWallShape" type="CollisionShape3D" parent="RockWalls" unique_id=37088972]
 transform = Transform3D(0.99255, 0, -0.12187, 0, 1, 0, 0.12187, 0, 0.99255, -181, 14, 10)
@@ -847,6 +854,11 @@ spot_angle = 4.0
 script = ExtResource("35_creatures")
 player = NodePath("../Player")
 water = NodePath("../Water")
+creature_count = 2
+stalker_count = 2
+hunt_depth = 6.0
+orbit_radius_range = Vector2(1800, 4200)
+orbit_depth_range = Vector2(-1400, -800)
 
 [node name="SanityDirector" type="Node" parent="." unique_id=1057535268]
 script = ExtResource("37_sanity")

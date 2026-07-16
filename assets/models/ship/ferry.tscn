@@ -8,6 +8,7 @@
 [ext_resource type="Script" uid="uid://b3s502b801kf" path="res://assets/scripts/helm_interactable.gd" id="5_helm"]
 [ext_resource type="Script" uid="uid://cs2x7rmusrtt6" path="res://assets/scripts/interactables/ship_ladder.gd" id="6_ladder"]
 [ext_resource type="PackedScene" uid="uid://bs7x4dgp16lr5" path="res://assets/models/boat/boat_0.1.glb" id="8_2ib73"]
+[ext_resource type="PackedScene" uid="uid://d327mym4cwyr7" path="res://assets/models/boat/ladder.glb" id="9_4dvsp"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_82xsv"]
 size = Vector3(44, 8.062927, 13.075356)
@@ -15,12 +16,6 @@ size = Vector3(44, 8.062927, 13.075356)
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_2ib73"]
 radius = 4.768
 height = 28.039642
-
-[sub_resource type="BoxMesh" id="BoxMesh_ryguw"]
-size = Vector3(1, 2, 1)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cabin"]
-albedo_color = Color(0.9, 0.9, 0.88, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_2cqfq"]
 size = Vector3(12, 4, 3.5)
@@ -41,17 +36,12 @@ size = Vector3(10, 3, 5)
 [sub_resource type="BoxMesh" id="BoxMesh_getpj"]
 size = Vector3(42, 8, 8)
 
-[sub_resource type="SphereShape3D" id="SphereShape3D_helm"]
-radius = 1.1981678
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_2ib73"]
+height = 0.17443848
+radius = 0.7788086
 
-[sub_resource type="SphereShape3D" id="SphereShape3D_ladder"]
-radius = 3.902697
-
-[sub_resource type="BoxMesh" id="BoxMesh_ladder"]
-size = Vector3(0.5, 4.5, 0.2)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ladder"]
-albedo_color = Color(0.15, 0.14, 0.13, 1)
+[sub_resource type="BoxShape3D" id="BoxShape3D_s6qt6"]
+size = Vector3(3.3085938, 13.639282, 2.0875854)
 
 [node name="Ferry" type="RigidBody3D" unique_id=693725928 node_paths=PackedStringArray("buoyant_cells", "mesh", "engine_cells")]
 collision_layer = 4
@@ -77,6 +67,9 @@ collision_layer = 2
 
 [node name="StaticBody3D" parent="boat/cabin" parent_id_path=PackedInt32Array(331109473, 242130612) index="0" unique_id=882874939]
 collision_layer = 2
+
+[node name="CollisionShape3D" parent="boat/cabin/StaticBody3D" index="0" unique_id=399572911]
+metadata/_edit_lock_ = true
 
 [node name="StaticBody3D" parent="boat/exhaust_pipe" parent_id_path=PackedInt32Array(331109473, 480545196) index="0" unique_id=820711434]
 collision_layer = 2
@@ -121,13 +114,6 @@ shape = SubResource("CapsuleShape3D_2ib73")
 debug_color = Color(0.97, 0, 0.4688336, 1)
 
 [node name="ShipModel" type="Node3D" parent="." unique_id=912749708]
-
-[node name="WheelModel" type="Node3D" parent="." unique_id=210063994]
-transform = Transform3D(1, 4.440892e-15, 0, -1.5543122e-15, 1, 1.7763568e-14, 0, 0, 1, -0.4371643, 0.94984293, 0.18908024)
-
-[node name="Placeholder" type="MeshInstance3D" parent="WheelModel" unique_id=907863029]
-mesh = SubResource("BoxMesh_ryguw")
-surface_material_override/0 = SubResource("StandardMaterial3D_cabin")
 
 [node name="FS Cell" type="MeshInstance3D" parent="." unique_id=544734856 node_paths=PackedStringArray("parent")]
 transform = Transform3D(1, 6.217249e-15, 0, -1.5543122e-15, 1, 2.4868996e-14, 0, 0, 1, -16, -0.9220474, -9.56982)
@@ -212,9 +198,8 @@ far = 10000.0
 script = ExtResource("3_camera")
 
 [node name="CoordDevice" type="Label3D" parent="." unique_id=1883220637]
-transform = Transform3D(0.19999994, 1.9984014e-15, -1.1175871e-08, -4.052314e-15, 0.2, 5.3290705e-15, 1.1175871e-08, 0, 0.19999994, -0.5263748, 2.1358566, 0.12020683)
+transform = Transform3D(2.4335947e-09, 6.3130143e-22, 0.19999994, -4.052314e-15, 0.2, 5.3290697e-15, -0.19999994, -1.998402e-15, 2.4335947e-09, -3.0367432, 5.5119705, -0.11337018)
 pixel_size = 0.008
-billboard = 1
 render_priority = 4
 modulate = Color(1, 0.75, 0.35, 1)
 text = "0000.0 N  0000.0 W"
@@ -222,60 +207,58 @@ font_size = 48
 script = ExtResource("4_device")
 
 [node name="HelmPosition" type="Marker3D" parent="." unique_id=1679096902]
-transform = Transform3D(1, 8.881784e-16, 0, -1.5543122e-15, 1, 3.5527137e-15, 0, 0, 1, -0.013648987, 1, 0.13551521)
+transform = Transform3D(1, 8.881784e-16, 0, -1.5543122e-15, 1, 3.5527137e-15, 0, 0, 1, -2.218934, 4.3993506, 0.0023938417)
 
 [node name="HelmInteractable" type="Area3D" parent="." unique_id=646670221 node_paths=PackedStringArray("ship", "helm_marker", "highlight_mesh")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.900901, 1, 0.16024303)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5875483, 4.885566, 0.0027356148)
 collision_layer = 4
 collision_mask = 0
 script = ExtResource("5_helm")
 ship = NodePath("..")
 helm_marker = NodePath("../HelmPosition")
-highlight_mesh = NodePath("../WheelModel")
+highlight_mesh = NodePath("../boat/control_steering/control_panel")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="HelmInteractable" unique_id=122829786]
-transform = Transform3D(1, 1.7763568e-15, 0, -1.5543122e-15, 1, 7.1054274e-15, 0, 0, 1, -0.13716125, 0.25847006, -0.013819218)
-shape = SubResource("SphereShape3D_helm")
+transform = Transform3D(-4.371139e-08, -1, -7.1054274e-15, 1, -4.371139e-08, -3.105881e-22, 0, 0, 1, -0.002090454, 0.25847006, -0.013819218)
+shape = SubResource("CylinderShape3D_2ib73")
 
 [node name="LadderPort" type="Area3D" parent="." unique_id=1198969120 node_paths=PackedStringArray("deck_point")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.900901, -2, 6.4753733)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.7573156, -2, 6.4753733)
 collision_layer = 4
 collision_mask = 2
 script = ExtResource("6_ladder")
 deck_point = NodePath("../LadderPortDeck")
 
 [node name="LadderPortShape" type="CollisionShape3D" parent="LadderPort" unique_id=1272002090]
-shape = SubResource("SphereShape3D_ladder")
+transform = Transform3D(1, 0, 0, 0, 0.9659258, 0.25881904, 0, -0.25881904, 0.9659258, -0.0009765625, -2.513629, 1.6562576)
+shape = SubResource("BoxShape3D_s6qt6")
 
 [node name="StairsModel" type="Node3D" parent="LadderPort" unique_id=1310250006]
 
-[node name="Placeholder" type="MeshInstance3D" parent="LadderPort/StairsModel" unique_id=727024763]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7549925, 0.5, -0.1500001)
-mesh = SubResource("BoxMesh_ladder")
-surface_material_override/0 = SubResource("StandardMaterial3D_ladder")
+[node name="ladder" parent="LadderPort/StairsModel" unique_id=549469516 instance=ExtResource("9_4dvsp")]
+transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, -4.359698, -0.8362036)
 
 [node name="LadderPortDeck" type="Marker3D" parent="." unique_id=311907477]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 2.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.8624725, -0.49571723, 5.869631)
 
 [node name="LadderStarboard" type="Area3D" parent="." unique_id=2085888897 node_paths=PackedStringArray("deck_point")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.851071, -2, -7.0632763)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.7342877, -2, -7.0632763)
 collision_layer = 4
 collision_mask = 2
 script = ExtResource("6_ladder")
 deck_point = NodePath("../LadderStarboardDeck")
 
 [node name="LadderStarboardShape" type="CollisionShape3D" parent="LadderStarboard" unique_id=99035561]
-shape = SubResource("SphereShape3D_ladder")
+transform = Transform3D(1, 0, 0, 0, 0.9659258, -0.25881904, 0, 0.25881904, 0.9659258, 0, -2.7236805, -1.2758942)
+shape = SubResource("BoxShape3D_s6qt6")
 
 [node name="StairsModel" type="Node3D" parent="LadderStarboard" unique_id=421168406]
 
-[node name="Placeholder" type="MeshInstance3D" parent="LadderStarboard/StairsModel" unique_id=1308630627]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0.15)
-mesh = SubResource("BoxMesh_ladder")
-surface_material_override/0 = SubResource("StandardMaterial3D_ladder")
+[node name="ladder" parent="LadderStarboard/StairsModel" unique_id=1999136750 instance=ExtResource("9_4dvsp")]
+transform = Transform3D(-10, 0, 1.509958e-06, 0, 10, 0, -1.509958e-06, 0, -10, 0, -4.359698, 1.3670034)
 
 [node name="LadderStarboardDeck" type="Marker3D" parent="." unique_id=187559225]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, -2.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.8624725, -0.49571723, -5.9231167)
 
 [node name="EngineLoop" type="AudioStreamPlayer3D" parent="." unique_id=1949703198]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.5, -1, 0)
@@ -292,3 +275,5 @@ autoplay = true
 max_distance = 25.0
 
 [editable path="boat"]
+[editable path="LadderPort/StairsModel/ladder"]
+[editable path="LadderStarboard/StairsModel/ladder"]

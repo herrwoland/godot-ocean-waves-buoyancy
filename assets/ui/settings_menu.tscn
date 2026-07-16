@@ -200,7 +200,7 @@ custom_minimum_size = Vector2(130, 0)
 layout_mode = 2
 size_flags_vertical = 4
 min_value = 50000.0
-max_value = 5000000.0
+max_value = 50000000.0
 step = 25000.0
 value = 400000.0
 
